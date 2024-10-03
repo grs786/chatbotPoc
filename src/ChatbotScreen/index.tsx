@@ -1,33 +1,45 @@
 import React, { useState, useEffect } from "react";
-import { GiftedChat, InputToolbar, Bubble } from "react-native-gifted-chat";
 import {
-  View,
-  Modal,
-  TouchableOpacity,
-  Text,
-  StyleSheet,
-  SafeAreaView,
-} from "react-native";
+  GiftedChat,
+  InputToolbar,
+  Bubble,
+  IMessage,
+} from "react-native-gifted-chat";
+import { View, TouchableOpacity, Text, SafeAreaView } from "react-native";
 import * as ImagePicker from "expo-image-picker";
 import { Audio } from "expo-av";
 import { MaterialIcons } from "@expo/vector-icons";
 import CustomHeader from "../components/CustomHeader";
 import { AudioMessage } from "./components/Audioslider";
+import { styles } from "./styles";
 
-const reactions = [
+interface MessageReaction {
+  id: number;
+  emoji: string;
+}
+
+interface Message extends IMessage {
+  audio?: string; // Adding optional audio field for audio messages
+}
+
+interface Reactions {
+  [key: string]: string[]; // Stores reactions for each message by message _id
+}
+
+const reactions: MessageReaction[] = [
   { id: 1, emoji: "👍" },
   { id: 2, emoji: "👎" },
   { id: 3, emoji: "❤️" },
 ];
 
-const ChatbotScreen = () => {
-  const [messages, setMessages] = useState([]);
-  const [modalVisible, setModalVisible] = useState(false);
-  const [recording, setRecording] = useState(null);
-  const [audioUri, setAudioUri] = useState("");
-  const [selectedMessage, setSelectedMessage] = useState(null);
-  const [reactionVisible, setReactionVisible] = useState(false);
-  const [messageReactions, setMessageReactions] = useState({});
+const ChatbotScreen: React.FC = () => {
+  const [messages, setMessages] = useState<Message[]>([]);
+  const [modalVisible, setModalVisible] = useState<boolean>(false);
+  const [recording, setRecording] = useState<Audio.Recording | null>(null);
+  const [audioUri, setAudioUri] = useState<string>("");
+  const [selectedMessage, setSelectedMessage] = useState<Message | null>(null);
+  const [reactionVisible, setReactionVisible] = useState<boolean>(false);
+  const [messageReactions, setMessageReactions] = useState<Reactions>({});
 
   useEffect(() => {
     setMessages([
@@ -70,7 +82,7 @@ const ChatbotScreen = () => {
     };
   }, []);
 
-  const onSend = (newMessages = []) => {
+  const onSend = (newMessages: Message[] = []) => {
     setMessages((previousMessages) =>
       GiftedChat.append(previousMessages, newMessages)
     );
@@ -85,7 +97,7 @@ const ChatbotScreen = () => {
     });
 
     if (!result.canceled) {
-      const message = {
+      const message: Message = {
         _id: Math.random().toString(),
         text: "",
         createdAt: new Date(),
@@ -108,7 +120,7 @@ const ChatbotScreen = () => {
         Audio.RecordingOptionsPresets.HIGH_QUALITY
       );
       setRecording(recording);
-      setAudioUri(recording.getURI());
+      setAudioUri(recording.getURI() || "");
     } catch (err) {
       console.error("Failed to start recording", err);
     }
@@ -116,15 +128,12 @@ const ChatbotScreen = () => {
 
   const stopRecording = async () => {
     if (recording) {
-      await recording.stopAndUnloadAsync(); // Stop and unload the recording
-      const uri = recording.getURI(); // Get the URI of the recorded audio
+      await recording.stopAndUnloadAsync();
+      const uri = recording.getURI();
       setRecording(null);
-      setAudioUri(uri); // Set the audio URI state
+      setAudioUri(uri || "");
 
-      // Log the URI to verify it's being set
-      console.log("Audio URI after stopping:", uri);
-
-      const message = {
+      const message: Message = {
         _id: Math.random().toString(),
         text: "",
         createdAt: new Date(),
@@ -139,14 +148,12 @@ const ChatbotScreen = () => {
     setModalVisible(false);
   };
 
-
-
-  const renderMessage = (props) => {
+  const renderMessage = (props: any) => {
     return (
       <Bubble
         {...props}
         wrapperStyle={{
-          right: [styles.sentMessageContainer], // Apply the new background color for sent messages
+          right: [styles.sentMessageContainer],
           left: [styles.receiveMessageContainer],
         }}
         onLongPress={() => {
@@ -157,15 +164,17 @@ const ChatbotScreen = () => {
     );
   };
 
-  const handleReaction = (emoji) => {
-    const { _id } = selectedMessage;
+  const handleReaction = (emoji: string) => {
+    if (selectedMessage) {
+      const { _id } = selectedMessage;
 
-    setMessageReactions((prev) => ({
-      ...prev,
-      [_id]: [...(prev[_id] || []), emoji],
-    }));
+      setMessageReactions((prev) => ({
+        ...prev,
+        [_id]: [...(prev[_id] || []), emoji],
+      }));
 
-    setReactionVisible(false);
+      setReactionVisible(false);
+    }
   };
 
   const renderReactions = () => {
@@ -186,7 +195,7 @@ const ChatbotScreen = () => {
     );
   };
 
-  const renderMessageAudio = (props) => (
+  const renderMessageAudio = (props: any) => (
     <AudioMessage currentMessage={props.currentMessage} />
   );
 
@@ -209,6 +218,7 @@ const ChatbotScreen = () => {
       </TouchableOpacity>
     </View>
   );
+
   return (
     <SafeAreaView style={styles.mainContainer}>
       <CustomHeader title="Alia" image="face" />
@@ -229,80 +239,11 @@ const ChatbotScreen = () => {
           />
         )}
         renderAccessory={renderAccessory}
-        renderMessageAudio={renderMessageAudio} // Use the new AudioMessage component
+        renderMessageAudio={renderMessageAudio}
       />
       {renderReactions()}
     </SafeAreaView>
   );
 };
-
-const styles = StyleSheet.create({
-  mainContainer: {
-    flex: 1,
-    backgroundColor: "#fff",
-    width: "100%",
-  },
-  sentMessageContainer: {
-    backgroundColor: "#061db7",
-    borderRadius: 15,
-    marginVertical: 4,
-    marginRight: 5,
-  },
-  receiveMessageContainer: {
-    backgroundColor: "#ced4da",
-    borderRadius: 15,
-    marginVertical: 4,
-    marginLeft: 5,
-  },
-  modalContainer: {
-    flex: 1,
-    justifyContent: "center",
-    alignItems: "center",
-    backgroundColor: "rgba(0, 0, 0, 0.5)",
-  },
-  modalContent: {
-    width: "80%",
-    padding: 20,
-    backgroundColor: "white",
-    borderRadius: 10,
-    alignItems: "center",
-  },
-  accessoryContainer: {
-    flexDirection: "row-reverse",
-    alignItems: "center",
-    padding: 10,
-    backgroundColor: "#ced4da",
-  },
-  reactionContainer: {
-    flexDirection: "row",
-    justifyContent: "space-around",
-    padding: 10,
-    backgroundColor: "#f0f0f0",
-    borderRadius: 10,
-    position: "absolute",
-    bottom: 100, // Adjust as necessary
-    left: 10,
-    right: 10,
-  },
-  reactionButton: {
-    flex: 1,
-    alignItems: "center",
-  },
-  reactionEmoji: {
-    fontSize: 24,
-  },
-  modalTitle: {
-    fontSize: 20,
-    marginBottom: 15,
-  },
-  modalButton: {
-    marginVertical: 10,
-    padding: 10,
-    backgroundColor: "#f0f0f0",
-    borderRadius: 5,
-    width: "100%",
-    alignItems: "center",
-  },
-});
 
 export default ChatbotScreen;
