@@ -1,14 +1,14 @@
 import React, { useState, useEffect } from "react";
-import { GiftedChat, InputToolbar, IMessage } from "react-native-gifted-chat";
+import { GiftedChat, InputToolbar } from "react-native-gifted-chat";
 import { SafeAreaView } from "react-native";
 import { Audio } from "expo-av";
 import CustomHeader from "../components/CustomHeader";
-import MessageBubble from "./components/MessageBubble";
 import AccessoryBar from "./components/AccessoryBar";
 import ReactionsOverlay from "./components/ReactionOverlay";
 import { AudioMessage } from "./components/Audioslider";
 import { styles } from "./styles";
 import { MessageReaction, Message, Reactions } from "./types";
+import MessageBubble  from "./components/MessageBubble";
 
 const reactions: MessageReaction[] = [
   { id: 1, emoji: "👍" },
@@ -76,6 +76,7 @@ const ChatbotScreen: React.FC = () => {
       setReactionVisible(false);
     }
   };
+  console.log('messgerxn>>>',messageReactions)
 
   const renderMessageAudio = (props: any) => (
     <AudioMessage currentMessage={props.currentMessage} />

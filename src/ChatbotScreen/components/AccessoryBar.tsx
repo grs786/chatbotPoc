@@ -90,7 +90,7 @@ const AccessoryBar: React.FC<Props> = ({
         onPress={() => (recording ? stopRecording() : startRecording())}
       >
         <MaterialIcons
-          name="mic"
+          name={recording ? "stop" : "mic"}
           size={24}
           color={recording ? "red" : "black"}
         />

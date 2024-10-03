@@ -52,9 +52,15 @@ export const styles = StyleSheet.create({
       flex: 1,
       alignItems: "center",
     },
-    reactionEmoji: {
-      fontSize: 24,
+    reactionDisplayContainer: {
+      flexDirection: "row",
+      marginTop: 4,
     },
+    reactionEmoji: {
+      fontSize: 12,
+      marginRight: 4,
+    },
+  
     modalTitle: {
       fontSize: 20,
       marginBottom: 15,
