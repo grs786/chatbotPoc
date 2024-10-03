@@ -27,7 +27,7 @@ export const styles = StyleSheet.create({
     modalContent: {
       width: "80%",
       padding: 20,
-      backgroundColor: "white",
+      backgroundColor: "white",   
       borderRadius: 10,
       alignItems: "center",
     },

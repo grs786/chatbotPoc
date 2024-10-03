@@ -12,24 +12,13 @@ import { MaterialIcons } from "@expo/vector-icons";
 import CustomHeader from "../components/CustomHeader";
 import { AudioMessage } from "./components/Audioslider";
 import { styles } from "./styles";
+import {MessageReaction,Message,Reactions} from './types'
 
-interface MessageReaction {
-  id: number;
-  emoji: string;
-}
 
-interface Message extends IMessage {
-  audio?: string; // Adding optional audio field for audio messages
-}
-
-interface Reactions {
-  [key: string]: string[]; // Stores reactions for each message by message _id
-}
 
 const reactions: MessageReaction[] = [
   { id: 1, emoji: "👍" },
   { id: 2, emoji: "👎" },
-  { id: 3, emoji: "❤️" },
 ];
 
 const ChatbotScreen: React.FC = () => {
@@ -113,16 +102,25 @@ const ChatbotScreen: React.FC = () => {
     setModalVisible(false);
   };
 
+
   const startRecording = async () => {
     try {
-      await Audio.requestPermissionsAsync();
-      const { recording } = await Audio.Recording.createAsync(
-        Audio.RecordingOptionsPresets.HIGH_QUALITY
+      const status = await Audio?.requestPermissionsAsync();
+      await Audio?.setAudioModeAsync({
+        allowsRecordingIOS: true,
+        playsInSilentModeIOS: true,
+        shouldDuckAndroid: true,
+        playThroughEarpieceAndroid: false,
+      });
+      setAudioUri('');
+      const {recording} = await Audio.Recording.createAsync(
+        Audio?.RECORDING_OPTIONS_PRESET_HIGH_QUALITY,
       );
+
       setRecording(recording);
       setAudioUri(recording.getURI() || "");
     } catch (err) {
-      console.error("Failed to start recording", err);
+      console.error('Failed to start recording', err);
     }
   };
 
