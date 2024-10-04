@@ -7,8 +7,9 @@ import MessageList from "./components/MessageList";
 import MessageInput from "./components/MessageInput";
 import ReactionModal from "./components/ReactionModal";
 import { styles } from "./styles";
+import VehicleInfoModal from "./components/VechileInfoModal";
 
-const ChatScreen: React.FC = () => {
+const ChatScreen: React.FC = ({ navigation }: any) => {
   const [messages, setMessages] = useState<any[]>([]);
   const [inputText, setInputText] = useState("");
   const [recording, setRecording] = useState<Audio.Recording | null>(null);
@@ -17,6 +18,7 @@ const ChatScreen: React.FC = () => {
     null
   );
   const [messageReactions, setMessageReactions] = useState<any>({});
+  const [modalVisible, setModalVisible] = useState<boolean>(true);
 
   useEffect(() => {
     setMessages([
@@ -129,10 +131,14 @@ const ChatScreen: React.FC = () => {
     }));
     setReactionVisible(false);
   };
+  const handleVinClose = () => {
+    setModalVisible(false); // Close the modal
+  };
 
   return (
     <SafeAreaView style={styles.mainContainer}>
-      <CustomHeader title="WSM Assistant" />
+      <VehicleInfoModal visible={modalVisible} onClose={handleVinClose} />
+      <CustomHeader title="WSM Assistant" navigation={navigation} />
       <MessageList
         messages={messages}
         handleReaction={handleReaction}

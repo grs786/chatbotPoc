@@ -4,6 +4,7 @@ import { SafeAreaProvider } from "react-native-safe-area-context";
 import ApplicationNavigator from "./src/Navigator/AppNavigator";
 import { NavigationContainer } from "@react-navigation/native";
 import React from "react";
+import { DrawerNavigator } from "./src/Navigator/DrawerNavigator";
 
 export default function App() {
   return (
@@ -16,7 +17,8 @@ export default function App() {
         
       />
       <NavigationContainer>
-        <ApplicationNavigator />
+        {/* <ApplicationNavigator /> */}
+        <DrawerNavigator/>
       </NavigationContainer>
     </SafeAreaProvider>
   );

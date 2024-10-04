@@ -87,6 +87,20 @@ export const styles = StyleSheet.create({
 
   },
 
+  textInputContainer: {
+    flexDirection: "row", // To align TextInput and button horizontally
+    alignItems: "center",
+    borderWidth: 1,
+    borderColor: "#ccc",
+    borderRadius: 5,
+    backgroundColor: "#fff",
+    elevation: 5, // Android shadow
+    shadowColor: "#000", // iOS shadow
+    shadowOffset: { width: 0, height: 2 }, // iOS shadow
+    shadowOpacity: 0.1, // iOS shadow
+    shadowRadius: 4, // iOS shadow
+  },
+
   timestamp: {
     fontSize: 12,
     color: "#999",
@@ -164,18 +178,24 @@ export const styles = StyleSheet.create({
     alignItems: "center",
     backgroundColor: "rgba(0, 0, 0, 0.5)", // Semi-transparent background
   },
-  vechilemodalContainer: {
-    backgroundColor: "#fff",
-    borderRadius: 10,
-    height: "100%",
+    vechilemodalContainer: {
+      backgroundColor: "white",
+      borderRadius: 10,
+      paddingBottom: 20,
+      elevation: 10,
+      height:'100%',
+      shadowColor: "#000",
+      shadowOffset: { width: 0, height: 2 },
+      shadowOpacity: 0.1,
+      shadowRadius: 6,
   },
   logoContainer: {
     alignItems: "center",
     marginVertical: 80,
   },
   logo: {
-    width: 30,
-    height: 30,
+    width: 90,
+    height: 40,
   },
   inputContainers: {
     marginBottom: 10,
@@ -184,10 +204,10 @@ export const styles = StyleSheet.create({
     fontSize: 16,
     marginBottom: 5,
     fontWeight: "500",
-    color: "blue",
+    color: "#1D4ED8",
   },
   input: {
-    borderWidth: 1,
+    flex:1,
     borderColor: "#ccc",
     borderRadius: 5,
     padding: 10,
@@ -202,7 +222,20 @@ export const styles = StyleSheet.create({
   dropdownContainer: {
     marginBottom: 20,
   },
+  arrowButton: {
+    padding: 11,
+    backgroundColor: "#1D4ED8",
+    borderTopRightRadius: 5,
+    borderBottomRightRadius:5,
+    marginLeft: 10,
+  },
   dropdown: {
     borderColor: "#ccc",
+    elevation: 5, // Android shadow
+    shadowColor: "#000", // iOS shadow
+    shadowOffset: { width: 0, height: 2 }, // iOS shadow
+    shadowOpacity: 0.1, // iOS shadow
+    shadowRadius: 4, // iOS shadow
   },
+  dropOptions:{borderColor:'#ccc',elevation:2}
 });

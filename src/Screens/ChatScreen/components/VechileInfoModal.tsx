@@ -1,8 +1,9 @@
 import React, { useState } from "react";
-import { View, Text, TextInput, Image, Modal, Keyboard } from "react-native";
+import { View, Text, TextInput, Image, Modal, Keyboard, TouchableOpacity } from "react-native";
 import DropDownPicker from "react-native-dropdown-picker";
 import CustomHeader from "../../../components/CustomHeader";
 import { styles } from "../styles";
+import { MaterialIcons } from "@expo/vector-icons";
 
 interface VehicleInfoModalProps {
   visible: boolean;
@@ -17,14 +18,15 @@ const VehicleInfoModal: React.FC<VehicleInfoModalProps> = ({
   const [selectedVehicle, setSelectedVehicle] = useState<string | null>(null);
   const [open, setOpen] = useState(false);
   const [items, setItems] = useState([
-    { label: "Vehicle 1", value: "vehicle1" },
-    { label: "Vehicle 2", value: "vehicle2" },
+    { label: "2021 F-150 3.5L CYCLON", value: "vehicle1" },
+    { label: "2021 F_170 2.7L V6", value: "vehicle2" },
   ]);
 
   const handleVinChange = (value: string) => {
     setVin(value);
 
-    if (value.length > 0) {
+    // Close the modal when VIN is entered
+    if (value.length > 6) {
       const typingDelay = setTimeout(() => {
         onClose();
         clearTimeout(typingDelay);
@@ -35,8 +37,6 @@ const VehicleInfoModal: React.FC<VehicleInfoModalProps> = ({
 
   const handleVehicleSelection = (value: string | null) => {
     setSelectedVehicle(value);
-
-    // Close the modal once a vehicle is selected
     if (value !== null) {
       onClose();
     }
@@ -50,19 +50,24 @@ const VehicleInfoModal: React.FC<VehicleInfoModalProps> = ({
           <View style={{ paddingHorizontal: 20 }}>
             <View style={styles.logoContainer}>
               <Image
-                source={require("../../../Assets/images/googleIcon.png")}
+                source={require("../../../Assets/images/ford.png")}
                 style={styles.logo}
               />
             </View>
 
             <View style={styles.inputContainers}>
               <Text style={styles.label}>Enter Vehicle Information Number</Text>
+              <View style={styles.textInputContainer}> 
               <TextInput
                 style={styles.input}
                 placeholder="VIN"
                 value={vin}
                 onChangeText={handleVinChange}
               />
+               <TouchableOpacity style={styles.arrowButton} onPress={() => {}}>
+                  <MaterialIcons name="arrow-forward" size={24} color="white" />
+                </TouchableOpacity>
+                </View>
             </View>
 
             <Text style={styles.orText}>OR</Text>
@@ -78,6 +83,8 @@ const VehicleInfoModal: React.FC<VehicleInfoModalProps> = ({
                 setItems={setItems}
                 placeholder="Select an option"
                 style={styles.dropdown}
+                dropDownContainerStyle={styles.dropOptions}
+                textStyle={{color:'grey'}}
               />
             </View>
           </View>

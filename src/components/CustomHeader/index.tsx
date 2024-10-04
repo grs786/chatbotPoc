@@ -2,24 +2,26 @@ import { View, TouchableOpacity, Text, Platform } from "react-native";
 import React from "react";
 import { styles } from "./styles";
 import { MaterialIcons } from "@expo/vector-icons";
+import { useNavigation } from "@react-navigation/native";
 
-const CustomHeader = ({ title }: { title: string; }) => {
+const CustomHeader = ({ title,navigation }: { title: string,navigation:any }) => {
   return (
     <View style={styles.container}>
-      <TouchableOpacity>
-        <View
-          style={{
-            flexDirection: "row",
-            alignItems: "center",
-            justifyContent: "space-between",
-            paddingHorizontal: 20,
-          }}
-        >
+      <View
+        style={{
+          flexDirection: "row",
+          alignItems: "center",
+          justifyContent: "space-between",
+          paddingHorizontal: 20,
+        }}
+      >
+        <TouchableOpacity onPress={() => navigation.openDrawer()}>
           <MaterialIcons name="list" size={30} color={"black"} />
-          <Text style={styles.headertext}>{title}</Text>
-          <MaterialIcons name="create" size={30} color={"#1A7BD3"} />
-        </View>
-      </TouchableOpacity>
+        </TouchableOpacity>
+
+        <Text style={styles.headertext}>{title}</Text>
+        <MaterialIcons name="create" size={30} color={"#1A7BD3"} />
+      </View>
     </View>
   );
 };
