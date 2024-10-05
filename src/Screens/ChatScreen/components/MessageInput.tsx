@@ -1,7 +1,16 @@
-import React from "react";
+import React, { Dispatch, SetStateAction } from "react";
 import { View, TextInput, TouchableOpacity } from "react-native";
 import { MaterialIcons } from "@expo/vector-icons";
 import { styles } from "../styles";
+interface IMessageInputProps {
+  inputText: string;
+  setInputText: Dispatch<SetStateAction<string>>; 
+  handleSend: () => void;                         
+  pickImage: () => void;                          
+  recording: boolean;                             
+  startRecording: () => void;                     
+  stopRecording: () => void;                      
+}
 
 const MessageInput = ({
   inputText,
@@ -11,7 +20,7 @@ const MessageInput = ({
   recording,
   startRecording,
   stopRecording,
-}:any) => {
+}:IMessageInputProps) => {
   return (
     <View style={styles.inputContainer}>
       <TouchableOpacity onPress={pickImage}>
@@ -23,24 +32,27 @@ const MessageInput = ({
         value={inputText}
         onChangeText={(text) => setInputText(text)}
       />
-      <TouchableOpacity onPress={handleSend}>
-        <MaterialIcons name="send" size={24} color="grey" />
-      </TouchableOpacity>
-      <TouchableOpacity
-        style={{
-          backgroundColor: "blue",
-          padding: 10,
-          borderRadius: 4,
-          marginLeft: 5,
-        }}
-        onPress={() => (recording ? stopRecording() : startRecording())}
-      >
-        <MaterialIcons
-          name={recording ? "stop" : "mic"}
-          size={24}
-          color={recording ? "red" : "white"}
-        />
-      </TouchableOpacity>
+      {inputText.trim() ? (
+        <TouchableOpacity onPress={handleSend}>
+          <MaterialIcons name="send" size={24} color="blue" />
+        </TouchableOpacity>
+      ) : (
+        <TouchableOpacity
+          style={{
+            backgroundColor: "blue",
+            padding: 10,
+            borderRadius: 4,
+            marginLeft: 5,
+          }}
+          onPress={() => (recording ? stopRecording() : startRecording())}
+        >
+          <MaterialIcons
+            name={recording ? "stop" : "mic"}
+            size={24}
+            color={recording ? "red" : "white"}
+          />
+        </TouchableOpacity>
+      )}
     </View>
   );
 };

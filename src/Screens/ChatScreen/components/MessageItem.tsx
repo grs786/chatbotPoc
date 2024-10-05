@@ -4,14 +4,39 @@ import { AudioMessage } from "./Audioslider";
 import RenderHtml from "react-native-render-html";
 import { styles } from "../styles";
 
-const MessageItem = ({ item, handleReaction, reaction, messageReactions }:any) => {
+interface User {
+  _id: number;
+  name: string;
+  fullname: string;
+}
+
+interface Message {
+  _id: number;
+  text: string;
+  createdAt: string;
+  user: User;
+  image?: string;
+  audio?: string;
+}
+
+interface IMessageItemProps {
+  item: Message;
+  handleReaction: (messageId: number) => void; 
+  reaction?: string; 
+  messageReactions?: any;
+}
+
+const MessageItem: React.FC<IMessageItemProps> = ({ item, handleReaction, reaction, messageReactions }) => {
   return (
     <View style={item.user._id === 1 ? styles.messageContainer : styles.rmessageContainer}>
+      {/* Header with sender/receiver name and timestamp */}
       <View style={styles.iconContainer}>
         <Text style={item.user._id === 1 ? styles.senderIcon : styles.receiverIcon}>
           {item.user.name}
         </Text>
-        <Text style={{marginHorizontal:8,fontSize:16,fontWeight:'500'}}>{item.user.fullname}</Text>
+        <Text style={{ marginHorizontal: 8, fontSize: 16, fontWeight: '500' }}>
+          {item.user.fullname}
+        </Text>
         <Text style={styles.timestamp}>
           {new Date(item.createdAt).toLocaleTimeString([], {
             hour: "2-digit",
@@ -19,6 +44,8 @@ const MessageItem = ({ item, handleReaction, reaction, messageReactions }:any) =
           })}
         </Text>
       </View>
+
+      {/* Message Content: Image, Audio, or Text */}
       <TouchableOpacity
         onLongPress={() => handleReaction(item._id)}
         style={item.user._id === 1 ? styles.sentMessageContainer : styles.receiveMessageContainer}

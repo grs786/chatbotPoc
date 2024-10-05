@@ -37,7 +37,7 @@ const PastConversationsScreen = ({props}:any) => {
   const renderChatItem = ({ item }) => (
     <View style={styles.chatItemContainer}>
       <TouchableOpacity style={styles.chatItem}>
-        <MaterialIcons name="chat" size={24} color="gray" />
+        <MaterialIcons name="chat" size={22} color="gray" />
         <Text style={styles.chatTitle}>{item.title}</Text>
       </TouchableOpacity>
       <TouchableOpacity>

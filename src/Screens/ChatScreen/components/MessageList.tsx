@@ -1,12 +1,41 @@
 import React from "react";
-import { FlatList } from "react-native";
+import { FlatList, ListRenderItem } from "react-native";
 import MessageItem from "./MessageItem";
 import { styles } from "../styles";
 
-const MessageList = ({ messages, handleReaction, messageReactions }:any) => {
-  const renderMessage = ({ item }:any) => {
+interface IMessage {
+  _id: string | number;
+  text?: string;
+  image?: string;
+  audio?: string;
+  user: {
+    _id: number;
+    name: string;
+    fullname: string;
+  };
+  createdAt: string;
+}
+
+interface IMessageListProps {
+  messages: IMessage[]; 
+  handleReaction: (messageId: string | number) => void; 
+  messageReactions: { [key: string]: string }; 
+}
+
+const MessageList: React.FC<IMessageListProps> = ({
+  messages,
+  handleReaction,
+  messageReactions,
+}) => {
+  const renderMessage: ListRenderItem<IMessage> = ({ item }) => {
     const reaction = messageReactions[item._id];
-    return <MessageItem  item={item} handleReaction={handleReaction} reaction={reaction} />;
+    return (
+      <MessageItem
+        item={item}
+        handleReaction={handleReaction}
+        reaction={reaction}
+      />
+    );
   };
 
   return (
@@ -16,6 +45,9 @@ const MessageList = ({ messages, handleReaction, messageReactions }:any) => {
       renderItem={renderMessage}
       contentContainerStyle={styles.messageList}
       showsVerticalScrollIndicator={false}
+      ref={(ref) => (this.flatList = ref)}
+      onContentSizeChange={() => this.flatList?.scrollToEnd({ animated: true })}
+      onLayout={() => this.flatList?.scrollToEnd({ animated: true })}
     />
   );
 };

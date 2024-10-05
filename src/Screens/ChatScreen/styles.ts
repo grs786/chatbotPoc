@@ -174,7 +174,7 @@ export const styles = StyleSheet.create({
 
   modalBackground: {
     flex: 1,
-    justifyContent: "center",
+    // justifyContent: "center",
     alignItems: "center",
     backgroundColor: "rgba(0, 0, 0, 0.5)", // Semi-transparent background
   },
@@ -183,7 +183,7 @@ export const styles = StyleSheet.create({
       borderRadius: 10,
       paddingBottom: 20,
       elevation: 10,
-      height:'100%',
+      height:'90%',
       shadowColor: "#000",
       shadowOffset: { width: 0, height: 2 },
       shadowOpacity: 0.1,
@@ -237,5 +237,7 @@ export const styles = StyleSheet.create({
     shadowOpacity: 0.1, // iOS shadow
     shadowRadius: 4, // iOS shadow
   },
-  dropOptions:{borderColor:'#ccc',elevation:2}
+  dropOptions:{borderColor:'#ccc',elevation:2},
+  headertext: { fontSize: 20,fontWeight:'500', color: "#1A7BD3",alignItems:'center',textAlign:'center',paddingTop:40 },
+
 });

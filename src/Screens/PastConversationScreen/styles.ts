@@ -8,7 +8,7 @@ export const styles = StyleSheet.create({
       backgroundColor: "#fff",
     },
     heading: {
-      fontSize: 24,
+      fontSize: 20,
       fontWeight: "bold",
       marginBottom: 10,
     },
@@ -38,12 +38,12 @@ export const styles = StyleSheet.create({
       alignItems: "center",
     },
     chatTitle: {
-      fontSize: 14,
+      fontSize: 13,
       marginLeft: 10,
       fontWeight:'500'
     },
     dateHeading: {
-      fontSize: 16,
+      fontSize: 14,
       marginVertical: 10,
       color: "#888",
       fontWeight:'500',

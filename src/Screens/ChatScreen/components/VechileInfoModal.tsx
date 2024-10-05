@@ -25,8 +25,7 @@ const VehicleInfoModal: React.FC<VehicleInfoModalProps> = ({
   const handleVinChange = (value: string) => {
     setVin(value);
 
-    // Close the modal when VIN is entered
-    if (value.length > 6) {
+    if (value.length > 10) {
       const typingDelay = setTimeout(() => {
         onClose();
         clearTimeout(typingDelay);
@@ -46,7 +45,7 @@ const VehicleInfoModal: React.FC<VehicleInfoModalProps> = ({
     <Modal visible={visible} animationType="slide" transparent={true}>
       <View style={styles.modalBackground}>
         <View style={styles.vechilemodalContainer}>
-          <CustomHeader title="WSM Assistant" />
+          <Text style={styles.headertext}>WSM Assitant</Text>
           <View style={{ paddingHorizontal: 20 }}>
             <View style={styles.logoContainer}>
               <Image
