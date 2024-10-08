@@ -18,7 +18,6 @@ export const AudioMessage: React.FC<AudioMessageProps> = ({ currentMessage }) =>
   const [playbackStatus, setPlaybackStatus] = useState<Audio.AudioStatus | null>(null);
   const [duration, setDuration] = useState<number>(0); 
 
-  console.log('currunt>>',currentMessage)
 
   useEffect(() => {
     return () => {

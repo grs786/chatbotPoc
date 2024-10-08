@@ -37,7 +37,7 @@ export const styles = StyleSheet.create({
     padding: 5,
     alignItems: "flex-start",
     shadowColor: "#000",
-    borderRadius:4,
+    borderRadius: 4,
     shadowOffset: {
       width: 0,
       height: 2,
@@ -76,15 +76,14 @@ export const styles = StyleSheet.create({
     backgroundColor: "#fff",
     padding: 10,
     borderRadius: 10,
-    marginLeft:30
+    marginLeft: 30,
   },
   rmessageBubble: {
     maxWidth: "88%",
     backgroundColor: "#E8E9E8",
     padding: 10,
     borderRadius: 10,
-    marginLeft:20
-
+    marginLeft: 20,
   },
 
   textInputContainer: {
@@ -114,11 +113,11 @@ export const styles = StyleSheet.create({
   inputContainer: {
     flexDirection: "row",
     alignItems: "center",
-    paddingHorizontal:10,
+    paddingHorizontal: 10,
     backgroundColor: "#E1F6FF",
     borderWidth: 1,
     borderColor: "#dddddd",
-    borderRadius:20
+    borderRadius: 20,
   },
   textInput: {
     flex: 1,
@@ -174,59 +173,84 @@ export const styles = StyleSheet.create({
 
   modalBackground: {
     flex: 1,
-    // justifyContent: "center",
+    paddingBottom: 80,
     alignItems: "center",
     backgroundColor: "rgba(0, 0, 0, 0.5)", // Semi-transparent background
   },
-    vechilemodalContainer: {
-      backgroundColor: "white",
-      borderRadius: 10,
-      paddingBottom: 20,
-      elevation: 10,
-      height:'90%',
-      shadowColor: "#000",
-      shadowOffset: { width: 0, height: 2 },
-      shadowOpacity: 0.1,
-      shadowRadius: 6,
+  vechilemodalContainer: {
+    backgroundColor: "white",
+    borderRadius: 10,
+    // paddingVertical: 20,
+    elevation: 10,
+    height: "100%",
+    width: "100%",
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 6,
   },
   logoContainer: {
     alignItems: "center",
     marginVertical: 80,
   },
   logo: {
-    width: 90,
-    height: 40,
+    width: 50,
+    height: 50,
   },
   inputContainers: {
     marginBottom: 10,
   },
+  buttonContainer:{
+    alignItems:'center',
+    marginBottom:20,
+  },
+  bluebutton:{
+    flexDirection:'row',
+    alignItems:'center',
+    justifyContent:'center',
+    width:'100%',
+    padding:12,
+    borderRadius:10,
+    backgroundColor:'#1E3A8A',
+
+  },
+
   label: {
     fontSize: 16,
     marginBottom: 5,
     fontWeight: "500",
-    color: "#1D4ED8",
+    color: "#1E3A8A",
   },
   input: {
-    flex:1,
+    flex: 1,
     borderColor: "#ccc",
     borderRadius: 5,
     padding: 10,
     fontSize: 16,
+    color:'#1D4ED8'
   },
   orText: {
     textAlign: "center",
-    marginVertical: 10,
+    marginVertical: 30,
     fontSize: 18,
     fontWeight: "bold",
+  },
+  submittext:{
+    textAlign: "center",
+    fontSize: 14,
+    paddingVertical:4,
+    fontWeight: '400',
+    color:'white',
+
   },
   dropdownContainer: {
     marginBottom: 20,
   },
   arrowButton: {
     padding: 11,
-    backgroundColor: "#1D4ED8",
+    backgroundColor: "#1E3A8A",
     borderTopRightRadius: 5,
-    borderBottomRightRadius:5,
+    borderBottomRightRadius: 5,
     marginLeft: 10,
   },
   dropdown: {
@@ -237,7 +261,71 @@ export const styles = StyleSheet.create({
     shadowOpacity: 0.1, // iOS shadow
     shadowRadius: 4, // iOS shadow
   },
-  dropOptions:{borderColor:'#ccc',elevation:2},
-  headertext: { fontSize: 20,fontWeight:'500', color: "#1A7BD3",alignItems:'center',textAlign:'center',paddingTop:40 },
+  dropOptions: { borderColor: "#ccc", elevation: 2 },
+  headertext: {
+    fontSize: 20,
+    fontWeight: "500",
+    color: "#1A7BD3",
+    alignItems: "center",
+    textAlign: "center",
+    paddingTop: 40,
+  },
 
+  vehicleDetailsContainer: {
+    padding: 20,
+    backgroundColor: '#fff',
+    borderRadius: 10,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 5,
+    elevation: 3,
+    justifyContent:'center',
+    height:'81%'
+  },
+  connectedHeader: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginBottom: 10,
+  },
+  vehicleTitle: {
+    fontSize: 16,
+    fontWeight: 'bold',
+    color: ' #1E3A8A',
+  },
+  connectionStatus: {
+    color: ' #1E3A8A',
+  },
+  statusDot: {
+    width: 10,
+    height: 10,
+    marginLeft:3,
+    backgroundColor: 'green',
+    borderRadius: 5,
+  },
+  vehicleInfo: {
+    marginBottom: 15,
+  },
+  vehicleModel: {
+    fontSize: 18,
+    fontWeight: 'bold',
+    color: '#1E3A8A',
+  },
+  vinNumber: {
+    fontSize: 14,
+    color: '#555',
+  },
+  viewDataButton: {
+    backgroundColor: '#E8ECEF',
+    padding: 10,
+    borderRadius: 5,
+    alignItems: 'center',
+  },
+  viewDataText: {
+    fontSize: 16,
+    color: '#777',
+    padding:5,
+  },
+  
 });

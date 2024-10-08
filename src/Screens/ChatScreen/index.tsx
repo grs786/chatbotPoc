@@ -1,5 +1,11 @@
 import React, { useState, useEffect } from "react";
-import { SafeAreaView, KeyboardAvoidingView } from "react-native";
+import {
+  SafeAreaView,
+  KeyboardAvoidingView,
+  View,
+  Text,
+  TouchableOpacity,
+} from "react-native";
 import { Audio } from "expo-av";
 import * as ImagePicker from "expo-image-picker";
 import CustomHeader from "../../components/CustomHeader";
@@ -28,6 +34,8 @@ const ChatScreen: React.FC = () => {
   const [modalVisible, setModalVisible] = useState<boolean>(true);
   const [accessToken, setAccessToken] = useState<string>("");
   const [sessionId, setSessionId] = useState<string>("");
+  const [vehicleInfo, setVehicleInfo] = useState<string | null>(null); // Store vehicle information
+
   const navigation = useNavigation();
 
   // console.log(BASE_URL, "BASE_URLBASE_URL");
@@ -126,6 +134,7 @@ const ChatScreen: React.FC = () => {
       }
 
       setInputText(""); // Clear the input field
+      setVehicleInfo(null);
     }
   };
 
@@ -198,14 +207,52 @@ const ChatScreen: React.FC = () => {
     setReactionVisible(false);
   };
 
-  const handleVinClose = () => {
+  const handleVinClose = (vehicleData: string | null) => {
     setModalVisible(false); // Close the modal
+    setVehicleInfo(vehicleData); // Set vehicle info from modal
   };
+  console.log("vechicle>>", vehicleInfo);
 
   return (
     <SafeAreaView style={styles.mainContainer}>
       <VehicleInfoModal visible={modalVisible} onClose={handleVinClose} />
       <CustomHeader title="WSM Assistant" navigation={navigation} />
+
+      {vehicleInfo && (
+        <>
+          <View style={styles.vehicleDetailsContainer}>
+            {vehicleInfo?.connected == true && (
+              <View style={styles.connectedHeader}>
+                <Text style={styles.vehicleTitle}>Vehicle</Text>
+                <View style={{ flexDirection: "row", alignItems: "center" }}>
+                  <Text style={styles.connectionStatus}>Connected</Text>
+                  <View style={styles.statusDot} />
+                </View>
+              </View>
+            )}
+            <View style={styles.vehicleInfo}>
+              <Text style={styles.vehicleModel}>{vehicleInfo?.model}</Text>
+              <Text style={styles.vinNumber}>{vehicleInfo?.vinNumber}</Text>
+            </View>
+            <TouchableOpacity style={styles.viewDataButton}>
+              <Text style={styles.viewDataText}>View Vehicle Data</Text>
+            </TouchableOpacity>
+            <Text style={styles.orText}>OR</Text>
+
+            <View style={styles.buttonContainer}>
+              <TouchableOpacity
+                style={[styles.bluebutton, { backgroundColor: "#333" }]}
+                onPress={() => {
+                  setVehicleInfo(null);
+                  setModalVisible(true);
+                }}
+              >
+                <Text style={styles.submittext}>Change VIN</Text>
+              </TouchableOpacity>
+            </View>
+          </View>
+        </>
+      )}
       <MessageList
         messages={messages}
         handleReaction={handleReaction}

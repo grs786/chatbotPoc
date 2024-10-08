@@ -1,7 +1,7 @@
 import { Platform, StyleSheet } from "react-native";
 
 export const styles = StyleSheet.create({
-  headertext: { fontSize: 20, color: "#1A7BD3" },
+  headertext: { fontSize: 20, color: "#1E3A8A",fontWeight:'600' },
   container: {
     paddingVertical: 10,
     paddingTop: Platform.OS === "ios" ? 20 : 30,

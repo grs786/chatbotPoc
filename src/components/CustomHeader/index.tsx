@@ -1,10 +1,16 @@
-import { View, TouchableOpacity, Text, Platform } from "react-native";
+import { View, TouchableOpacity, Text, Platform, Image } from "react-native";
 import React from "react";
 import { styles } from "./styles";
 import { MaterialIcons } from "@expo/vector-icons";
 import { useNavigation } from "@react-navigation/native";
 
-const CustomHeader = ({ title,navigation }: { title: string,navigation:any }) => {
+const CustomHeader = ({
+  title,
+  navigation,
+}: {
+  title: string;
+  navigation: any;
+}) => {
   return (
     <View style={styles.container}>
       <View
@@ -16,11 +22,16 @@ const CustomHeader = ({ title,navigation }: { title: string,navigation:any }) =>
         }}
       >
         <TouchableOpacity onPress={() => navigation.openDrawer()}>
-          <MaterialIcons name="list" size={30} color={"black"} />
+          <Image
+            source={require("../../Assets/images/menuIcon.png")}
+            style={{ width: 25, height: 25 }}
+          />
         </TouchableOpacity>
-
         <Text style={styles.headertext}>{title}</Text>
-        <MaterialIcons name="create" size={30} color={"#1A7BD3"} />
+        <Image
+          source={require("../../Assets/images/editIcon.png")}
+          style={{ width: 25, height: 25 }}
+        />
       </View>
     </View>
   );
