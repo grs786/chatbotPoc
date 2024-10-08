@@ -1,10 +1,9 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import {
   View,
   Text,
   TextInput,
   Image,
-  Modal,
   Keyboard,
   TouchableOpacity,
   ActivityIndicator,
@@ -14,7 +13,6 @@ import { styles } from "../styles";
 import { useNavigation } from "@react-navigation/native";
 
 interface VehicleInfoModalProps {
-  visible: boolean;
   onClose: (
     vehicleDetails: {
       model: string;
@@ -24,10 +22,7 @@ interface VehicleInfoModalProps {
   ) => void;
 }
 
-const VehicleInfoModal: React.FC<VehicleInfoModalProps> = ({
-  visible,
-  onClose,
-}) => {
+const VehicleInfoModal: React.FC<VehicleInfoModalProps> = ({ onClose }) => {
   const [vin, setVin] = useState<string>("");
   const [loading, setLoading] = useState<boolean>(false);
   const [connectedViaButton, setConnectedViaButton] = useState<boolean>(true);
@@ -83,65 +78,59 @@ const VehicleInfoModal: React.FC<VehicleInfoModalProps> = ({
   };
 
   return (
-    <Modal visible={visible} animationType="slide" transparent={true}>
-      <View style={styles.modalBackground}>
-        <View style={styles.vechilemodalContainer}>
-          <CustomHeader title="WSM Assistant" navigation={navigation} />
+    <View style={styles.modalBackground}>
+      <View style={styles.vechilemodalContainer}>
+        <View style={{ paddingHorizontal: 20 }}>
+          <View style={styles.logoContainer}>
+            <Image
+              source={require("../../../Assets/images/fordLogo.png")}
+              style={styles.logo}
+            />
+          </View>
 
-          <View style={{ paddingHorizontal: 20 }}>
-            <View style={styles.logoContainer}>
-              <Image
-                source={require("../../../Assets/images/fordLogo.png")}
-                style={styles.logo}
-              />
-            </View>
+          {!loading ? (
+            <>
+              <TouchableOpacity
+                style={[styles.bluebutton]}
+                onPress={handleConnectVehicle}
+                disabled={loading}
+              >
+                <Text style={styles.submittext}>Connect to vehicle</Text>
+                <Image
+                  source={require("../../../Assets/images/sensorsIcon.png")}
+                  style={{ width: 25, height: 25, marginLeft: 5 }}
+                />
+              </TouchableOpacity>
 
-            {!loading ? (
-              <>
-                <View style={styles.buttonContainer}>
+              <Text style={styles.orText}>OR</Text>
+
+              <View style={styles.inputContainers}>
+                <Text style={styles.label}>Enter VIN</Text>
+                <View style={styles.textInputContainer}>
+                  <TextInput
+                    style={styles.input}
+                    placeholder="VIN"
+                    value={vin}
+                    onChangeText={handleVinChange}
+                    maxLength={17}
+                    returnKeyType="done"
+                    onSubmitEditing={handleVinSubmit}
+                  />
                   <TouchableOpacity
-                    style={[styles.bluebutton]}
-                    onPress={handleConnectVehicle}
-                    disabled={loading}
+                    style={styles.arrowButton}
+                    onPress={handleVinSubmit}
                   >
-                    <Text style={styles.submittext}>Connect to vehicle</Text>
-                    <Image
-                      source={require("../../../Assets/images/sensorsIcon.png")}
-                      style={{ width: 25, height: 25, marginLeft: 5 }}
-                    />
+                    <Text style={styles.submittext}>Submit</Text>
                   </TouchableOpacity>
                 </View>
-
-                <Text style={styles.orText}>OR</Text>
-
-                <View style={styles.inputContainers}>
-                  <Text style={styles.label}>Enter VIN</Text>
-                  <View style={styles.textInputContainer}>
-                    <TextInput
-                      style={styles.input}
-                      placeholder="VIN"
-                      value={vin}
-                      onChangeText={handleVinChange}
-                      maxLength={17}
-                      returnKeyType="done"
-                      onSubmitEditing={handleVinSubmit}
-                    />
-                    <TouchableOpacity
-                      style={styles.arrowButton}
-                      onPress={handleVinSubmit}
-                    >
-                      <Text style={styles.submittext}>Submit</Text>
-                    </TouchableOpacity>
-                  </View>
-                </View>
-              </>
-            ) : (
-              <ActivityIndicator size="large" color="#1C4E80" />
-            )}
-          </View>
+              </View>
+            </>
+          ) : (
+            <ActivityIndicator size="large" color="#1C4E80" />
+          )}
         </View>
       </View>
-    </Modal>
+    </View>
   );
 };
 

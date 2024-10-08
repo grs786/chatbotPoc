@@ -1,7 +1,7 @@
 // import ApiPaths from '@/Configs/api-paths';
 import { useCallback } from "react";
 import axios, { AxiosRequestConfig } from "axios";
-import ApiPaths from "../../Configs/ApiPaths";
+import ApiPaths from "../../../environment";
 
 export const useUserSession = () => {
   const createUserSession = useCallback(async () => {
@@ -19,7 +19,7 @@ export const useUserSession = () => {
       // Make the POST request
 
       const response = await axios.post(
-        `${ApiPaths.BASEURL}${ApiPaths.AUTH_SESSION}`,
+        `${ApiPaths.BASE_URL}${ApiPaths.AUTH_SESSION}`,
         bodyParams,
         config
       );

@@ -87,3 +87,4 @@ tests/test-results.xml
 **/node_modules
 
 .env
+environment.ts

@@ -1,4 +1,5 @@
 import { StyleSheet } from "react-native";
+import { Colors } from "src/Assets/colors";
 
 export const styles = StyleSheet.create({
   mainContainer: {
@@ -48,7 +49,7 @@ export const styles = StyleSheet.create({
   },
   senderIcon: {
     fontSize: 14,
-    color: "#1E3A8A",
+    color: Colors.NAVYBLUE,
     backgroundColor: "#87CEFA",
     borderRadius: 15,
     width: 60,
@@ -58,7 +59,7 @@ export const styles = StyleSheet.create({
   },
   receiverIcon: {
     fontSize: 16,
-    color: "#1E3A8A",
+    color: Colors.NAVYBLUE,
     backgroundColor: "#87CEFA",
     borderRadius: 15,
     width: 60,
@@ -83,17 +84,20 @@ export const styles = StyleSheet.create({
   textInputContainer: {
     flexDirection: "row", // To align TextInput and button horizontally
     alignItems: "center",
-    borderWidth: 1,
+    // borderWidth: 1,
     borderColor: "#ccc",
     borderRadius: 5,
     backgroundColor: "#fff",
     elevation: 5, // Android shadow
     shadowColor: "#000", // iOS shadow
-    shadowOffset: { width: 0, height: 2 }, // iOS shadow
-    shadowOpacity: 0.1, // iOS shadow
-    shadowRadius: 4, // iOS shadow
+    shadowOffset: { width: 1, height: 2 }, // iOS shadow
+    shadowOpacity: 1, // iOS shadow
+    shadowRadius: 2, // iOS shadow
   },
-
+  buttonContainer:{
+    alignItems:'center',
+    marginBottom:20,
+  },
   timestamp: {
     fontSize: 12,
     color: "#999",
@@ -166,17 +170,20 @@ export const styles = StyleSheet.create({
   },
 
   modalBackground: {
-    flex: 1,
-    paddingBottom: 80,
     alignItems: "center",
     backgroundColor: "rgba(0, 0, 0, 0.5)", // Semi-transparent background
+    position: "absolute",
+    height: "100%",
+    width: "100%",
+    marginTop: "30%",
+    
+
   },
   vechilemodalContainer: {
     backgroundColor: "white",
-    borderRadius: 10,
     // paddingVertical: 20,
     elevation: 10,
-    height: "100%",
+    height: "85%",
     width: "100%",
     shadowColor: "#000",
     shadowOffset: { width: 0, height: 2 },
@@ -194,26 +201,24 @@ export const styles = StyleSheet.create({
   inputContainers: {
     marginBottom: 10,
   },
-  buttonContainer:{
-    alignItems:'center',
-    marginBottom:20,
-  },
+  
   bluebutton:{
     flexDirection:'row',
     alignItems:'center',
     justifyContent:'center',
-    width:'100%',
+    width:'70%',
     padding:12,
     borderRadius:10,
-    backgroundColor:'#1E3A8A',
+    backgroundColor:Colors.NAVYBLUE,
+    alignSelf:'center'
 
   },
 
   label: {
-    fontSize: 16,
+    fontSize: 14,
     marginBottom: 5,
     fontWeight: "500",
-    color: "#1E3A8A",
+    color: Colors.NAVYBLUE,
   },
   input: {
     flex: 1,
@@ -226,7 +231,7 @@ export const styles = StyleSheet.create({
   orText: {
     textAlign: "center",
     marginVertical: 30,
-    fontSize: 18,
+    fontSize: 16,
     fontWeight: "bold",
   },
   submittext:{
@@ -242,7 +247,7 @@ export const styles = StyleSheet.create({
   },
   arrowButton: {
     padding: 11,
-    backgroundColor: "#1E3A8A",
+    backgroundColor: Colors.NAVYBLUE,
     borderTopRightRadius: 5,
     borderBottomRightRadius: 5,
     marginLeft: 10,
@@ -275,7 +280,7 @@ export const styles = StyleSheet.create({
     shadowRadius: 5,
     elevation: 3,
     justifyContent:'center',
-    height:'81%'
+    height:'81%',
   },
   connectedHeader: {
     flexDirection: 'row',
@@ -284,12 +289,14 @@ export const styles = StyleSheet.create({
     marginBottom: 10,
   },
   vehicleTitle: {
-    fontSize: 16,
+    fontSize: 14,
     fontWeight: 'bold',
-    color: ' #1E3A8A',
+    color: Colors.NAVYBLUE,
   },
   connectionStatus: {
-    color: ' #1E3A8A',
+    color: Colors.NAVYBLUE,
+    fontSize:12,
+    fontWeight:'500'
   },
   statusDot: {
     width: 10,
@@ -300,26 +307,45 @@ export const styles = StyleSheet.create({
   },
   vehicleInfo: {
     marginBottom: 15,
+    backgroundColor:Colors.WHITE,
+    paddingHorizontal:16,
+    paddingVertical:24,
+    borderRadius:8,
+    elevation: 5, // Android shadow
+    shadowColor: "#000", // iOS shadow
+    shadowOffset: { width: 0, height: 2 }, // iOS shadow
+    shadowOpacity: 0.3, // iOS shadow
+    shadowRadius: 2, // iOS shadow
   },
   vehicleModel: {
-    fontSize: 18,
+    fontSize: 14,
     fontWeight: 'bold',
-    color: '#1E3A8A',
+    color: Colors.NAVYBLUE,
+    paddingBottom:10
   },
   vinNumber: {
     fontSize: 14,
     color: '#555',
+    
   },
   viewDataButton: {
-    backgroundColor: '#E8ECEF',
+    backgroundColor: Colors.DISABLED_BUTTON,
     padding: 10,
     borderRadius: 5,
     alignItems: 'center',
   },
   viewDataText: {
     fontSize: 16,
-    color: '#777',
     padding:5,
+    color:Colors.DISABLED_TEXT
   },
+  vehicleIcon:{
+    width:24,
+    height:24,
+    marginRight:10
+  },
+  vehicleRowView:{
+    flexDirection:"row"
+  }
   
 });

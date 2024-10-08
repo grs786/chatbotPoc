@@ -3,12 +3,12 @@ import { StyleSheet } from "react-native";
 export const styles = StyleSheet.create({
     container: {
       flex: 1,
-      paddingHorizontal: 20,
       paddingTop: 50,
-      backgroundColor: "#fff",
+      backgroundColor: "rgb(248,250,252)",
+      paddingHorizontal:10
     },
     heading: {
-      fontSize: 20,
+      fontSize: 16,
       fontWeight: "bold",
       marginBottom: 10,
     },
@@ -23,7 +23,7 @@ export const styles = StyleSheet.create({
     searchInput: {
       flex: 1,
       marginHorizontal: 10,
-      fontSize: 16,
+      fontSize: 14,
     },
     chatItemContainer: {
       flexDirection: "row",
@@ -40,7 +40,8 @@ export const styles = StyleSheet.create({
     chatTitle: {
       fontSize: 13,
       marginLeft: 10,
-      fontWeight:'500'
+      fontWeight:'500',
+      width:'82%',
     },
     dateHeading: {
       fontSize: 14,

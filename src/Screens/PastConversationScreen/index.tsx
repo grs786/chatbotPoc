@@ -16,25 +16,8 @@ import {
 } from "../ChatScreen/useChatOperations";
 import { useNavigation } from "@react-navigation/native";
 import { SCREENS } from "../../Common/screens";
-
-const pastChatsData = [
-  {
-    id: "1",
-    title: "2021 F-150, 3.5L cyclon...",
-    date: "Today",
-  },
-  {
-    id: "2",
-    title: "Select_new",
-    date: "Today",
-  },
-  {
-    id: "3",
-    title: "Engine making noise",
-    date: "Previous 7 days",
-  },
-];
-
+import CustomHeader from "src/components/CustomHeader";
+import Apipath from "../../../environment";
 export interface IChatHistory {
   id: string;
   createdAt: string;
@@ -43,11 +26,15 @@ export interface IChatHistory {
   userIdentifier: string;
 }
 
-const PastConversationsScreen = (props) => {
+const PastConversationsScreen = (
+  props: React.JSX.IntrinsicAttributes & {
+    title: string;
+    navigation: any;
+    containerStyle?: StyleSheet | undefined;
+  }
+) => {
   const [searchText, setSearchText] = useState("");
   const [chatHistory, setChatHistory] = useState<IChatHistory[]>();
-  const [sessionId, setSessionId] = useState("hello test data");
-  // const [accessToken, setAccessToken] = useState<string>("");
   const navigation = useNavigation();
   const { createUserSession } = useUserSession();
 
@@ -56,26 +43,18 @@ const PastConversationsScreen = (props) => {
   const { ThreadListData } = useThreadListData();
 
   const intialSession = async () => {
-    setSessionId("hello test data12");
     const data = await createUserSession();
     const reqParam = {
       accessToken: data?.access_token,
-      vinNumber: "1FTFW1E85MFA63398",
+      vinNumber: Apipath.SAMPLE_VIN,
     };
     const respData = await retreiveVehicleData(reqParam);
-
     const threadListing = {
       accessToken: data.access_token,
       sessionId: respData?.session_id,
     };
-    console.log(threadListing, "threadListing->ahjdgfhjsdf");
     const historyData = await ThreadListData(threadListing);
-    console.log(
-      JSON.stringify(historyData?.history, null, 2),
-      "`setChatHistorysetChatHistory0978`"
-    );
     setChatHistory(historyData?.history);
-    setSessionId("hello test data13");
 
     // Set initial messages
   };
@@ -83,32 +62,45 @@ const PastConversationsScreen = (props) => {
   useEffect(() => {
     intialSession();
   }, []);
-  // const filteredChats = chatHistory?.filter((chat) =>
-  //   chat?.name.toLowerCase().includes(searchText.toLowerCase())
-  // );
-
-  console.log(sessionId, "sessionId_09866");
-  console.log(chatHistory, "chatHistorychatHistorychatHistorychatHistory");
-
-  const renderChatItem = ({ item }) => (
-    <View style={styles.chatItemContainer}>
-      <TouchableOpacity
-        style={styles.chatItem}
-        onPress={() =>
-          navigation.navigate(SCREENS.ChatScreen, { itemID: item.id })
-        }
-      >
-        <MaterialIcons name="chat" size={22} color="gray" />
-        <Text style={styles.chatTitle}>{item?.name}</Text>
-      </TouchableOpacity>
-      <TouchableOpacity>
-        <MaterialIcons name="delete" size={20} color="gray" />
-      </TouchableOpacity>
-    </View>
+  const filteredChats = chatHistory?.filter((chat) =>
+    chat?.name.toLowerCase().includes(searchText.toLowerCase())
   );
+
+  const renderChatItem = ({ item }) => {
+    console.log(JSON.stringify(item, null, 2), "dfsdfsdfsdf");
+
+    return (
+      <View style={styles.chatItemContainer}>
+        <TouchableOpacity
+          style={styles.chatItem}
+          onPress={() =>
+            navigation.navigate(SCREENS.ChatScreen, { itemID: item.id })
+          }
+        >
+          <MaterialIcons name="chat" size={22} color="gray" />
+          <Text numberOfLines={1} style={styles.chatTitle}>
+            {item?.name}
+          </Text>
+        </TouchableOpacity>
+        <TouchableOpacity>
+          <MaterialIcons name="delete" size={20} color="gray" />
+        </TouchableOpacity>
+      </View>
+    );
+  };
 
   return (
     <View style={styles.container}>
+      <CustomHeader
+        containerStyle={{
+          paddingHorizontal: 0,
+          shadowColor: "#fff",
+          backgroundColor: "transparent",
+          marginBottom: 20,
+        }}
+        title=""
+        {...props}
+      />
       <Text style={styles.heading}>Past Chats</Text>
       {/* Search Bar */}
       <View style={styles.searchContainer}>
@@ -119,7 +111,6 @@ const PastConversationsScreen = (props) => {
           value={searchText}
           onChangeText={setSearchText}
         />
-        <MaterialIcons name="edit" size={24} color="gray" />
       </View>
 
       {/* Chat List */}
@@ -128,25 +119,25 @@ const PastConversationsScreen = (props) => {
         keyExtractor={(item) => item.id}
         renderItem={renderChatItem}
         extraData={chatHistory}
-        ListHeaderComponent={() => (
-          <>
-            <Text style={styles.dateHeading}>Today</Text>
-            {chatHistory?.filter((chat) => chat?.createdAt === "Today")
-              .length === 0 && (
-              <Text style={styles.emptyMessage}>No chats today</Text>
-            )}
-          </>
-        )}
-        ListFooterComponent={() => (
-          <>
-            <Text style={styles.dateHeading}>Yesterday</Text>
-            {chatHistory?.filter(
-              (chat) => chat?.createdAt === "Previous 7 days"
-            ).length === 0 && (
-              <Text style={styles.emptyMessage}>No previous chats</Text>
-            )}
-          </>
-        )}
+        // ListHeaderComponent={() => (
+        //   <>
+        //     <Text style={styles.dateHeading}>Today</Text>
+        //     {chatHistory?.filter((chat) => chat?.createdAt === "Today")
+        //       .length === 0 && (
+        //       <Text style={styles.emptyMessage}>No chats today</Text>
+        //     )}
+        //   </>
+        // )}
+        // ListFooterComponent={() => (
+        //   <>
+        //     <Text style={styles.dateHeading}>Previous 2 Days</Text>
+        //     {chatHistory?.filter(
+        //       (chat) => chat?.createdAt === "Previous 7 days"
+        //     ).length === 0 && (
+        //       <Text style={styles.emptyMessage}>No previous chats</Text>
+        //     )}
+        //   </>
+        // )}
       />
     </View>
   );

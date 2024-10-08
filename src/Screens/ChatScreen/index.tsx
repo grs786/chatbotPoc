@@ -5,6 +5,7 @@ import {
   View,
   Text,
   TouchableOpacity,
+  Image,
 } from "react-native";
 import { Audio } from "expo-av";
 import * as ImagePicker from "expo-image-picker";
@@ -21,6 +22,9 @@ import {
   usePostChatData,
   useThreadListData,
 } from "./useChatOperations";
+import { IVehicleInfo } from "./types";
+import Apipath from "../../../environment";
+import { Colors } from "src/Assets/colors";
 
 const ChatScreen: React.FC = () => {
   const [messages, setMessages] = useState<any[]>([]);
@@ -33,8 +37,7 @@ const ChatScreen: React.FC = () => {
   const [messageReactions, setMessageReactions] = useState<any>({});
   const [modalVisible, setModalVisible] = useState<boolean>(true);
   const [accessToken, setAccessToken] = useState<string>("");
-  const [sessionId, setSessionId] = useState<string>("");
-  const [vehicleInfo, setVehicleInfo] = useState<string | null>(null); // Store vehicle information
+  const [vehicleInfo, setVehicleInfo] = useState<IVehicleInfo | null>(null); // Store vehicle information
 
   const navigation = useNavigation();
 
@@ -51,14 +54,9 @@ const ChatScreen: React.FC = () => {
 
     const reqParam = {
       accessToken: data?.access_token,
-      vinNumber: "1FTFW1E85MFA63398",
+      vinNumber: Apipath.SAMPLE_VIN,
     };
     const respData = await retreiveVehicleData(reqParam);
-    setSessionId(respData?.session_id);
-    console.log(
-      JSON.stringify(respData.session_id, null, 2),
-      "response data>>>>>>>"
-    );
 
     // Set initial messages
     setMessages([
@@ -215,7 +213,6 @@ const ChatScreen: React.FC = () => {
 
   return (
     <SafeAreaView style={styles.mainContainer}>
-      <VehicleInfoModal visible={modalVisible} onClose={handleVinClose} />
       <CustomHeader title="WSM Assistant" navigation={navigation} />
 
       {vehicleInfo && (
@@ -223,7 +220,13 @@ const ChatScreen: React.FC = () => {
           <View style={styles.vehicleDetailsContainer}>
             {vehicleInfo?.connected == true && (
               <View style={styles.connectedHeader}>
-                <Text style={styles.vehicleTitle}>Vehicle</Text>
+                <View style={styles.vehicleRowView}>
+                  <Image
+                    source={require("../../Assets/images/vehicleIcon.png")}
+                    style={styles.vehicleIcon}
+                  />
+                  <Text style={styles.vehicleTitle}>Vehicle</Text>
+                </View>
                 <View style={{ flexDirection: "row", alignItems: "center" }}>
                   <Text style={styles.connectionStatus}>Connected</Text>
                   <View style={styles.statusDot} />
@@ -241,7 +244,10 @@ const ChatScreen: React.FC = () => {
 
             <View style={styles.buttonContainer}>
               <TouchableOpacity
-                style={[styles.bluebutton, { backgroundColor: "#333" }]}
+                style={[
+                  styles.bluebutton,
+                  { backgroundColor: Colors.NAVYBLUE_SHADE1, width: "100%" },
+                ]}
                 onPress={() => {
                   setVehicleInfo(null);
                   setModalVisible(true);
@@ -277,6 +283,10 @@ const ChatScreen: React.FC = () => {
         setReactionVisible={setReactionVisible}
         applyReaction={applyReaction}
       />
+
+      {modalVisible && (
+        <VehicleInfoModal visible={modalVisible} onClose={handleVinClose} />
+      )}
     </SafeAreaView>
   );
 };

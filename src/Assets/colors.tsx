@@ -1,0 +1,8 @@
+export const Colors = {
+  BLACK: "#000",
+  WHITE: "#FFF",
+  NAVYBLUE: "#1E3A8A",
+  NAVYBLUE_SHADE1: "#334155",
+  DISABLED_BUTTON: "#E2E8F0",
+  DISABLED_TEXT: "#94A3B8",
+};
