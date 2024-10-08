@@ -28,7 +28,7 @@ const MessageInput = ({
       </TouchableOpacity>
       <TextInput
         style={styles.textInput}
-        placeholder="Ask follow-up..."
+        placeholder="Message WSM Assistant"
         value={inputText}
         onChangeText={(text) => setInputText(text)}
       />
@@ -39,7 +39,7 @@ const MessageInput = ({
       ) : (
         <TouchableOpacity
           style={{
-            backgroundColor: "blue",
+            // backgroundColor: "blue",
             padding: 10,
             borderRadius: 4,
             marginLeft: 5,
@@ -49,7 +49,7 @@ const MessageInput = ({
           <MaterialIcons
             name={recording ? "stop" : "mic"}
             size={24}
-            color={recording ? "red" : "white"}
+            color={recording ? "red" : "#1E3A8A"}
           />
         </TouchableOpacity>
       )}

@@ -75,7 +75,7 @@ const ChatScreen: React.FC = () => {
           <p>Just let me know which area you're experiencing trouble with.</p>
         `,
         createdAt: new Date(),
-        user: { _id: 2, name: "W", fullname: "Workshop Manual ChatBot" },
+        user: { _id: 2, name: "WSM Bot", fullname: "Workshop Manual ChatBot" },
       },
       {
         _id: 2,
@@ -83,7 +83,7 @@ const ChatScreen: React.FC = () => {
           <p><strong>Hello!</strong> Welcome to the <em>WSM Assistant</em>. How can I help you today?</p>
         `,
         createdAt: new Date(),
-        user: { _id: 1, name: "Y", fullname: "You" },
+        user: { _id: 1, name: "Tech", fullname: "You" },
       },
     ]);
   };
