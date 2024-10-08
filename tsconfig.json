@@ -3,5 +3,8 @@
   "compilerOptions": {
     "jsx": "react",
     "strict": true
-  }
+  },
+  "include": [
+    "react-native-dotenv.d.ts" // Add this line
+  ],
 }

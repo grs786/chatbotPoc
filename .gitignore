@@ -85,3 +85,5 @@ tests/test-results.xml
 *.class
 /android/*.gradle
 **/node_modules
+
+.env

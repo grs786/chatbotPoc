@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   View,
   Text,
@@ -8,6 +8,14 @@ import {
 } from "react-native";
 import { MaterialIcons } from "@expo/vector-icons";
 import { styles } from "./styles";
+import {
+  usePostChatData,
+  useRetreiveVehicleData,
+  useThreadListData,
+  useUserSession,
+} from "../ChatScreen/useChatOperations";
+import { useNavigation } from "@react-navigation/native";
+import { SCREENS } from "../../Common/screens";
 
 const pastChatsData = [
   {
@@ -27,18 +35,71 @@ const pastChatsData = [
   },
 ];
 
-const PastConversationsScreen = ({props}:any) => {
-  const [searchText, setSearchText] = useState("");
+export interface IChatHistory {
+  id: string;
+  createdAt: string;
+  name: string;
+  userId: string;
+  userIdentifier: string;
+}
 
-  const filteredChats = pastChatsData.filter((chat) =>
-    chat.title.toLowerCase().includes(searchText.toLowerCase())
-  );
+const PastConversationsScreen = (props) => {
+  const [searchText, setSearchText] = useState("");
+  const [chatHistory, setChatHistory] = useState<IChatHistory[]>();
+  const [sessionId, setSessionId] = useState("hello test data");
+  // const [accessToken, setAccessToken] = useState<string>("");
+  const navigation = useNavigation();
+  const { createUserSession } = useUserSession();
+
+  const { retreiveVehicleData } = useRetreiveVehicleData();
+  const { PostChatData } = usePostChatData();
+  const { ThreadListData } = useThreadListData();
+
+  const intialSession = async () => {
+    setSessionId("hello test data12");
+    const data = await createUserSession();
+    const reqParam = {
+      accessToken: data?.access_token,
+      vinNumber: "1FTFW1E85MFA63398",
+    };
+    const respData = await retreiveVehicleData(reqParam);
+
+    const threadListing = {
+      accessToken: data.access_token,
+      sessionId: respData?.session_id,
+    };
+    console.log(threadListing, "threadListing->ahjdgfhjsdf");
+    const historyData = await ThreadListData(threadListing);
+    console.log(
+      JSON.stringify(historyData?.history, null, 2),
+      "`setChatHistorysetChatHistory0978`"
+    );
+    setChatHistory(historyData?.history);
+    setSessionId("hello test data13");
+
+    // Set initial messages
+  };
+
+  useEffect(() => {
+    intialSession();
+  }, []);
+  // const filteredChats = chatHistory?.filter((chat) =>
+  //   chat?.name.toLowerCase().includes(searchText.toLowerCase())
+  // );
+
+  console.log(sessionId, "sessionId_09866");
+  console.log(chatHistory, "chatHistorychatHistorychatHistorychatHistory");
 
   const renderChatItem = ({ item }) => (
     <View style={styles.chatItemContainer}>
-      <TouchableOpacity style={styles.chatItem}>
+      <TouchableOpacity
+        style={styles.chatItem}
+        onPress={() =>
+          navigation.navigate(SCREENS.ChatScreen, { itemID: item.id })
+        }
+      >
         <MaterialIcons name="chat" size={22} color="gray" />
-        <Text style={styles.chatTitle}>{item.title}</Text>
+        <Text style={styles.chatTitle}>{item?.name}</Text>
       </TouchableOpacity>
       <TouchableOpacity>
         <MaterialIcons name="delete" size={20} color="gray" />
@@ -58,26 +119,30 @@ const PastConversationsScreen = ({props}:any) => {
           value={searchText}
           onChangeText={setSearchText}
         />
-        <MaterialIcons name='edit' size={24} color="gray" />
+        <MaterialIcons name="edit" size={24} color="gray" />
       </View>
 
       {/* Chat List */}
       <FlatList
-        data={filteredChats}
+        data={chatHistory}
         keyExtractor={(item) => item.id}
         renderItem={renderChatItem}
+        extraData={chatHistory}
         ListHeaderComponent={() => (
           <>
             <Text style={styles.dateHeading}>Today</Text>
-            {filteredChats.filter((chat) => chat.date === "Today").length ===
-              0 && <Text style={styles.emptyMessage}>No chats today</Text>}
+            {chatHistory?.filter((chat) => chat?.createdAt === "Today")
+              .length === 0 && (
+              <Text style={styles.emptyMessage}>No chats today</Text>
+            )}
           </>
         )}
         ListFooterComponent={() => (
           <>
-            <Text style={styles.dateHeading}>Previous 7 days</Text>
-            {filteredChats.filter((chat) => chat.date === "Previous 7 days")
-              .length === 0 && (
+            <Text style={styles.dateHeading}>Yesterday</Text>
+            {chatHistory?.filter(
+              (chat) => chat?.createdAt === "Previous 7 days"
+            ).length === 0 && (
               <Text style={styles.emptyMessage}>No previous chats</Text>
             )}
           </>

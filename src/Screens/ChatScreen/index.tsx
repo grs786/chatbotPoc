@@ -8,8 +8,15 @@ import MessageInput from "./components/MessageInput";
 import ReactionModal from "./components/ReactionModal";
 import { styles } from "./styles";
 import VehicleInfoModal from "./components/VechileInfoModal";
+import { useNavigation } from "@react-navigation/native";
+import {
+  useUserSession,
+  useRetreiveVehicleData,
+  usePostChatData,
+  useThreadListData,
+} from "./useChatOperations";
 
-const ChatScreen: React.FC = ({ navigation }: any) => {
+const ChatScreen: React.FC = () => {
   const [messages, setMessages] = useState<any[]>([]);
   const [inputText, setInputText] = useState("");
   const [recording, setRecording] = useState<Audio.Recording | null>(null);
@@ -19,38 +26,65 @@ const ChatScreen: React.FC = ({ navigation }: any) => {
   );
   const [messageReactions, setMessageReactions] = useState<any>({});
   const [modalVisible, setModalVisible] = useState<boolean>(true);
+  const [accessToken, setAccessToken] = useState<string>("");
+  const [sessionId, setSessionId] = useState<string>("");
+  const navigation = useNavigation();
 
-  useEffect(() => {
+  // console.log(BASE_URL, "BASE_URLBASE_URL");
+
+  const { createUserSession } = useUserSession();
+  const { retreiveVehicleData } = useRetreiveVehicleData();
+  const { PostChatData } = usePostChatData();
+  const { ThreadListData } = useThreadListData();
+
+  const intialSession = async () => {
+    const data = await createUserSession();
+    setAccessToken(data?.access_token);
+
+    const reqParam = {
+      accessToken: data?.access_token,
+      vinNumber: "1FTFW1E85MFA63398",
+    };
+    const respData = await retreiveVehicleData(reqParam);
+    setSessionId(respData?.session_id);
+    console.log(
+      JSON.stringify(respData.session_id, null, 2),
+      "response data>>>>>>>"
+    );
+
+    // Set initial messages
     setMessages([
       {
         _id: 1,
-
         text: `
-        <p>Thank you for reaching out!</p>
-     <p>Please let me know if you'd like guidance with any specific <strong>mechanical issues</strong> or if you're looking for some <em>quick tips</em> on a specific <strong>repair process</strong>.</p>
-     <p>Here’s a quick example: If you're hearing a light knocking noise in your engine, it could be due to:</p>
-     <ul>
-       <li>Excessive clearance between the piston and cylinder wall</li>
-       <li>Excessive clearance between connecting rod bearings and the crankshaft</li>
-     </ul>
-     <p>Just let me know which area you're experiencing trouble with.</p>
-     `,
-
+          <p>Thank you for reaching out!</p>
+          <p>Please let me know if you'd like guidance with any specific <strong>mechanical issues</strong> or if you're looking for some <em>quick tips</em> on a specific <strong>repair process</strong>.</p>
+          <p>Here’s a quick example: If you're hearing a light knocking noise in your engine, it could be due to:</p>
+          <ul>
+            <li>Excessive clearance between the piston and cylinder wall</li>
+            <li>Excessive clearance between connecting rod bearings and the crankshaft</li>
+          </ul>
+          <p>Just let me know which area you're experiencing trouble with.</p>
+        `,
         createdAt: new Date(),
         user: { _id: 2, name: "W", fullname: "Workshop Manual ChatBot" },
       },
       {
         _id: 2,
         text: `
-        <p><strong>Hello!</strong> Welcome to the <em>WSM Assistant</em>. How can I help you today?</p>
-      `,
+          <p><strong>Hello!</strong> Welcome to the <em>WSM Assistant</em>. How can I help you today?</p>
+        `,
         createdAt: new Date(),
         user: { _id: 1, name: "Y", fullname: "You" },
       },
     ]);
+  };
+
+  useEffect(() => {
+    intialSession();
   }, []);
 
-  const handleSend = () => {
+  const handleSend = async () => {
     if (inputText.trim()) {
       const newMessage = {
         _id: Math.random().toString(),
@@ -58,8 +92,40 @@ const ChatScreen: React.FC = ({ navigation }: any) => {
         createdAt: new Date(),
         user: { _id: 1, name: "Y" },
       };
+
+      // Update state with the new user message
       setMessages((prevMessages) => [...prevMessages, newMessage]);
-      setInputText("");
+
+      // Call the API to get the response
+      const chatParam = {
+        accessToken,
+        vinNumber: "1FTFW1E85MFA63398", // Adjust the vinNumber as needed
+        question: inputText, // Send the user's question
+      };
+
+      try {
+        const chatRespData = await PostChatData(chatParam); // Call the API
+        console.log(
+          JSON.stringify(chatRespData?.data, null, 2),
+          "chatRespData"
+        );
+
+        // Parse the API response
+        const parsedResponse = chatRespData?.data;
+        const botMessage = {
+          _id: Math.random().toString(),
+          text: parsedResponse.answer, // Use the answer from the API response
+          createdAt: new Date(),
+          user: { _id: 2, name: "W", fullname: "Workshop Manual ChatBot" },
+        };
+
+        // Update state with the bot's response
+        setMessages((prevMessages) => [...prevMessages, botMessage]);
+      } catch (error) {
+        console.error("Error fetching response:", error);
+      }
+
+      setInputText(""); // Clear the input field
     }
   };
 
@@ -85,16 +151,16 @@ const ChatScreen: React.FC = ({ navigation }: any) => {
 
   const startRecording = async () => {
     try {
-      const status = await Audio?.requestPermissionsAsync();
+      const status = await Audio.requestPermissionsAsync();
       if (status.granted) {
-        await Audio?.setAudioModeAsync({
+        await Audio.setAudioModeAsync({
           allowsRecordingIOS: true,
           playsInSilentModeIOS: true,
           shouldDuckAndroid: true,
           playThroughEarpieceAndroid: false,
         });
         const { recording } = await Audio.Recording.createAsync(
-          Audio?.RECORDING_OPTIONS_PRESET_HIGH_QUALITY
+          Audio.RECORDING_OPTIONS_PRESET_HIGH_QUALITY
         );
         setRecording(recording);
       }
@@ -131,6 +197,7 @@ const ChatScreen: React.FC = ({ navigation }: any) => {
     }));
     setReactionVisible(false);
   };
+
   const handleVinClose = () => {
     setModalVisible(false); // Close the modal
   };

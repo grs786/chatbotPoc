@@ -56,7 +56,7 @@ const MessageItem: React.FC<IMessageItemProps> = ({ item, handleReaction, reacti
           <AudioMessage currentMessage={item.audio} />
         ) : (
           <View style={item.user._id === 1 ? styles.messageBubble : styles.rmessageBubble}>
-            <RenderHtml contentWidth={300} source={{ html: item.text }} />
+            <RenderHtml contentWidth={300} source={{ html: item?.text }} />
             {reaction && <Text style={styles.reactionText}>{reaction}</Text>}
           </View>
         )}
