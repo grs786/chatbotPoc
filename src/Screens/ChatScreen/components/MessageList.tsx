@@ -7,7 +7,7 @@ import {
   View,
 } from "react-native";
 import MessageItem from "./MessageItem";
-import { styles } from "../styles";
+import { styles } from "./styles";
 import { MaterialIcons } from "@expo/vector-icons";
 
 interface IMessage {
@@ -25,8 +25,8 @@ interface IMessage {
 
 interface IMessageListProps {
   messages: IMessage[];
- handleReaction: (messageId: string | number, reaction: string) => void; 
- messageReactions: { [key: string]: string };
+  handleReaction: (messageId: string | number, reaction: string) => void;
+  messageReactions: { [key: string]: string };
 }
 
 const MessageList: React.FC<IMessageListProps> = ({
@@ -54,7 +54,7 @@ const MessageList: React.FC<IMessageListProps> = ({
     const layoutHeight = event.nativeEvent.layoutMeasurement.height;
 
     // Show "Scroll to Bottom" button if user is not near the bottom
-    if (contentHeight - offsetY > layoutHeight+50) {
+    if (contentHeight - offsetY > layoutHeight + 50) {
       setScrollToBottomVisible(true);
     } else {
       setScrollToBottomVisible(false);
@@ -66,7 +66,7 @@ const MessageList: React.FC<IMessageListProps> = ({
   };
 
   return (
-    <View style={{flex:1,}}>
+    <View style={{ flex: 1 }}>
       <FlatList
         data={messages}
         keyExtractor={(item) => item._id.toString()}
@@ -87,11 +87,7 @@ const MessageList: React.FC<IMessageListProps> = ({
           style={styles.scrollToBottomButton}
           onPress={scrollToEnd}
         >
-           <MaterialIcons
-          name={'arrow-drop-down'}
-          size={25}
-          color="white"
-        />
+          <MaterialIcons name={"arrow-drop-down"} size={25} color="white" />
         </TouchableOpacity>
       )}
     </View>

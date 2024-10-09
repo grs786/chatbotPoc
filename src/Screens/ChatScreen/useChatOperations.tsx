@@ -9,7 +9,9 @@ export const useUserSession = () => {
       "Content-Type": "application/x-www-form-urlencoded",
     };
 
-    const bodyParams = {};
+    const bodyParams = {
+      ...ApiPaths.USERSESSION_BODY,
+    };
 
     // Create the request configuration
     const config: AxiosRequestConfig = {
@@ -43,43 +45,46 @@ export const useUserSession = () => {
 };
 
 export const useRetreiveVehicleData = () => {
-  const retreiveVehicleData = useCallback(async (data) => {
-    console.log(data?.accessToken, "accessTokenaccessTokenaccessToken");
-    if (!data?.accessToken) {
-      return true;
-    }
-    const headersInput = {
-      Authorization: `Bearer ${data?.accessToken}`,
-      "Content-Type": "application/json",
-    };
-
-    // Create the request configuration
-    const config: AxiosRequestConfig = {
-      headers: headersInput,
-    };
-    const bodyparam = {
-      VIN: data?.vinNumber,
-    };
-    try {
-      // Make the POST request
-
-      const response = await axios.post(
-        `${ApiPaths.RETRIVE_VEHICLE_INFO}`,
-        bodyparam,
-        config
-      );
-
-      return response?.data;
-    } catch (error) {
-      // Handle errors
-      if (axios.isAxiosError(error)) {
-        console.log("Error response :", error?.response);
-        return error;
-      } else {
-        console.log("Unexpected error:", error);
+  const retreiveVehicleData = useCallback(
+    async (data: { accessToken: string; vinNumber: string }) => {
+      console.log(data?.accessToken, "accessTokenaccessTokenaccessToken");
+      if (!data?.accessToken) {
+        return true;
       }
-    }
-  }, []);
+      const headersInput = {
+        Authorization: `Bearer ${data?.accessToken}`,
+        "Content-Type": "application/json",
+      };
+
+      // Create the request configuration
+      const config: AxiosRequestConfig = {
+        headers: headersInput,
+      };
+      const bodyparam = {
+        VIN: data?.vinNumber,
+      };
+      try {
+        // Make the POST request
+
+        const response = await axios.post(
+          `${ApiPaths.RETRIVE_VEHICLE_INFO}`,
+          bodyparam,
+          config
+        );
+
+        return response?.data;
+      } catch (error) {
+        // Handle errors
+        if (axios.isAxiosError(error)) {
+          console.log("Error response :", error?.response);
+          return error;
+        } else {
+          console.log("Unexpected error:", error);
+        }
+      }
+    },
+    []
+  );
   return {
     retreiveVehicleData,
   };
@@ -116,9 +121,6 @@ export const usePostChatData = () => {
       return_format: "html",
       streaming: false,
     };
-
-    console.log(bodyParams, "bodyParamsbodyParamsbodyParams");
-
     try {
       // Make the POST request
 
@@ -130,7 +132,7 @@ export const usePostChatData = () => {
 
       console.log(response, "responseresponse");
 
-      return response;
+      return response?.data;
     } catch (error) {
       // Handle errors
       if (axios.isAxiosError(error)) {

@@ -1,15 +1,15 @@
 import React, { Dispatch, SetStateAction } from "react";
 import { View, TextInput, TouchableOpacity } from "react-native";
 import { MaterialIcons } from "@expo/vector-icons";
-import { styles } from "../styles";
+import { styles } from "./styles";
 interface IMessageInputProps {
   inputText: string;
-  setInputText: Dispatch<SetStateAction<string>>; 
-  handleSend: () => void;                         
-  pickImage: () => void;                          
-  recording: boolean;                             
-  startRecording: () => void;                     
-  stopRecording: () => void;                      
+  setInputText: Dispatch<SetStateAction<string>>;
+  handleSend: () => void;
+  pickImage: () => void;
+  recording: boolean;
+  startRecording: () => void;
+  stopRecording: () => void;
 }
 
 const MessageInput = ({
@@ -20,7 +20,7 @@ const MessageInput = ({
   recording,
   startRecording,
   stopRecording,
-}:IMessageInputProps) => {
+}: IMessageInputProps) => {
   return (
     <View style={styles.inputContainer}>
       <TouchableOpacity onPress={pickImage}>

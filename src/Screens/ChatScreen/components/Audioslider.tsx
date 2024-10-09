@@ -7,17 +7,19 @@ import React from "react";
 
 interface AudioMessageProps {
   currentMessage: {
-    audio: string; 
-    [key: string]: any; 
+    audio: string;
+    [key: string]: any;
   };
 }
 
-export const AudioMessage: React.FC<AudioMessageProps> = ({ currentMessage }) => {
+export const AudioMessage: React.FC<AudioMessageProps> = ({
+  currentMessage,
+}) => {
   const [sound, setSound] = useState<Audio.Sound | null>(null);
   const [isPlaying, setIsPlaying] = useState<boolean>(false);
-  const [playbackStatus, setPlaybackStatus] = useState<Audio.AudioStatus | null>(null);
-  const [duration, setDuration] = useState<number>(0); 
-
+  const [playbackStatus, setPlaybackStatus] =
+    useState<Audio.AudioStatus | null>(null);
+  const [duration, setDuration] = useState<number>(0);
 
   useEffect(() => {
     return () => {

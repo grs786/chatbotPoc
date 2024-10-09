@@ -1,19 +1,10 @@
-import React, { useState, useEffect, useRef } from "react";
-import {
-  SafeAreaView,
-  KeyboardAvoidingView,
-  View,
-  Text,
-  TouchableOpacity,
-  Image,
-  ScrollView,
-} from "react-native";
+import React, { useState, useEffect } from "react";
+import { SafeAreaView, KeyboardAvoidingView } from "react-native";
 import { Audio } from "expo-av";
 import * as ImagePicker from "expo-image-picker";
 import CustomHeader from "../../components/CustomHeader";
 import MessageList from "./components/MessageList";
 import MessageInput from "./components/MessageInput";
-import ReactionModal from "./components/ReactionModal";
 import { styles } from "./styles";
 import VehicleInfoModal from "./components/VechileInfoModal";
 import { useNavigation } from "@react-navigation/native";
@@ -25,13 +16,16 @@ import {
 } from "./useChatOperations";
 import { IVehicleInfo } from "./types";
 import Apipath from "../../../environment";
-import { Colors } from "src/Assets/colors";
+import RenderVehicleInfo from "./components/RenderVehicleInfo";
+import { isLoading } from "expo-font";
+import Loader from "src/components/Loader";
 
 const ChatScreen: React.FC = () => {
   const [messages, setMessages] = useState<any[]>([]);
   const [inputText, setInputText] = useState("");
   const [recording, setRecording] = useState<Audio.Recording | null>(null);
-  const [reactionVisible, setReactionVisible] = useState<boolean>(false);
+  const [sessionID, setSessionID] = useState<string>("");
+  const [isLoading, setIsLoading] = useState<boolean>(true);
   const [selectedMessageId, setSelectedMessageId] = useState<string | null>(
     null
   );
@@ -40,10 +34,9 @@ const ChatScreen: React.FC = () => {
   const [accessToken, setAccessToken] = useState<string>("");
   const [vehicleInfo, setVehicleInfo] = useState<IVehicleInfo | null>(null); // Store vehicle information
 
-  const scrollViewRef = useRef<ScrollView>(null);
   const navigation = useNavigation();
 
-  console.log(BASE_URL, "BASE_URLBASE_URL");
+  // console.log(BASE_URL, "BASE_URLBASE_URL");
 
   const { createUserSession } = useUserSession();
   const { retreiveVehicleData } = useRetreiveVehicleData();
@@ -54,38 +47,7 @@ const ChatScreen: React.FC = () => {
     const data = await createUserSession();
     setAccessToken(data?.access_token);
 
-    const reqParam = {
-      accessToken: data?.access_token,
-      vinNumber: Apipath.SAMPLE_VIN,
-    };
-    const respData = await retreiveVehicleData(reqParam);
-
     // Set initial messages
-    setMessages([
-      {
-        _id: 1,
-        text: `
-          <p>Thank you for reaching out!</p>
-          <p>Please let me know if you'd like guidance with any specific <strong>mechanical issues</strong> or if you're looking for some <em>quick tips</em> on a specific <strong>repair process</strong>.</p>
-          <p>Here’s a quick example: If you're hearing a light knocking noise in your engine, it could be due to:</p>
-          <ul>
-            <li>Excessive clearance between the piston and cylinder wall</li>
-            <li>Excessive clearance between connecting rod bearings and the crankshaft</li>
-          </ul>
-          <p>Just let me know which area you're experiencing trouble with.</p>
-        `,
-        createdAt: new Date(),
-        user: { _id: 2, name: "WSM\nBot", fullname: "Workshop Manual ChatBot" },
-      },
-      {
-        _id: 2,
-        text: `
-          <p><strong>Hello!</strong> Welcome to the <em>WSM Assistant</em>. How can I help you today?</p>
-        `,
-        createdAt: new Date(),
-        user: { _id: 1, name: "Tech", fullname: "You" },
-      },
-    ]);
   };
 
   useEffect(() => {
@@ -93,6 +55,9 @@ const ChatScreen: React.FC = () => {
   }, []);
 
   const handleSend = async () => {
+    setVehicleInfo(null);
+    setInputText(""); // Clear the input field
+
     if (inputText.trim()) {
       const newMessage = {
         _id: Math.random().toString(),
@@ -107,19 +72,15 @@ const ChatScreen: React.FC = () => {
       // Call the API to get the response
       const chatParam = {
         accessToken,
-        vinNumber: "1FTFW1E85MFA63398", // Adjust the vinNumber as needed
+        vinNumber: Apipath.SAMPLE_VIN, // Adjust the vinNumber as needed
         question: inputText, // Send the user's question
       };
 
       try {
         const chatRespData = await PostChatData(chatParam); // Call the API
-        console.log(
-          JSON.stringify(chatRespData?.data, null, 2),
-          "chatRespData"
-        );
 
         // Parse the API response
-        const parsedResponse = chatRespData?.data;
+        const parsedResponse = chatRespData;
         const botMessage = {
           _id: Math.random().toString(),
           text: parsedResponse.answer, // Use the answer from the API response
@@ -201,25 +162,29 @@ const ChatScreen: React.FC = () => {
   };
 
   const handleReaction = (messageId: string | number, reaction: string) => {
-    setMessageReactions((prevReactions) => ({
+    setMessageReactions((prevReactions: any) => ({
       ...prevReactions,
       [messageId]: reaction,
     }));
     setSelectedMessageId(messageId);
   };
-  console.log("rex>>", messageReactions, selectedMessageId);
 
-  const applyReaction = (reaction: string) => {
-    setMessageReactions((prevReactions) => ({
-      ...prevReactions,
-      [selectedMessageId!]: reaction,
-    }));
-    setReactionVisible(false);
-  };
-
-  const handleVinClose = (vehicleData: string | null) => {
+  const handleVinClose = async (vehicleData: string | null) => {
+    setIsLoading(true);
     setModalVisible(false); // Close the modal
-    setVehicleInfo(vehicleData); // Set vehicle info from modal
+    // setVehicleInfo(vehicleData); // Set vehicle info from modal
+    const reqParam = {
+      accessToken: accessToken,
+      vinNumber: Apipath.SAMPLE_VIN,
+    };
+    const respData = await retreiveVehicleData(reqParam);
+    console.log(
+      JSON.stringify(respData?.vehicle, null, 2),
+      "respData_respData"
+    );
+    setIsLoading(false);
+    setSessionID(respData?.vehicle.session_id);
+    setVehicleInfo({ ...respData?.vehicle?.vehicle_info, connected: true });
   };
   console.log("vechicle>>", vehicleInfo);
 
@@ -227,50 +192,16 @@ const ChatScreen: React.FC = () => {
     <SafeAreaView style={styles.mainContainer}>
       <CustomHeader title="WSM Assistant" navigation={navigation} />
 
-      {vehicleInfo && (
-        <>
-          <View style={styles.vehicleDetailsContainer}>
-            {vehicleInfo?.connected == true && (
-              <View style={styles.connectedHeader}>
-                <View style={styles.vehicleRowView}>
-                  <Image
-                    source={require("../../Assets/images/vehicleIcon.png")}
-                    style={styles.vehicleIcon}
-                  />
-                  <Text style={styles.vehicleTitle}>Vehicle</Text>
-                </View>
-                <View style={{ flexDirection: "row", alignItems: "center" }}>
-                  <Text style={styles.connectionStatus}>Connected</Text>
-                  <View style={styles.statusDot} />
-                </View>
-              </View>
-            )}
-            <View style={styles.vehicleInfo}>
-              <Text style={styles.vehicleModel}>{vehicleInfo?.model}</Text>
-              <Text style={styles.vinNumber}>{vehicleInfo?.vinNumber}</Text>
-            </View>
-            <TouchableOpacity style={styles.viewDataButton}>
-              <Text style={styles.viewDataText}>View Vehicle Data</Text>
-            </TouchableOpacity>
-            <Text style={styles.orText}>OR</Text>
-
-            <View style={styles.buttonContainer}>
-              <TouchableOpacity
-                style={[
-                  styles.bluebutton,
-                  { backgroundColor: Colors.NAVYBLUE_SHADE1, width: "100%" },
-                ]}
-                onPress={() => {
-                  setVehicleInfo(null);
-                  setModalVisible(true);
-                }}
-              >
-                <Text style={styles.submittext}>Change VIN</Text>
-              </TouchableOpacity>
-            </View>
-          </View>
-        </>
+      {!isLoading && vehicleInfo && (
+        <RenderVehicleInfo
+          vehicleInfo={vehicleInfo}
+          onPress={() => {
+            setVehicleInfo(null);
+            setModalVisible(true);
+          }}
+        />
       )}
+      {isLoading && <Loader />}
       <MessageList
         messages={messages}
         handleReaction={handleReaction}
@@ -291,12 +222,6 @@ const ChatScreen: React.FC = () => {
           stopRecording={stopRecording}
         />
       </KeyboardAvoidingView>
-      <ReactionModal
-        reactionVisible={reactionVisible}
-        setReactionVisible={setReactionVisible}
-        applyReaction={applyReaction}
-      />
-
       {modalVisible && (
         <VehicleInfoModal visible={modalVisible} onClose={handleVinClose} />
       )}

@@ -1,8 +1,9 @@
 import React from "react";
-import { View, Text, TouchableOpacity, Image, Clipboard } from "react-native";
+import { View, Text, TouchableOpacity, Image, Dimensions } from "react-native";
 import { AudioMessage } from "./Audioslider";
 import RenderHtml from "react-native-render-html";
-import { styles } from "../styles";
+import { styles } from "./styles";
+import * as Clipboard from "expo-clipboard";
 
 interface User {
   _id: number;
@@ -35,8 +36,7 @@ const MessageItem: React.FC<IMessageItemProps> = ({
   const selectedReaction = messageReactions?.[item._id];
 
   const copyToClipboard = async (text: string) => {
-    await Clipboard.setString(text); // Copy the text to the clipboard
-    console.log('Copied to clipboard:', text); // Debug log
+    await Clipboard.setStringAsync(text);
   };
 
   console.log("sellele", reaction, messageReactions);
@@ -46,8 +46,7 @@ const MessageItem: React.FC<IMessageItemProps> = ({
         item.user._id === 1 ? styles.messageContainer : styles.rmessageContainer
       }
     >
-      <TouchableOpacity
-        onLongPress={() => handleReaction(item._id, selectedReaction)}
+      <View
         style={
           item.user._id === 1
             ? styles.sentMessageContainer
@@ -80,15 +79,17 @@ const MessageItem: React.FC<IMessageItemProps> = ({
                 </Text>
               </View>
 
-              <RenderHtml contentWidth={300} source={{ html: item?.text }} />
+              <RenderHtml
+                contentWidth={Dimensions.get("window").width * 0.5}
+                source={{ html: item?.text }}
+              />
             </View>
             {item.user._id === 2 && (
               <View
                 style={{
                   flexDirection: "row",
                   alignItems: "center",
-                  justifyContent: "center",
-                  paddingRight: 40,
+                  paddingLeft: "20%",
                 }}
               >
                 <TouchableOpacity
@@ -115,12 +116,17 @@ const MessageItem: React.FC<IMessageItemProps> = ({
                   />
                 </TouchableOpacity>
 
-                <TouchableOpacity onPress={() => {handleReaction(item._id, "Copy"), copyToClipboard(item.text)}}>
+                <TouchableOpacity
+                  onPress={() => {
+                    handleReaction(item._id, "Copy"),
+                      copyToClipboard(item.text);
+                  }}
+                >
                   <Image
                     source={require("../../../Assets/images/copy.png")}
                     style={[
                       styles.reactionText,
-                      reaction === "Copy" && { tintColor: "blue" },
+                      // reaction === "Copy" && { tintColor: "blue" },
                     ]}
                   />
                 </TouchableOpacity>
@@ -128,7 +134,7 @@ const MessageItem: React.FC<IMessageItemProps> = ({
             )}
           </>
         )}
-      </TouchableOpacity>
+      </View>
     </View>
   );
 };

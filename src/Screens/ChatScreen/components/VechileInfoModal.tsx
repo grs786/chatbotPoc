@@ -8,9 +8,9 @@ import {
   TouchableOpacity,
   ActivityIndicator,
 } from "react-native";
-import CustomHeader from "../../../components/CustomHeader";
-import { styles } from "../styles";
-import { useNavigation } from "@react-navigation/native";
+import { styles } from "./styles";
+import { styles as styles2 } from "../styles";
+import Loader from "src/components/Loader";
 
 interface VehicleInfoModalProps {
   onClose: (
@@ -31,8 +31,6 @@ const VehicleInfoModal: React.FC<VehicleInfoModalProps> = ({ onClose }) => {
     vinNumber: string;
     connected: boolean;
   } | null>(null);
-
-  const navigation = useNavigation();
 
   const handleVinChange = (value: string) => {
     setVin(value);
@@ -91,24 +89,24 @@ const VehicleInfoModal: React.FC<VehicleInfoModalProps> = ({ onClose }) => {
           {!loading ? (
             <>
               <TouchableOpacity
-                style={[styles.bluebutton]}
+                style={[styles2.bluebutton]}
                 onPress={handleConnectVehicle}
                 disabled={loading}
               >
-                <Text style={styles.submittext}>Connect to vehicle</Text>
+                <Text style={styles2.submittext}>Connect to vehicle</Text>
                 <Image
                   source={require("../../../Assets/images/sensorsIcon.png")}
                   style={{ width: 25, height: 25, marginLeft: 5 }}
                 />
               </TouchableOpacity>
 
-              <Text style={styles.orText}>OR</Text>
+              <Text style={styles2.orText}>OR</Text>
 
               <View style={styles.inputContainers}>
-                <Text style={styles.label}>Enter VIN</Text>
+                <Text style={styles2.label}>Enter VIN</Text>
                 <View style={styles.textInputContainer}>
                   <TextInput
-                    style={styles.input}
+                    style={styles2.input}
                     placeholder="VIN"
                     value={vin}
                     onChangeText={handleVinChange}
@@ -120,13 +118,13 @@ const VehicleInfoModal: React.FC<VehicleInfoModalProps> = ({ onClose }) => {
                     style={styles.arrowButton}
                     onPress={handleVinSubmit}
                   >
-                    <Text style={styles.submittext}>Submit</Text>
+                    <Text style={styles2.submittext}>Submit</Text>
                   </TouchableOpacity>
                 </View>
               </View>
             </>
           ) : (
-            <ActivityIndicator size="large" color="#1C4E80" />
+            <Loader title="Connecting with vehicle..." />
           )}
         </View>
       </View>
