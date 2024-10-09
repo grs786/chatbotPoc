@@ -25,8 +25,8 @@ interface IMessage {
 
 interface IMessageListProps {
   messages: IMessage[];
-  handleReaction: (messageId: string | number) => void;
-  messageReactions: { [key: string]: string };
+ handleReaction: (messageId: string | number, reaction: string) => void; 
+ messageReactions: { [key: string]: string };
 }
 
 const MessageList: React.FC<IMessageListProps> = ({

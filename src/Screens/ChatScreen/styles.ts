@@ -13,7 +13,7 @@ export const styles = StyleSheet.create({
   sentMessageContainer: {
     alignSelf: "flex-start",
     marginVertical: 5,
-    padding:5,
+    padding: 5,
     borderRadius: 10,
   },
   receiveMessageContainer: {
@@ -27,28 +27,26 @@ export const styles = StyleSheet.create({
     color: "#333",
   },
   scrollToBottomButton: {
-    position: 'absolute',
-    right:'46%',
+    position: "absolute",
+    right: "46%",
     bottom: -10,
     padding: 8,
-    backgroundColor:Colors.NAVYBLUE,
+    backgroundColor: Colors.NAVYBLUE,
     borderRadius: 40,
-    justifyContent: 'center',
-    alignItems: 'center',
+    justifyContent: "center",
+    alignItems: "center",
   },
   messageContainer: {
     marginVertical: 5,
     padding: 5,
     alignItems: "flex-start",
     backgroundColor: Colors.LIGHT_GREY,
-
   },
   rmessageContainer: {
     marginVertical: 5,
     padding: 5,
     alignItems: "flex-start",
     borderRadius: 4,
-   
   },
   iconContainer: {
     marginRight: 4,
@@ -57,7 +55,7 @@ export const styles = StyleSheet.create({
   },
   senderIcon: {
     fontSize: 14,
-    fontWeight:'600',
+    fontWeight: "600",
     color: Colors.NAVYBLUE,
     backgroundColor: Colors.LIGHT_BLUE,
     borderRadius: 10,
@@ -68,7 +66,7 @@ export const styles = StyleSheet.create({
   },
   receiverIcon: {
     fontSize: 14,
-    fontWeight:'600',
+    fontWeight: "600",
     color: Colors.NAVYBLUE,
     backgroundColor: Colors.LIGHT_BLUE,
     borderRadius: 10,
@@ -81,16 +79,14 @@ export const styles = StyleSheet.create({
     maxWidth: "80%",
     padding: 10,
     borderRadius: 10,
-    flexDirection:'row',
-    alignItems:'center'
+    flexDirection: "row",
+    alignItems: "center",
   },
   rmessageBubble: {
     maxWidth: "80%",
     padding: 10,
     borderRadius: 10,
-    flexDirection:'row'
-
-
+    flexDirection: "row",
   },
 
   textInputContainer: {
@@ -106,9 +102,9 @@ export const styles = StyleSheet.create({
     shadowOpacity: 1, // iOS shadow
     shadowRadius: 2, // iOS shadow
   },
-  buttonContainer:{
-    alignItems:'center',
-    marginBottom:20,
+  buttonContainer: {
+    alignItems: "center",
+    marginBottom: 20,
   },
   timestamp: {
     fontSize: 12,
@@ -139,10 +135,11 @@ export const styles = StyleSheet.create({
     fontWeight: "600",
   },
   reactionText: {
-    fontSize: 14,
-    color: "#555",
-    alignSelf: "flex-end",
-    marginTop: 5,
+    width: 17,
+    height: 17,
+    marginLeft:9,
+    
+    
   },
   reactionModal: {
     backgroundColor: "white",
@@ -188,8 +185,6 @@ export const styles = StyleSheet.create({
     height: "100%",
     width: "100%",
     marginTop: "30%",
-    
-
   },
   vechilemodalContainer: {
     backgroundColor: "white",
@@ -213,17 +208,16 @@ export const styles = StyleSheet.create({
   inputContainers: {
     marginBottom: 10,
   },
-  
-  bluebutton:{
-    flexDirection:'row',
-    alignItems:'center',
-    justifyContent:'center',
-    width:'70%',
-    padding:12,
-    borderRadius:10,
-    backgroundColor:Colors.NAVYBLUE,
-    alignSelf:'center'
 
+  bluebutton: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "center",
+    width: "70%",
+    padding: 12,
+    borderRadius: 10,
+    backgroundColor: Colors.NAVYBLUE,
+    alignSelf: "center",
   },
 
   label: {
@@ -238,7 +232,7 @@ export const styles = StyleSheet.create({
     borderRadius: 5,
     padding: 10,
     fontSize: 16,
-    color:'#1D4ED8'
+    color: "#1D4ED8",
   },
   orText: {
     textAlign: "center",
@@ -246,13 +240,12 @@ export const styles = StyleSheet.create({
     fontSize: 16,
     fontWeight: "bold",
   },
-  submittext:{
+  submittext: {
     textAlign: "center",
     fontSize: 14,
-    paddingVertical:4,
-    fontWeight: '400',
-    color:'white',
-
+    paddingVertical: 4,
+    fontWeight: "400",
+    color: "white",
   },
   dropdownContainer: {
     marginBottom: 20,
@@ -284,45 +277,45 @@ export const styles = StyleSheet.create({
 
   vehicleDetailsContainer: {
     padding: 20,
-    backgroundColor: '#fff',
+    backgroundColor: "#fff",
     borderRadius: 10,
-    shadowColor: '#000',
+    shadowColor: "#000",
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.1,
     shadowRadius: 5,
     elevation: 3,
-    justifyContent:'center',
-    height:'81%',
+    justifyContent: "center",
+    height: "81%",
   },
   connectedHeader: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
     marginBottom: 10,
   },
   vehicleTitle: {
     fontSize: 14,
-    fontWeight: 'bold',
+    fontWeight: "bold",
     color: Colors.NAVYBLUE,
   },
   connectionStatus: {
     color: Colors.NAVYBLUE,
-    fontSize:12,
-    fontWeight:'500'
+    fontSize: 12,
+    fontWeight: "500",
   },
   statusDot: {
     width: 10,
     height: 10,
-    marginLeft:3,
-    backgroundColor: 'green',
+    marginLeft: 3,
+    backgroundColor: "green",
     borderRadius: 5,
   },
   vehicleInfo: {
     marginBottom: 15,
-    backgroundColor:Colors.WHITE,
-    paddingHorizontal:16,
-    paddingVertical:24,
-    borderRadius:8,
+    backgroundColor: Colors.WHITE,
+    paddingHorizontal: 16,
+    paddingVertical: 24,
+    borderRadius: 8,
     elevation: 5, // Android shadow
     shadowColor: "#000", // iOS shadow
     shadowOffset: { width: 0, height: 2 }, // iOS shadow
@@ -331,33 +324,31 @@ export const styles = StyleSheet.create({
   },
   vehicleModel: {
     fontSize: 14,
-    fontWeight: 'bold',
+    fontWeight: "bold",
     color: Colors.NAVYBLUE,
-    paddingBottom:10
+    paddingBottom: 10,
   },
   vinNumber: {
     fontSize: 14,
-    color: '#555',
-    
+    color: "#555",
   },
   viewDataButton: {
     backgroundColor: Colors.DISABLED_BUTTON,
     padding: 10,
     borderRadius: 5,
-    alignItems: 'center',
+    alignItems: "center",
   },
   viewDataText: {
     fontSize: 16,
-    padding:5,
-    color:Colors.DISABLED_TEXT
+    padding: 5,
+    color: Colors.DISABLED_TEXT,
   },
-  vehicleIcon:{
-    width:24,
-    height:24,
-    marginRight:10
+  vehicleIcon: {
+    width: 24,
+    height: 24,
+    marginRight: 10,
   },
-  vehicleRowView:{
-    flexDirection:"row"
-  }
-  
+  vehicleRowView: {
+    flexDirection: "row",
+  },
 });

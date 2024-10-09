@@ -40,9 +40,10 @@ const ChatScreen: React.FC = () => {
   const [accessToken, setAccessToken] = useState<string>("");
   const [vehicleInfo, setVehicleInfo] = useState<IVehicleInfo | null>(null); // Store vehicle information
 
+  const scrollViewRef = useRef<ScrollView>(null);
   const navigation = useNavigation();
 
-  // console.log(BASE_URL, "BASE_URLBASE_URL");
+  console.log(BASE_URL, "BASE_URLBASE_URL");
 
   const { createUserSession } = useUserSession();
   const { retreiveVehicleData } = useRetreiveVehicleData();
@@ -123,16 +124,18 @@ const ChatScreen: React.FC = () => {
           _id: Math.random().toString(),
           text: parsedResponse.answer, // Use the answer from the API response
           createdAt: new Date(),
-          user: { _id: 2, name: "WSM\nBot", fullname: "Workshop Manual ChatBot" },
+          user: {
+            _id: 2,
+            name: "WSM\nBot",
+            fullname: "Workshop Manual ChatBot",
+          },
         };
-      
 
         // Update state with the bot's response
         setMessages((prevMessages) => [...prevMessages, botMessage]);
 
         // Scroll to top of new message (to show the start)
-      }
-       catch (error) {
+      } catch (error) {
         console.error("Error fetching response:", error);
       }
 
@@ -197,10 +200,14 @@ const ChatScreen: React.FC = () => {
     }
   };
 
-  const handleReaction = (messageId: string) => {
+  const handleReaction = (messageId: string | number, reaction: string) => {
+    setMessageReactions((prevReactions) => ({
+      ...prevReactions,
+      [messageId]: reaction,
+    }));
     setSelectedMessageId(messageId);
-    setReactionVisible(true);
   };
+  console.log("rex>>", messageReactions, selectedMessageId);
 
   const applyReaction = (reaction: string) => {
     setMessageReactions((prevReactions) => ({
@@ -215,8 +222,6 @@ const ChatScreen: React.FC = () => {
     setVehicleInfo(vehicleData); // Set vehicle info from modal
   };
   console.log("vechicle>>", vehicleInfo);
-
-
 
   return (
     <SafeAreaView style={styles.mainContainer}>
@@ -266,11 +271,11 @@ const ChatScreen: React.FC = () => {
           </View>
         </>
       )}
-        <MessageList
-          messages={messages}
-          handleReaction={handleReaction}
-          messageReactions={messageReactions}
-        />
+      <MessageList
+        messages={messages}
+        handleReaction={handleReaction}
+        messageReactions={messageReactions}
+      />
 
       <KeyboardAvoidingView
         behavior="padding"
