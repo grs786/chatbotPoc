@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import {
   SafeAreaView,
   KeyboardAvoidingView,
@@ -6,6 +6,7 @@ import {
   Text,
   TouchableOpacity,
   Image,
+  ScrollView,
 } from "react-native";
 import { Audio } from "expo-av";
 import * as ImagePicker from "expo-image-picker";
@@ -73,7 +74,7 @@ const ChatScreen: React.FC = () => {
           <p>Just let me know which area you're experiencing trouble with.</p>
         `,
         createdAt: new Date(),
-        user: { _id: 2, name: "WSM Bot", fullname: "Workshop Manual ChatBot" },
+        user: { _id: 2, name: "WSM\nBot", fullname: "Workshop Manual ChatBot" },
       },
       {
         _id: 2,
@@ -96,7 +97,7 @@ const ChatScreen: React.FC = () => {
         _id: Math.random().toString(),
         text: inputText,
         createdAt: new Date(),
-        user: { _id: 1, name: "Y" },
+        user: { _id: 1, name: "Tech" },
       };
 
       // Update state with the new user message
@@ -122,12 +123,16 @@ const ChatScreen: React.FC = () => {
           _id: Math.random().toString(),
           text: parsedResponse.answer, // Use the answer from the API response
           createdAt: new Date(),
-          user: { _id: 2, name: "W", fullname: "Workshop Manual ChatBot" },
+          user: { _id: 2, name: "WSM\nBot", fullname: "Workshop Manual ChatBot" },
         };
+      
 
         // Update state with the bot's response
         setMessages((prevMessages) => [...prevMessages, botMessage]);
-      } catch (error) {
+
+        // Scroll to top of new message (to show the start)
+      }
+       catch (error) {
         console.error("Error fetching response:", error);
       }
 
@@ -211,6 +216,8 @@ const ChatScreen: React.FC = () => {
   };
   console.log("vechicle>>", vehicleInfo);
 
+
+
   return (
     <SafeAreaView style={styles.mainContainer}>
       <CustomHeader title="WSM Assistant" navigation={navigation} />
@@ -259,11 +266,12 @@ const ChatScreen: React.FC = () => {
           </View>
         </>
       )}
-      <MessageList
-        messages={messages}
-        handleReaction={handleReaction}
-        messageReactions={messageReactions}
-      />
+        <MessageList
+          messages={messages}
+          handleReaction={handleReaction}
+          messageReactions={messageReactions}
+        />
+
       <KeyboardAvoidingView
         behavior="padding"
         style={{ paddingHorizontal: 10, marginVertical: 10 }}

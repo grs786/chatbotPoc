@@ -12,7 +12,6 @@ export const styles = StyleSheet.create({
   },
   sentMessageContainer: {
     alignSelf: "flex-start",
-    backgroundColor: "#E8E9E8",
     marginVertical: 5,
     padding:5,
     borderRadius: 10,
@@ -27,12 +26,21 @@ export const styles = StyleSheet.create({
     fontSize: 16,
     color: "#333",
   },
+  scrollToBottomButton: {
+    position: 'absolute',
+    right:'46%',
+    bottom: -10,
+    padding: 8,
+    backgroundColor:Colors.NAVYBLUE,
+    borderRadius: 40,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
   messageContainer: {
     marginVertical: 5,
     padding: 5,
     alignItems: "flex-start",
-    // backgroundColor: "white",
-    backgroundColor: "#E8E9E8",
+    backgroundColor: Colors.LIGHT_GREY,
 
   },
   rmessageContainer: {
@@ -43,25 +51,27 @@ export const styles = StyleSheet.create({
    
   },
   iconContainer: {
-    marginRight: 5,
+    marginRight: 4,
     flexDirection: "row",
     justifyContent: "space-between",
   },
   senderIcon: {
     fontSize: 14,
+    fontWeight:'600',
     color: Colors.NAVYBLUE,
-    backgroundColor: "#87CEFA",
-    borderRadius: 15,
+    backgroundColor: Colors.LIGHT_BLUE,
+    borderRadius: 10,
     width: 60,
     height: 60,
     textAlign: "center",
     textAlignVertical: "center",
   },
   receiverIcon: {
-    fontSize: 16,
+    fontSize: 14,
+    fontWeight:'600',
     color: Colors.NAVYBLUE,
-    backgroundColor: "#87CEFA",
-    borderRadius: 15,
+    backgroundColor: Colors.LIGHT_BLUE,
+    borderRadius: 10,
     width: 60,
     height: 60,
     textAlign: "center",
@@ -71,13 +81,15 @@ export const styles = StyleSheet.create({
     maxWidth: "80%",
     padding: 10,
     borderRadius: 10,
-    flexDirection:'row'
+    flexDirection:'row',
+    alignItems:'center'
   },
   rmessageBubble: {
     maxWidth: "80%",
     padding: 10,
     borderRadius: 10,
     flexDirection:'row'
+
 
   },
 

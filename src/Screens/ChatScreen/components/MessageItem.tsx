@@ -60,7 +60,7 @@ const MessageItem: React.FC<IMessageItemProps> = ({
             }
           >
             <View style={styles.iconContainer}>
-              <Text
+              <Text numberOfLines={2}
                 style={
                   item.user._id === 1 ? styles.senderIcon : styles.receiverIcon
                 }

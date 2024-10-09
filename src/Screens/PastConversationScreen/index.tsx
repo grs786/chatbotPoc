@@ -18,6 +18,7 @@ import { useNavigation } from "@react-navigation/native";
 import { SCREENS } from "../../Common/screens";
 import CustomHeader from "src/components/CustomHeader";
 import Apipath from "../../../environment";
+
 export interface IChatHistory {
   id: string;
   createdAt: string;
@@ -62,6 +63,7 @@ const PastConversationsScreen = (
   useEffect(() => {
     intialSession();
   }, []);
+  
   const filteredChats = chatHistory?.filter((chat) =>
     chat?.name.toLowerCase().includes(searchText.toLowerCase())
   );
