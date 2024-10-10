@@ -7,7 +7,7 @@ import {
   View,
 } from "react-native";
 import MessageItem from "./MessageItem";
-import { styles } from "../styles";
+import { styles } from "./styles";
 import { MaterialIcons } from "@expo/vector-icons";
 
 interface IMessage {
