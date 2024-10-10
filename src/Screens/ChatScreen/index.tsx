@@ -12,12 +12,10 @@ import {
   useUserSession,
   useRetreiveVehicleData,
   usePostChatData,
-  useThreadListData,
 } from "./useChatOperations";
 import { IVehicleInfo } from "./types";
 import Apipath from "../../../environment";
 import RenderVehicleInfo from "./components/RenderVehicleInfo";
-import { isLoading } from "expo-font";
 import Loader from "src/components/Loader";
 
 const ChatScreen: React.FC = () => {
@@ -36,18 +34,14 @@ const ChatScreen: React.FC = () => {
 
   const navigation = useNavigation();
 
-  // console.log(BASE_URL, "BASE_URLBASE_URL");
-
   const { createUserSession } = useUserSession();
   const { retreiveVehicleData } = useRetreiveVehicleData();
   const { PostChatData } = usePostChatData();
-  const { ThreadListData } = useThreadListData();
 
   const intialSession = async () => {
     const data = await createUserSession();
     setAccessToken(data?.access_token);
 
-    // Set initial messages
   };
 
   useEffect(() => {
@@ -56,7 +50,7 @@ const ChatScreen: React.FC = () => {
 
   const handleSend = async () => {
     setVehicleInfo(null);
-    setInputText(""); // Clear the input field
+    setInputText("");
 
     if (inputText.trim()) {
       const newMessage = {

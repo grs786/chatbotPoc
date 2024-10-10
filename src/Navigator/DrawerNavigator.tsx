@@ -15,7 +15,7 @@ export const DrawerNavigator = () => {
           width: Dimensions.get("window").width / 1.25,
         },
       }}
-      drawerContent={(props) => <PastConversationsScreen {...props} />}
+      drawerContent={(props) => <PastConversationsScreen  {...props} />}
       initialRouteName={SCREENS.ChatScreen}
     >
       <Drawer.Screen

@@ -1,11 +1,5 @@
 import React, { useRef, useState } from "react";
-import {
-  FlatList,
-  ListRenderItem,
-  Text,
-  TouchableOpacity,
-  View,
-} from "react-native";
+import { FlatList, ListRenderItem, TouchableOpacity, View } from "react-native";
 import MessageItem from "./MessageItem";
 import { styles } from "./styles";
 import { MaterialIcons } from "@expo/vector-icons";

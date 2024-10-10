@@ -33,7 +33,6 @@ const MessageItem: React.FC<IMessageItemProps> = ({
   reaction,
   messageReactions,
 }) => {
-  const selectedReaction = messageReactions?.[item._id];
 
   const copyToClipboard = async (text: string) => {
     await Clipboard.setStringAsync(text);
@@ -126,7 +125,6 @@ const MessageItem: React.FC<IMessageItemProps> = ({
                     source={require("../../../Assets/images/copy.png")}
                     style={[
                       styles.reactionText,
-                      // reaction === "Copy" && { tintColor: "blue" },
                     ]}
                   />
                 </TouchableOpacity>

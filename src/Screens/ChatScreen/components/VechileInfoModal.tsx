@@ -6,7 +6,6 @@ import {
   Image,
   Keyboard,
   TouchableOpacity,
-  ActivityIndicator,
 } from "react-native";
 import { styles } from "./styles";
 import { styles as styles2 } from "../styles";

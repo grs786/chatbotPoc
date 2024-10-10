@@ -2,6 +2,7 @@ import React, { Dispatch, SetStateAction } from "react";
 import { View, TextInput, TouchableOpacity } from "react-native";
 import { MaterialIcons } from "@expo/vector-icons";
 import { styles } from "./styles";
+
 interface IMessageInputProps {
   inputText: string;
   setInputText: Dispatch<SetStateAction<string>>;
@@ -39,7 +40,6 @@ const MessageInput = ({
       ) : (
         <TouchableOpacity
           style={{
-            // backgroundColor: "blue",
             padding: 10,
             borderRadius: 4,
             marginLeft: 5,

@@ -2,14 +2,10 @@ import {
   View,
   TouchableOpacity,
   Text,
-  Platform,
   Image,
-  StyleProp,
 } from "react-native";
 import React from "react";
 import { styles } from "./styles";
-import { MaterialIcons } from "@expo/vector-icons";
-import { NavigationProp, useNavigation } from "@react-navigation/native";
 
 const CustomHeader = ({
   title,

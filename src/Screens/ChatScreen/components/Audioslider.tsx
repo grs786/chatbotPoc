@@ -73,8 +73,8 @@ export const AudioMessage: React.FC<AudioMessageProps> = ({
           value={playbackStatus.positionMillis}
           minimumValue={0}
           maximumValue={duration}
-          thumbTintColor="#f39c12" // Orange color for the thumb
-          minimumTrackTintColor="white" // Orange color for the played portion
+          thumbTintColor="#f39c12" 
+          minimumTrackTintColor="white"
           maximumTrackTintColor="black"
           onSlidingComplete={async (value) => {
             if (sound) {
@@ -116,7 +116,7 @@ const styles = StyleSheet.create({
   audioContainer: {
     flexDirection: "row",
     alignItems: "center",
-    backgroundColor: "#f39c12", // Match with user message bubble color
+    backgroundColor: "#f39c12",
     padding: 10,
     borderRadius: 10,
     marginVertical: 5,
@@ -126,8 +126,5 @@ const styles = StyleSheet.create({
     height: 40,
     marginLeft: 10,
   },
-  timeText: {
-    marginLeft: 10,
-    color: "#fff", // White text for contrast
-  },
+ 
 });

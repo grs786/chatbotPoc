@@ -29,7 +29,7 @@ export interface IChatHistory {
 
 const PastConversationsScreen = (
   props: React.JSX.IntrinsicAttributes & {
-    title: string;
+    title?: string;
     navigation: any;
     containerStyle?: StyleSheet | undefined;
   }
