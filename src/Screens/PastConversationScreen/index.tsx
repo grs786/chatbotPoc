@@ -63,9 +63,9 @@ const PastConversationsScreen = (
   useEffect(() => {
     intialSession();
   }, []);
-  
+
   const filteredChats = chatHistory?.filter((chat) =>
-    chat?.name.toLowerCase().includes(searchText.toLowerCase())
+    chat?.name?.toLowerCase().includes(searchText.toLowerCase())
   );
 
   const renderChatItem = ({ item }) => {
@@ -121,25 +121,6 @@ const PastConversationsScreen = (
         keyExtractor={(item) => item.id}
         renderItem={renderChatItem}
         extraData={chatHistory}
-        // ListHeaderComponent={() => (
-        //   <>
-        //     <Text style={styles.dateHeading}>Today</Text>
-        //     {chatHistory?.filter((chat) => chat?.createdAt === "Today")
-        //       .length === 0 && (
-        //       <Text style={styles.emptyMessage}>No chats today</Text>
-        //     )}
-        //   </>
-        // )}
-        // ListFooterComponent={() => (
-        //   <>
-        //     <Text style={styles.dateHeading}>Previous 2 Days</Text>
-        //     {chatHistory?.filter(
-        //       (chat) => chat?.createdAt === "Previous 7 days"
-        //     ).length === 0 && (
-        //       <Text style={styles.emptyMessage}>No previous chats</Text>
-        //     )}
-        //   </>
-        // )}
       />
     </View>
   );

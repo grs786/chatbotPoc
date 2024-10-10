@@ -68,14 +68,14 @@ export const styles = StyleSheet.create({
     textAlignVertical: "center",
   },
   messageBubble: {
-    width: "80%",
+    width: "70%",
     padding: 10,
     borderRadius: 10,
     flexDirection: "row",
     alignItems: "center",
   },
   rmessageBubble: {
-    width: "80%",
+    width: "70%",
     padding: 10,
     borderRadius: 10,
     flexDirection: "row",

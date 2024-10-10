@@ -2,12 +2,10 @@ import { StyleSheet } from "react-native";
 import { Colors } from "src/Assets/colors";
 
 export const styles = StyleSheet.create({
-  //chatrScreen styles begins here
   mainContainer: {
     flex: 1,
     backgroundColor: "white",
   },
-
   vehicleDetailsContainer: {
     padding: 20,
     backgroundColor: "#fff",
@@ -73,7 +71,7 @@ export const styles = StyleSheet.create({
     alignItems: "center",
   },
   viewDataText: {
-    fontSize: 16,
+    fontSize: 14,
     padding: 5,
     color: Colors.DISABLED_TEXT,
   },
@@ -127,13 +125,5 @@ export const styles = StyleSheet.create({
   buttonContainer: {
     alignItems: "center",
     marginBottom: 20,
-  },
-// Styles end here
-
-
-
-
-  
-  
-  
+  },  
 });
