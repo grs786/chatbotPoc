@@ -65,6 +65,14 @@ const MessageList: React.FC<IMessageListProps> = ({
     flatListRef.current?.scrollToEnd({ animated: true });
   };
 
+  const scrollToNearEnd = () => {
+    // Scroll to 100px above the bottom
+    flatListRef.current?.scrollToOffset({
+      offset: flatListRef.current?.contentSize?.height - 100,
+      animated: true,
+    });
+  };
+
   return (
     <View style={{ flex: 1 }}>
       <FlatList
@@ -77,6 +85,9 @@ const MessageList: React.FC<IMessageListProps> = ({
         onContentSizeChange={() => {
           if (messages[messages.length - 1]?.user._id === 1) {
             flatListRef.current?.scrollToEnd({ animated: true });
+          }
+          else{
+          scrollToNearEnd()
           }
         }}
         onScroll={handleScroll}

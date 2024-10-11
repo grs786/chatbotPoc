@@ -126,4 +126,35 @@ export const styles = StyleSheet.create({
     alignItems: "center",
     marginBottom: 20,
   },  
+
+
+
+
+    container: {
+      padding: 10,
+    },
+    assistantMessage: {
+      backgroundColor: '#e6f7ff',
+      borderRadius: 10,
+      padding: 10,
+      marginVertical: 5,
+      alignSelf: 'flex-start',
+      maxWidth: '80%',
+    },
+    assistantText: {
+      color: '#005b9f',
+      fontSize: 16,
+    },
+    userMessage: {
+      backgroundColor: '#dcf8c6',
+      borderRadius: 10,
+      padding: 10,
+      marginVertical: 5,
+      alignSelf: 'flex-end',
+      maxWidth: '80%',
+    },
+    userText: {
+      color: '#2e2e2e',
+      fontSize: 16,
+    },
 });

@@ -18,6 +18,7 @@ import { useNavigation } from "@react-navigation/native";
 import { SCREENS } from "../../Common/screens";
 import CustomHeader from "src/components/CustomHeader";
 import Apipath from "../../../environment";
+import chatHistorys from '../../components/chathistory.json'
 
 export interface IChatHistory {
   id: string;
@@ -64,9 +65,37 @@ const PastConversationsScreen = (
     intialSession();
   }, []);
 
-  const filteredChats = chatHistory?.filter((chat) =>
+  const filteredChats = chatHistorys.history?.filter((chat) =>
     chat?.name?.toLowerCase().includes(searchText.toLowerCase())
   );
+
+  const isToday = (dateString) => {
+    const chatDate = new Date(dateString);
+    const today = new Date();
+    return (
+      chatDate.getDate() === today.getDate() &&
+      chatDate.getMonth() === today.getMonth() &&
+      chatDate.getFullYear() === today.getFullYear()
+    );
+  };
+
+  // if the chat is from the previous two days
+  const isPreviousTwoDays = (dateString) => {
+    const chatDate = new Date(dateString);
+    const today = new Date();
+    const diffInTime = today.getTime() - chatDate.getTime();
+    const diffInDays = diffInTime / (1000 * 3600 * 24);
+    return diffInDays <= 2 && diffInDays > 0;
+  };
+
+  // Filter today's chats
+  const todayChats = filteredChats?.filter((chat) => isToday(chat.createdAt));
+
+  // Filter chats from the previous two days
+  const previousChats = filteredChats?.filter((chat) =>
+    isPreviousTwoDays(chat.createdAt)
+  );
+
 
   const renderChatItem = ({ item }) => {
     console.log(JSON.stringify(item, null, 2), "dfsdfsdfsdf");
@@ -115,13 +144,39 @@ const PastConversationsScreen = (
         />
       </View>
 
+
+
+       {/* Today's Chats Section */}
+       {todayChats?.length > 0 && (
+        <View>
+          <Text style={styles.heading}>Today</Text>
+          <FlatList
+            data={todayChats}
+            keyExtractor={(item) => item.id}
+            renderItem={renderChatItem}
+          />
+        </View>
+      )}
+
+      {/* Previous Two Days Chats Section */}
+      {previousChats?.length > 0 && (
+        <View>
+          <Text style={styles.heading}>Last 2 Days</Text>
+          <FlatList
+            data={previousChats}
+            keyExtractor={(item) => item.id}
+            renderItem={renderChatItem}
+          />
+        </View>
+      )}
+
       {/* Chat List */}
-      <FlatList
+      {/* <FlatList
         data={chatHistory}
         keyExtractor={(item) => item.id}
         renderItem={renderChatItem}
         extraData={chatHistory}
-      />
+      /> */}
     </View>
   );
 };

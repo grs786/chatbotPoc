@@ -1,0 +1,59 @@
+{
+    "step_history": [
+        {
+            "id": "a5c5688a-74b8-4837-8786-331f15ccc733",
+            "name": "Workshop Manual ChatBot Demo",
+            "type": "assistant_message",
+            "threadId": "c566335b-5d12-4b6e-ba1f-150eb8ea0f5f",
+            "parentId": null,
+            "disableFeedback": false,
+            "streaming": false,
+            "waitForAnswer": false,
+            "isError": false,
+            "input": null,
+            "output": "Timed out: no action was taken",
+            "createdAt": "2024-10-07T14:51:15.182025Z",
+            "start": "2024-10-07T14:51:15.182025Z",
+            "end": "2024-10-07T14:51:15.182025Z"
+        },
+        {
+            "id": "d03578e9-5bac-40c7-8d95-201588fac3fe",
+            "name": "Workshop Manual ChatBot Demo",
+            "type": "assistant_message",
+            "threadId": "c566335b-5d12-4b6e-ba1f-150eb8ea0f5f",
+            "parentId": null,
+            "disableFeedback": false,
+            "streaming": false,
+            "waitForAnswer": true,
+            "isError": false,
+            "input": null,
+            "output": "Vehicle selection options: ",
+            "createdAt": "2024-10-07T14:52:45.189559Z",
+            "start": "2024-10-07T14:52:45.189559Z",
+            "end": "2024-10-07T14:52:45.189559Z"
+        },
+      
+        {
+            "id": "ba494ff1-e133-4949-a961-79a93da504bb",
+            "name": "GSHARM33@ford.com",
+            "type": "user_message",
+            "threadId": "c566335b-5d12-4b6e-ba1f-150eb8ea0f5f",
+            "parentId": null,
+            "disableFeedback": false,
+            "streaming": false,
+            "waitForAnswer": false,
+            "isError": false,
+            "input": null,
+            "output": "vehicle is making noise",
+            "createdAt": "2024-10-07T14:53:55.718037Z",
+            "start": "2024-10-07T14:53:55.718037Z",
+            "end": "2024-10-07T14:53:55.718037Z"
+        },
+        
+
+
+
+
+
+    ]
+}

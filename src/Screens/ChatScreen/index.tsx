@@ -1,5 +1,11 @@
 import React, { useState, useEffect } from "react";
-import { SafeAreaView, KeyboardAvoidingView } from "react-native";
+import {
+  SafeAreaView,
+  KeyboardAvoidingView,
+  Text,
+  FlatList,
+  View,
+} from "react-native";
 import { Audio } from "expo-av";
 import * as ImagePicker from "expo-image-picker";
 import CustomHeader from "../../components/CustomHeader";
@@ -7,7 +13,7 @@ import MessageList from "./components/MessageList";
 import MessageInput from "./components/MessageInput";
 import { styles } from "./styles";
 import VehicleInfoModal from "./components/VechileInfoModal";
-import { useNavigation } from "@react-navigation/native";
+import { useNavigation, useRoute } from "@react-navigation/native";
 import {
   useUserSession,
   useRetreiveVehicleData,
@@ -17,6 +23,9 @@ import { IVehicleInfo } from "./types";
 import Apipath from "../../../environment";
 import RenderVehicleInfo from "./components/RenderVehicleInfo";
 import Loader from "src/components/Loader";
+import RenderHtml from "react-native-render-html";
+import historyData from "../../components/history.json";
+import StepHistory from "./components/HistoryMessageList";
 
 const ChatScreen: React.FC = () => {
   const [messages, setMessages] = useState<any[]>([]);
@@ -31,7 +40,8 @@ const ChatScreen: React.FC = () => {
   const [modalVisible, setModalVisible] = useState<boolean>(true);
   const [accessToken, setAccessToken] = useState<string>("");
   const [vehicleInfo, setVehicleInfo] = useState<IVehicleInfo | null>(null); // Store vehicle information
-
+  const route = useRoute();
+  const historyId = route?.params?.id;
   const navigation = useNavigation();
 
   const { createUserSession } = useUserSession();
@@ -41,7 +51,6 @@ const ChatScreen: React.FC = () => {
   const intialSession = async () => {
     const data = await createUserSession();
     setAccessToken(data?.access_token);
-
   };
 
   useEffect(() => {
