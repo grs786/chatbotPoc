@@ -10,7 +10,7 @@ export const styles = StyleSheet.create({
     heading: {
       fontSize: 16,
       fontWeight: "bold",
-      marginBottom: 10,
+      marginVertical: 16,
     },
     searchContainer: {
       flexDirection: "row",

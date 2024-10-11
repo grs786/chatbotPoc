@@ -17,21 +17,26 @@ import { useNavigation, useRoute } from "@react-navigation/native";
 import {
   useUserSession,
   useRetreiveVehicleData,
+  useFetchUserData,
   usePostChatData,
+  useUpdateThreadData,
 } from "./useChatOperations";
 import { IVehicleInfo } from "./types";
 import Apipath from "../../../environment";
 import RenderVehicleInfo from "./components/RenderVehicleInfo";
 import Loader from "src/components/Loader";
-import RenderHtml from "react-native-render-html";
-import historyData from "../../components/history.json";
-import StepHistory from "./components/HistoryMessageList";
+import uuid from "uuid-random";
+import { setItem } from "src/Utilities/StorageClasses";
+// import { setItem, getItem, removeItem, clearStorage } from './storage'; // Adjust the path as necessary
 
 const ChatScreen: React.FC = () => {
   const [messages, setMessages] = useState<any[]>([]);
   const [inputText, setInputText] = useState("");
   const [recording, setRecording] = useState<Audio.Recording | null>(null);
-  const [sessionID, setSessionID] = useState<string>("");
+  const [sessionId, setSessionID] = useState<string>("");
+  const [userId, setUserID] = useState<string>("");
+  const [userIdentifier, setUserIdentifier] = useState<string>("");
+
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [selectedMessageId, setSelectedMessageId] = useState<string | null>(
     null
@@ -41,20 +46,23 @@ const ChatScreen: React.FC = () => {
   const [accessToken, setAccessToken] = useState<string>("");
   const [vehicleInfo, setVehicleInfo] = useState<IVehicleInfo | null>(null); // Store vehicle information
   const route = useRoute();
-  const historyId = route?.params?.id;
+  const historyId = route?.params?.id ?? "dssjhgdasgjdasdsd";
   const navigation = useNavigation();
 
   const { createUserSession } = useUserSession();
   const { retreiveVehicleData } = useRetreiveVehicleData();
+  const { fetchUserData } = useFetchUserData();
   const { PostChatData } = usePostChatData();
+  const { updateThreadData } = useUpdateThreadData();
 
-  const intialSession = async () => {
+  const initialSession = async () => {
     const data = await createUserSession();
+    await setItem(Apipath.ACCESS_TOKEN, data?.access_token);
     setAccessToken(data?.access_token);
   };
 
   useEffect(() => {
-    intialSession();
+    initialSession();
   }, []);
 
   const handleSend = async () => {
@@ -78,6 +86,18 @@ const ChatScreen: React.FC = () => {
         vinNumber: Apipath.SAMPLE_VIN, // Adjust the vinNumber as needed
         question: inputText, // Send the user's question
       };
+      const uniqueID = uuid();
+      console.log("Generated UUID:", uniqueID);
+      const updateThreadBody = {
+        uuid: uniqueID,
+        createdAt: new Date(),
+        name: inputText,
+        userId: userId,
+        userEmail: userIdentifier,
+        accessToken: accessToken,
+      };
+      const updateThreadList = await updateThreadData(updateThreadBody);
+      console.log(updateThreadList, "updateThreadList");
 
       try {
         const chatRespData = await PostChatData(chatParam); // Call the API
@@ -186,15 +206,24 @@ const ChatScreen: React.FC = () => {
       "respData_respData"
     );
     setIsLoading(false);
-    setSessionID(respData?.vehicle.session_id);
     setVehicleInfo({ ...respData?.vehicle?.vehicle_info, connected: true });
+    setSessionID(respData?.vehicle.session_id);
+
+    await setItem(Apipath.SESSION_ID, respData?.session_id);
+
+    const userData = await fetchUserData(Apipath.USER_MAIL, accessToken);
+    console.log(userData, "userData_userData");
+    await setItem(Apipath.USER_ID, userData?.id);
+    setUserID(userData?.id);
+    setUserIdentifier(userData?.identifier);
+
+    console.log("vechicle>>", vehicleInfo);
   };
-  console.log("vechicle>>", vehicleInfo);
 
   return (
     <SafeAreaView style={styles.mainContainer}>
       <CustomHeader title="WSM Assistant" navigation={navigation} />
-
+      {/* <StepHistory itemID={"history"} /> */}
       {!isLoading && vehicleInfo && (
         <RenderVehicleInfo
           vehicleInfo={vehicleInfo}

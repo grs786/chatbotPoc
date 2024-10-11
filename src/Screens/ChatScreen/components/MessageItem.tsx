@@ -37,7 +37,6 @@ const MessageItem: React.FC<IMessageItemProps> = ({
     await Clipboard.setStringAsync(text);
   };
 
-  console.log("sellele", reaction, messageReactions);
   return (
     <View
       style={

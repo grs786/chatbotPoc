@@ -1,8 +1,8 @@
 // import ApiPaths from '@/Configs/api-paths';
 import { useCallback } from "react";
-import axios, { AxiosRequestConfig } from "axios";
 import ApiPaths from "../../../environment";
-import { post } from "../../Utilities/ApiCall"; // Adjust the path as necessary
+import { post, get } from "../../Utilities/ApiCall"; // Adjust the path as necessary
+import { v4 as uuidv4 } from "uuid";
 
 export const useUserSession = () => {
   const createUserSession = useCallback(async () => {
@@ -49,6 +49,65 @@ export const useRetreiveVehicleData = () => {
   };
 };
 
+export const useFetchUserData = () => {
+  const fetchUserData = useCallback(
+    async (UUID: string, access_token: string) => {
+      try {
+        const response = await get(
+          `${ApiPaths.USER_SESSION}${UUID}`,
+          {},
+          {
+            Authorization: `Bearer ${access_token}`,
+          },
+          ApiPaths.BASE_URL
+        );
+        return response;
+      } catch (error: any) {}
+    },
+    []
+  );
+  return {
+    fetchUserData,
+  };
+};
+
+interface IUpdateThread {
+  uuid?: string;
+  createdAt: Date;
+  name: string;
+  userId: string;
+  userEmail: string;
+  accessToken: string;
+}
+
+export const useUpdateThreadData = () => {
+  const updateThreadData = useCallback(async (data: IUpdateThread) => {
+    const bodyParams = {
+      id: data.uuid, //"bef01b52-cda3-4a6b-9887-a29fbc0cb741",
+      createdAt: data?.createdAt,
+      name: data.name, // "lets keep it simple",
+      userId: data.userId, //"0fa853e6-3485-4626-9f13-1f4c718bfe5c",
+      userIdentifier: data.userEmail, //"gsharm33@ford.com",
+    };
+
+    try {
+      const response = await post(
+        ApiPaths.UPDATE_THREAD,
+        { ...bodyParams },
+        {
+          Authorization: `Bearer ${data?.accessToken}`,
+        },
+        ApiPaths.BASE_URL
+      );
+
+      return response;
+    } catch (error: any) {}
+  }, []);
+  return {
+    updateThreadData,
+  };
+};
+
 export const usePostChatData = () => {
   const PostChatData = useCallback(async (data: any) => {
     const bodyParams = {
@@ -84,13 +143,14 @@ export const usePostChatData = () => {
     PostChatData,
   };
 };
+
 interface IThreadList {
   accessToken: string;
   sessionId: string;
 }
 
-export const useThreadListData = () => {
-  const ThreadListData = useCallback(async (data: IThreadList) => {
+export const useFetchAllThreadData = () => {
+  const fetchAllThreadData = useCallback(async (data: IThreadList) => {
     const bodyParams = {
       id: data?.sessionId ?? "6f46a86c-a8fb-414e-b916-759de5dfdb2f", //`${data?.sessionId}`,
     };
@@ -150,6 +210,6 @@ export const useThreadListData = () => {
     // }
   }, []);
   return {
-    ThreadListData,
+    fetchAllThreadData,
   };
 };

@@ -4,9 +4,9 @@ import RenderHtml from "react-native-render-html"; // Assuming you are using Ren
 import stepHistory from "../../../components/history.json"; // Adjust path as necessary
 import { styles } from "./styles";
 
-const StepHistory = ({itemID}) => {
-  console.log('iddd,,,,,',itemID)
-  const renderMessage = ({ item, }) => {
+const StepHistory = (itemID: string) => {
+  console.log("iddd,,,,,", itemID);
+  const renderMessage = ({ item }) => {
     if (item.type === "assistant_message") {
       return (
         <View style={styles.rmessageContainer}>

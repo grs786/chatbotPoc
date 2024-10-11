@@ -5,20 +5,21 @@ import {
   TextInput,
   FlatList,
   TouchableOpacity,
+  ScrollView,
 } from "react-native";
 import { MaterialIcons } from "@expo/vector-icons";
 import { styles } from "./styles";
 import {
-  usePostChatData,
   useRetreiveVehicleData,
-  useThreadListData,
+  useFetchAllThreadData,
   useUserSession,
 } from "../ChatScreen/useChatOperations";
 import { useNavigation } from "@react-navigation/native";
 import { SCREENS } from "../../Common/screens";
 import CustomHeader from "src/components/CustomHeader";
 import Apipath from "../../../environment";
-import chatHistorys from '../../components/chathistory.json'
+// import chatHistorys from "../../components/chathistory.json";
+import { getItem } from "src/Utilities/StorageClasses";
 
 export interface IChatHistory {
   id: string;
@@ -38,26 +39,29 @@ const PastConversationsScreen = (
   const [searchText, setSearchText] = useState("");
   const [chatHistory, setChatHistory] = useState<IChatHistory[]>();
   const navigation = useNavigation();
-  const { createUserSession } = useUserSession();
-
-  const { retreiveVehicleData } = useRetreiveVehicleData();
-  const { PostChatData } = usePostChatData();
-  const { ThreadListData } = useThreadListData();
+  const { fetchAllThreadData } = useFetchAllThreadData();
 
   const intialSession = async () => {
-    const data = await createUserSession();
-    const reqParam = {
-      accessToken: data?.access_token,
-      vinNumber: Apipath.SAMPLE_VIN,
-    };
-    const respData = await retreiveVehicleData(reqParam);
-    const threadListing = {
-      accessToken: data.access_token,
-      sessionId: respData?.session_id,
-    };
-    const historyData = await ThreadListData(threadListing);
-    setChatHistory(historyData?.history);
+    // const data = await createUserSession();
+    // const reqParam = {
+    //   accessToken: data?.access_token,
+    //   vinNumber: Apipath.SAMPLE_VIN,
+    // };
+    // const respData = await retreiveVehicleData(reqParam);
+    const accessTokenId = await getItem(Apipath.ACCESS_TOKEN);
+    const user_Id = await getItem(Apipath.USER_ID);
+    console.log(accessTokenId, "accessTokenIdaccessTokenId", user_Id);
 
+    if (user_Id && accessTokenId) {
+      const threadListing = {
+        accessToken: accessTokenId,
+        sessionId: "0fa853e6-3485-4626-9f13-1f4c718bfe5c", //user_Id,
+      };
+      console.log(threadListing, "threadListingthreadListing");
+      const historyData = await fetchAllThreadData(threadListing);
+      console.log(historyData, "historyDatahistoryData");
+      setChatHistory(historyData?.history);
+    }
     // Set initial messages
   };
 
@@ -65,11 +69,11 @@ const PastConversationsScreen = (
     intialSession();
   }, []);
 
-  const filteredChats = chatHistorys.history?.filter((chat) =>
+  const filteredChats = chatHistory?.filter((chat) =>
     chat?.name?.toLowerCase().includes(searchText.toLowerCase())
   );
 
-  const isToday = (dateString) => {
+  const isToday = (dateString: string) => {
     const chatDate = new Date(dateString);
     const today = new Date();
     return (
@@ -80,7 +84,7 @@ const PastConversationsScreen = (
   };
 
   // if the chat is from the previous two days
-  const isPreviousTwoDays = (dateString) => {
+  const isPreviousTwoDays = (dateString: string) => {
     const chatDate = new Date(dateString);
     const today = new Date();
     const diffInTime = today.getTime() - chatDate.getTime();
@@ -96,8 +100,7 @@ const PastConversationsScreen = (
     isPreviousTwoDays(chat.createdAt)
   );
 
-
-  const renderChatItem = ({ item }) => {
+  const renderChatItem = (item: IChatHistory) => {
     console.log(JSON.stringify(item, null, 2), "dfsdfsdfsdf");
 
     return (
@@ -143,33 +146,23 @@ const PastConversationsScreen = (
           onChangeText={setSearchText}
         />
       </View>
+      <ScrollView showsVerticalScrollIndicator={false}>
+        {/* Today's Chats Section */}
+        {todayChats && todayChats?.length > 0 && (
+          <View>
+            <Text style={styles.heading}>Today</Text>
+            {todayChats?.map((item) => renderChatItem(item))}
+          </View>
+        )}
 
-
-
-       {/* Today's Chats Section */}
-       {todayChats?.length > 0 && (
-        <View>
-          <Text style={styles.heading}>Today</Text>
-          <FlatList
-            data={todayChats}
-            keyExtractor={(item) => item.id}
-            renderItem={renderChatItem}
-          />
-        </View>
-      )}
-
-      {/* Previous Two Days Chats Section */}
-      {previousChats?.length > 0 && (
-        <View>
-          <Text style={styles.heading}>Last 2 Days</Text>
-          <FlatList
-            data={previousChats}
-            keyExtractor={(item) => item.id}
-            renderItem={renderChatItem}
-          />
-        </View>
-      )}
-
+        {/* Previous Two Days Chats Section */}
+        {previousChats && previousChats?.length > 0 && (
+          <View>
+            <Text style={styles.heading}>Last 2 Days</Text>
+            {previousChats?.map((item) => renderChatItem(item))}
+          </View>
+        )}
+      </ScrollView>
       {/* Chat List */}
       {/* <FlatList
         data={chatHistory}
