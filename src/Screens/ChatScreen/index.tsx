@@ -27,6 +27,7 @@ import RenderVehicleInfo from "./components/RenderVehicleInfo";
 import Loader from "src/components/Loader";
 import uuid from "uuid-random";
 import { setItem } from "src/Utilities/StorageClasses";
+import StepHistory from "./components/HistoryMessageList";
 // import { setItem, getItem, removeItem, clearStorage } from './storage'; // Adjust the path as necessary
 
 const ChatScreen: React.FC = () => {
@@ -37,16 +38,16 @@ const ChatScreen: React.FC = () => {
   const [userId, setUserID] = useState<string>("");
   const [userIdentifier, setUserIdentifier] = useState<string>("");
 
-  const [isLoading, setIsLoading] = useState<boolean>(true);
+  const [isLoading, setIsLoading] = useState<boolean>(false);
   const [selectedMessageId, setSelectedMessageId] = useState<string | null>(
     null
   );
   const [messageReactions, setMessageReactions] = useState<any>({});
-  const [modalVisible, setModalVisible] = useState<boolean>(true);
+  const [modalVisible, setModalVisible] = useState<boolean>(false);
   const [accessToken, setAccessToken] = useState<string>("");
   const [vehicleInfo, setVehicleInfo] = useState<IVehicleInfo | null>(null); // Store vehicle information
   const route = useRoute();
-  const historyId = route?.params?.id ?? "dssjhgdasgjdasdsd";
+  const historyId = route?.params?.id
   const navigation = useNavigation();
 
   const { createUserSession } = useUserSession();
@@ -223,7 +224,6 @@ const ChatScreen: React.FC = () => {
   return (
     <SafeAreaView style={styles.mainContainer}>
       <CustomHeader title="WSM Assistant" navigation={navigation} />
-      {/* <StepHistory itemID={"history"} /> */}
       {!isLoading && vehicleInfo && (
         <RenderVehicleInfo
           vehicleInfo={vehicleInfo}
@@ -239,6 +239,8 @@ const ChatScreen: React.FC = () => {
         handleReaction={handleReaction}
         messageReactions={messageReactions}
       />
+     <StepHistory itemID={"history"} />
+
 
       <KeyboardAvoidingView
         behavior="padding"

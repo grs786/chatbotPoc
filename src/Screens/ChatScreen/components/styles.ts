@@ -51,7 +51,7 @@ export const styles = StyleSheet.create({
     height: 64,
     borderRadius: 6,
     alignItems: "center",
-    paddingHorizontal: 8,
+    padding: 8,
   },
   senderIcon: {
     fontSize: 14,
