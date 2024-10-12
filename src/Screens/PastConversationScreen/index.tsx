@@ -108,7 +108,7 @@ const PastConversationsScreen = (
         <TouchableOpacity
           style={styles.chatItem}
           onPress={() =>
-            navigation.navigate(SCREENS.ChatScreen, { itemID: item.id })
+            navigation.navigate(SCREENS.ChatScreen, { itemData: item })
           }
         >
           <MaterialIcons name="chat" size={22} color="gray" />

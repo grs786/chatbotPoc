@@ -45,6 +45,7 @@ export const post = async (
     });
     return response.data; // Return the response data
   } catch (error) {
+    console.log(JSON.stringify(error, null, 2), "api_errorerror_msg");
     handleError(error);
   }
 };
@@ -92,7 +93,10 @@ const handleError = (error: unknown) => {
     // Check if the error is an AxiosError
     if (error.response) {
       // Server responded with a status other than 200 range
-      console.error("Error response:", error.response.data);
+      console.error(
+        "Error response:",
+        JSON.stringify(error.response.data, null, 2)
+      );
       throw new Error(error.response.data.message || "An error occurred");
     } else if (error.request) {
       // Request was made but no response received

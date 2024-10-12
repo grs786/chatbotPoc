@@ -167,49 +167,87 @@ export const useFetchAllThreadData = () => {
 
       return response;
     } catch (error: any) {}
-
-    // if (!data?.accessToken) {
-    //   return true;
-    // }
-    // const headersInput = {
-    //   Authorization: `Bearer ${data?.accessToken}`,
-    //   "Content-Type": "application/json",
-    // };
-
-    // // Create the request configuration
-    // const config: AxiosRequestConfig = {
-    //   headers: headersInput,
-    // };
-
-    // // const bodyParams = {
-    // //   id: "6f46a86c-a8fb-414e-b916-759de5dfdb2f", //`${data?.sessionId}`,
-    // // };
-
-    // console.log(bodyParams, "Threadlist>>>");
-
-    // try {
-    //   // Make the POST request
-
-    //   const response = await axios.post(
-    //     `${ApiPaths.BASE_URL}${ApiPaths.THREAD_LIST}`,
-    //     bodyParams,
-    //     config
-    //   );
-
-    //   console.log(response, "Threadlist_response");
-
-    //   return response?.data;
-    // } catch (error) {
-    //   // Handle errors
-    //   if (axios.isAxiosError(error)) {
-    //     console.log("Error response :", error?.response);
-    //     return error;
-    //   } else {
-    //     console.log("Unexpected error:", error);
-    //   }
-    // }
   }, []);
   return {
     fetchAllThreadData,
+  };
+};
+
+interface IUserStepProps {
+  accessToken: string;
+  paramsData: {
+    id: string;
+    name: string;
+    type: string;
+    threadId: string;
+    parentId: string;
+    disableFeedback: boolean;
+    streaming: boolean;
+    waitForAnswer: boolean;
+    isError: boolean;
+    input: string;
+    output: string;
+    createdAt: Date;
+    start: Date;
+    end: Date;
+  };
+}
+
+export const useCreateUserStep = () => {
+  const createUserStep = useCallback(async (data: IUserStepProps) => {
+    const bodyParams = data?.paramsData;
+
+    try {
+      const response = await post(
+        ApiPaths.CREATE_USERSTEP,
+        { ...bodyParams },
+        {
+          Authorization: `Bearer ${data?.accessToken}`,
+        },
+        ApiPaths.BASE_URL
+      );
+
+      return response;
+    } catch (error: any) {}
+  }, []);
+  return {
+    createUserStep,
+  };
+};
+
+interface IFetchThreadHistory {
+  history: [
+    {
+      id: string;
+      createdAt: string;
+      name: string;
+      userId: string;
+      userIdentifier: string;
+    }
+  ];
+}
+
+export const useFetchThreadHistory = () => {
+  const fetchThreadHistory = useCallback(
+    async (historyData: IFetchThreadHistory, accessToken: string) => {
+      const bodyParams = historyData;
+      console.log(bodyParams, "bodyParamsbodyParamsbodyParams");
+      try {
+        const response = await post(
+          ApiPaths.THREAD_HISTORY,
+          { ...bodyParams },
+          {
+            Authorization: `Bearer ${accessToken}`,
+          },
+          ApiPaths.BASE_URL
+        );
+
+        return response;
+      } catch (error: any) {}
+    },
+    []
+  );
+  return {
+    fetchThreadHistory,
   };
 };

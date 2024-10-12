@@ -20,6 +20,8 @@ import {
   useFetchUserData,
   usePostChatData,
   useUpdateThreadData,
+  useCreateUserStep,
+  useFetchThreadHistory,
 } from "./useChatOperations";
 import { IVehicleInfo } from "./types";
 import Apipath from "../../../environment";
@@ -43,18 +45,20 @@ const ChatScreen: React.FC = () => {
     null
   );
   const [messageReactions, setMessageReactions] = useState<any>({});
-  const [modalVisible, setModalVisible] = useState<boolean>(false);
+  const [modalVisible, setModalVisible] = useState<boolean>(true);
   const [accessToken, setAccessToken] = useState<string>("");
   const [vehicleInfo, setVehicleInfo] = useState<IVehicleInfo | null>(null); // Store vehicle information
   const route = useRoute();
-  const historyId = route?.params?.id
+  const historyId = route?.params?.id;
   const navigation = useNavigation();
 
   const { createUserSession } = useUserSession();
   const { retreiveVehicleData } = useRetreiveVehicleData();
   const { fetchUserData } = useFetchUserData();
-  const { PostChatData } = usePostChatData();
   const { updateThreadData } = useUpdateThreadData();
+  const { PostChatData } = usePostChatData();
+  const { createUserStep } = useCreateUserStep();
+  const { fetchThreadHistory } = useFetchThreadHistory();
 
   const initialSession = async () => {
     const data = await createUserSession();
@@ -65,6 +69,27 @@ const ChatScreen: React.FC = () => {
   useEffect(() => {
     initialSession();
   }, []);
+
+  const retreiveHistoryData = async (itemData: any) => {
+    const historyData = {
+      history: [
+        {
+          ...itemData,
+        },
+      ],
+    };
+    const historyRespVal = await fetchThreadHistory(historyData, accessToken);
+    console.log(
+      JSON.stringify(historyRespVal, null, 2),
+      "historyRespValhistoryRespVal"
+    );
+  };
+
+  useEffect(() => {
+    if (route?.params?.itemData) {
+      retreiveHistoryData(route?.params?.itemData);
+    }
+  }, [route]);
 
   const handleSend = async () => {
     setVehicleInfo(null);
@@ -88,7 +113,6 @@ const ChatScreen: React.FC = () => {
         question: inputText, // Send the user's question
       };
       const uniqueID = uuid();
-      console.log("Generated UUID:", uniqueID);
       const updateThreadBody = {
         uuid: uniqueID,
         createdAt: new Date(),
@@ -98,7 +122,6 @@ const ChatScreen: React.FC = () => {
         accessToken: accessToken,
       };
       const updateThreadList = await updateThreadData(updateThreadBody);
-      console.log(updateThreadList, "updateThreadList");
 
       try {
         const chatRespData = await PostChatData(chatParam); // Call the API
@@ -116,8 +139,33 @@ const ChatScreen: React.FC = () => {
           },
         };
 
+        const output = {
+          answer: chatRespData?.answer,
+          sources: chatRespData?.sources,
+        };
+
+        const userStepBody = {
+          paramsData: {
+            id: uniqueID, //autogenerate_mobile_uuid
+            name: "", //RephraseAgent / chatbot
+            type: "assistant_message", //user_message, assistant_message
+            threadId: sessionId, //sessionID
+            parentId: chatRespData.question_id, //questionID
+            disableFeedback: true,
+            streaming: false,
+            waitForAnswer: true,
+            isError: true,
+            input: inputText, // user Question
+            output: JSON.stringify(output), // chatbot answer + source json Stringify
+            createdAt: new Date(),
+            start: new Date(),
+            end: new Date(),
+          },
+          accessToken: accessToken,
+        };
         // Update state with the bot's response
         setMessages((prevMessages) => [...prevMessages, botMessage]);
+        const updateUserStep = await createUserStep(userStepBody);
 
         // Scroll to top of new message (to show the start)
       } catch (error) {
@@ -202,23 +250,16 @@ const ChatScreen: React.FC = () => {
       vinNumber: Apipath.SAMPLE_VIN,
     };
     const respData = await retreiveVehicleData(reqParam);
-    console.log(
-      JSON.stringify(respData?.vehicle, null, 2),
-      "respData_respData"
-    );
+
     setIsLoading(false);
     setVehicleInfo({ ...respData?.vehicle?.vehicle_info, connected: true });
-    setSessionID(respData?.vehicle.session_id);
-
+    setSessionID(respData?.session_id);
     await setItem(Apipath.SESSION_ID, respData?.session_id);
 
     const userData = await fetchUserData(Apipath.USER_MAIL, accessToken);
-    console.log(userData, "userData_userData");
     await setItem(Apipath.USER_ID, userData?.id);
     setUserID(userData?.id);
     setUserIdentifier(userData?.identifier);
-
-    console.log("vechicle>>", vehicleInfo);
   };
 
   return (
@@ -239,8 +280,7 @@ const ChatScreen: React.FC = () => {
         handleReaction={handleReaction}
         messageReactions={messageReactions}
       />
-     <StepHistory itemID={"history"} />
-
+      {/* <StepHistory itemID={"history"} /> */}
 
       <KeyboardAvoidingView
         behavior="padding"
