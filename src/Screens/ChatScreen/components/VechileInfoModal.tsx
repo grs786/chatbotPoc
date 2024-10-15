@@ -126,6 +126,9 @@ const VehicleInfoModal: React.FC<VehicleInfo> = ({ onClose, visible }) => {
                     <Text style={styles2.submittext}>Submit</Text>
                   </TouchableOpacity>
                 </View>
+                <Text style={styles.vinDetails}>
+                  Has to be a 17 character alphanumeric
+                </Text>
               </View>
             </>
           ) : (

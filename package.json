@@ -16,6 +16,7 @@
     "@react-navigation/native": "^6.0.2",
     "@react-navigation/native-stack": "^6.11.0",
     "axios": "^1.7.7",
+    "babel-plugin-inline-dotenv": "^1.7.0",
     "expo": "~51.0.28",
     "expo-av": "^14.0.7",
     "expo-clipboard": "^6.0.3",

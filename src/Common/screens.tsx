@@ -1,8 +1,7 @@
 export const SCREENS = {
-    SplashScreen: 'SplashScreen',
-    LoginScreen:'LoginScreen',
-    ChatScreen:'ChatScreen',
-    PastconversationScreen:'PastConversationScreen',
-    DrawerScreen:'DrawerScreen'
-  };
-  
+  SplashScreen: "SplashScreen",
+  LoginScreen: "LoginScreen",
+  ChatScreen: "ChatScreen",
+  PastConversationScreen: "PastConversationScreen",
+  DrawerScreen: "DrawerScreen",
+};

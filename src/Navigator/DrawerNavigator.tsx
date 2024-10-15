@@ -14,19 +14,15 @@ export const DrawerNavigator = () => {
         drawerStyle: {
           width: Dimensions.get("window").width / 1.25,
         },
+        headerShown: false,
       }}
-      drawerContent={(props) => <PastConversationsScreen  {...props} />}
+      drawerContent={(props) => <PastConversationsScreen {...props} />}
       initialRouteName={SCREENS.ChatScreen}
     >
+      <Drawer.Screen name={SCREENS.ChatScreen} component={ChatScreen} />
       <Drawer.Screen
-        name={SCREENS.ChatScreen}
-        component={ChatScreen}
-        options={{ headerShown: false }}
-      />
-      <Drawer.Screen
-        name={SCREENS.PastconversationScreen}
+        name={SCREENS.PastConversationScreen}
         component={PastConversationsScreen}
-        options={{ headerShown: false }}
       />
     </Drawer.Navigator>
   );

@@ -16,6 +16,7 @@ import {
   useUpdateThreadData,
   useCreateUserStep,
   useFetchThreadHistory,
+  useUpsertUserFeedback,
 } from "../../Hooks/useChatOperations";
 import { IVehicleInfo } from "./types";
 import Apipath from "../../../environment";
@@ -46,7 +47,7 @@ const ChatScreen: React.FC = () => {
   const [stepHistoryData, setStepHistoryData] = useState(null); // Store vehicle information
   const route =
     useRoute<RouteProp<{ params: { id?: string; itemData?: object } }>>();
-  const historyId = route?.params?.id;
+
   const navigation = useNavigation();
   const { recording, startRecording, stopRecording } = useAudioRecorder();
 
@@ -57,11 +58,14 @@ const ChatScreen: React.FC = () => {
   const { PostChatData } = usePostChatData();
   const { createUserStep } = useCreateUserStep();
   const { fetchThreadHistory } = useFetchThreadHistory();
+  const { upsertUserFeedback } = useUpsertUserFeedback();
   const { pickImage } = useImagePicker();
 
   const initialSession = async () => {
     const data = await createUserSession();
-    await setItem(Apipath.ACCESS_TOKEN, data?.access_token);
+
+    data?.access_token &&
+      (await setItem(Apipath.ACCESS_TOKEN, data?.access_token));
     setAccessToken(data?.access_token);
   };
 
@@ -78,7 +82,6 @@ const ChatScreen: React.FC = () => {
       ],
     };
     const historyRespVal = await fetchThreadHistory(historyData, accessToken);
-    console.log(historyRespVal, "historyRespValhistoryRespVal");
     setStepHistoryData(historyRespVal);
   };
 
@@ -129,6 +132,7 @@ const ChatScreen: React.FC = () => {
         const botMessage = {
           _id: Math.random().toString(),
           text: parsedResponse.answer, // Use the answer from the API response
+          question_id: parsedResponse.question_id,
           createdAt: new Date(),
           user: {
             _id: 2,
@@ -162,7 +166,7 @@ const ChatScreen: React.FC = () => {
 
         // Scroll to top of new message (to show the start)
       } catch (error) {
-        console.error("Error fetching response:", error);
+        // console.error("Error fetching response:", error);
       }
 
       setInputText(""); // Clear the input field
@@ -170,12 +174,25 @@ const ChatScreen: React.FC = () => {
     }
   };
 
-  const handleReaction = (messageId: string | number, reaction: string) => {
+  const handleReaction = async (
+    messageId: string | undefined,
+    questionId: string | number,
+    reaction: string,
+    value: number
+  ) => {
     setMessageReactions((prevReactions) => ({
       ...prevReactions,
       [messageId]: reaction,
     }));
     setSelectedMessageId(messageId);
+    const paramsBody = {
+      id: uuid(), // create from mobile_end uuid
+      forId: `${questionId}`, //QuestionID
+      value: value,
+      comment: "",
+    };
+
+    const userFeedback = await upsertUserFeedback(paramsBody, accessToken);
   };
 
   const handleVinClose = async (vehicleData: IVehicleDetail) => {

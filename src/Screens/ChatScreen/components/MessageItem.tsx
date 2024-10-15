@@ -14,6 +14,7 @@ interface User {
 interface Message {
   _id: number;
   text: string;
+  question_id: number;
   createdAt: string;
   user: User;
   image?: string;
@@ -22,7 +23,12 @@ interface Message {
 
 interface IMessageItemProps {
   item: Message;
-  handleReaction: (messageId: number, reaction: string) => void;
+  handleReaction: (
+    messageId: string,
+    question_id: number,
+    reaction: string,
+    value: number | undefined
+  ) => void;
   reaction?: string;
 }
 
@@ -88,7 +94,10 @@ const MessageItem: React.FC<IMessageItemProps> = ({
                 }}
               >
                 <TouchableOpacity
-                  onPress={() => handleReaction(item._id, "👍")}
+                  onPress={() => {
+                    console.log(item, "handle reactiondata");
+                    handleReaction(item._id, item.question_id, "👍", 1);
+                  }}
                 >
                   <Image
                     source={require("../../../Assets/images/thumbup.png")}
@@ -100,7 +109,9 @@ const MessageItem: React.FC<IMessageItemProps> = ({
                 </TouchableOpacity>
 
                 <TouchableOpacity
-                  onPress={() => handleReaction(item._id, "👎")}
+                  onPress={() =>
+                    handleReaction(item._id, item.question_id, "👎", 0)
+                  }
                 >
                   <Image
                     source={require("../../../Assets/images/thumbdown.png")}
@@ -113,7 +124,12 @@ const MessageItem: React.FC<IMessageItemProps> = ({
 
                 <TouchableOpacity
                   onPress={() => {
-                    handleReaction(item._id, "Copy"),
+                    handleReaction(
+                      item._id,
+                      item.question_id,
+                      "Copy",
+                      undefined
+                    ),
                       copyToClipboard(item.text);
                   }}
                 >

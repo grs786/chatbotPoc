@@ -107,7 +107,7 @@ const PastConversationsScreen = (
 
   return (
     <View style={styles.container}>
-      <CustomHeader containerStyle={styles.headerstyle} title= "" {...props} />
+      <CustomHeader containerStyle={styles.headerstyle} title="" {...props} />
       <Text style={styles.heading}>Past Chats</Text>
       {/* Search Bar */}
       <View style={styles.searchContainer}>

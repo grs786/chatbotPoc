@@ -38,7 +38,7 @@ const MessageList: React.FC<IMessageListProps> = ({
 }) => {
   const renderMessage: ListRenderItem<IMessage> = ({ item }) => {
     const reaction = messageReactions[item._id];
-
+    console.log(item, "renderMessagerenderMessage");
     return (
       <MessageItem
         item={item}
@@ -74,7 +74,7 @@ const MessageList: React.FC<IMessageListProps> = ({
       animated: true,
     });
   };
-
+  console.log(messages, "messagesmessagesmessages");
   return (
     <View style={{ flex: 1 }}>
       <FlatList

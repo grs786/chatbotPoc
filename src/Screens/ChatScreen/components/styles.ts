@@ -72,7 +72,6 @@ export const styles = StyleSheet.create({
     padding: 10,
     borderRadius: 10,
     flexDirection: "row",
-    // alignItems: "center",
   },
   rmessageBubble: {
     width: "70%",
@@ -88,9 +87,9 @@ export const styles = StyleSheet.create({
     borderRadius: 5,
     backgroundColor: "#fff",
     elevation: 5, // Android shadow
-    shadowColor: "#000", // iOS shadow
+    shadowColor: Colors.DISABLED_TEXT, // iOS shadow
     shadowOffset: { width: 1, height: 2 }, // iOS shadow
-    shadowOpacity: 1, // iOS shadow
+    shadowOpacity: 0.4, // iOS shadow
     shadowRadius: 2, // iOS shadow
   },
   buttonContainer: {
@@ -235,4 +234,13 @@ export const styles = StyleSheet.create({
     textAlign: "center",
     paddingTop: 40,
   },
+  vinDetails:{
+    fontSize: 10,
+    fontWeight: "500",
+    color: Colors.DISABLED_TEXT,
+    backgroundColor:Colors.LIGHT_BLUE,
+    paddingVertical:4,
+    paddingLeft:2,
+    marginTop:1
+  }
 });

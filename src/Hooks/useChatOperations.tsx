@@ -248,3 +248,34 @@ export const useFetchThreadHistory = () => {
     fetchThreadHistory,
   };
 };
+
+interface IupsertUserFeedback {
+  id: string; // create from mobile_end uuid
+  forId: string; //QuestionID
+  value: number;
+  comment?: string;
+}
+
+export const useUpsertUserFeedback = () => {
+  const upsertUserFeedback = useCallback(
+    async (feedback: IupsertUserFeedback, accessToken: string) => {
+      const bodyParams = feedback;
+      try {
+        const response = await post(
+          ApiPaths.USER_FEEBDACK,
+          { ...bodyParams },
+          {
+            Authorization: `Bearer ${accessToken}`,
+          },
+          ApiPaths.BASE_URL
+        );
+
+        return response;
+      } catch (error: any) {}
+    },
+    []
+  );
+  return {
+    upsertUserFeedback,
+  };
+};
