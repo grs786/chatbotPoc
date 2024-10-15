@@ -45,7 +45,6 @@ export const post = async (
     });
     return response.data; // Return the response data
   } catch (error) {
-    console.log(JSON.stringify(error, null, 2), "api_errorerror_msg");
     handleError(error);
   }
 };

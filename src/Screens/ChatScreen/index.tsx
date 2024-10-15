@@ -30,7 +30,6 @@ import Loader from "src/components/Loader";
 import uuid from "uuid-random";
 import { setItem } from "src/Utilities/StorageClasses";
 import StepHistory from "./components/HistoryMessageList";
-// import { setItem, getItem, removeItem, clearStorage } from './storage'; // Adjust the path as necessary
 
 const ChatScreen: React.FC = () => {
   const [messages, setMessages] = useState<any[]>([]);
@@ -48,6 +47,7 @@ const ChatScreen: React.FC = () => {
   const [modalVisible, setModalVisible] = useState<boolean>(true);
   const [accessToken, setAccessToken] = useState<string>("");
   const [vehicleInfo, setVehicleInfo] = useState<IVehicleInfo | null>(null); // Store vehicle information
+  const [stepHistoryData, setStepHistoryData] = useState(null); // Store vehicle information
   const route = useRoute();
   const historyId = route?.params?.id;
   const navigation = useNavigation();
@@ -79,14 +79,13 @@ const ChatScreen: React.FC = () => {
       ],
     };
     const historyRespVal = await fetchThreadHistory(historyData, accessToken);
-    console.log(
-      JSON.stringify(historyRespVal, null, 2),
-      "historyRespValhistoryRespVal"
-    );
+    console.log(historyRespVal, "historyRespValhistoryRespVal");
+    setStepHistoryData(historyRespVal);
   };
 
   useEffect(() => {
     if (route?.params?.itemData) {
+      setModalVisible(false);
       retreiveHistoryData(route?.params?.itemData);
     }
   }, [route]);
@@ -112,9 +111,9 @@ const ChatScreen: React.FC = () => {
         vinNumber: Apipath.SAMPLE_VIN, // Adjust the vinNumber as needed
         question: inputText, // Send the user's question
       };
-      const uniqueID = uuid();
+      // const uniqueID = uuid();
       const updateThreadBody = {
-        uuid: uniqueID,
+        uuid: sessionId,
         createdAt: new Date(),
         name: inputText,
         userId: userId,
@@ -139,16 +138,11 @@ const ChatScreen: React.FC = () => {
           },
         };
 
-        const output = {
-          answer: chatRespData?.answer,
-          sources: chatRespData?.sources,
-        };
-
         const userStepBody = {
           paramsData: {
-            id: uniqueID, //autogenerate_mobile_uuid
-            name: "", //RephraseAgent / chatbot
-            type: "assistant_message", //user_message, assistant_message
+            id: uuid(), //autogenerate_mobile_uuid
+            name: "chatbot", //RephraseAgent / chatbot
+            type: "user_message", //user_message, assistant_message
             threadId: sessionId, //sessionID
             parentId: chatRespData.question_id, //questionID
             disableFeedback: true,
@@ -156,7 +150,7 @@ const ChatScreen: React.FC = () => {
             waitForAnswer: true,
             isError: true,
             input: inputText, // user Question
-            output: JSON.stringify(output), // chatbot answer + source json Stringify
+            output: chatRespData?.answer, // chatbot answer + source json Stringify
             createdAt: new Date(),
             start: new Date(),
             end: new Date(),
@@ -242,15 +236,18 @@ const ChatScreen: React.FC = () => {
   };
 
   const handleVinClose = async (vehicleData: string | null) => {
+    setStepHistoryData(null);
     setIsLoading(true);
     setModalVisible(false); // Close the modal
     // setVehicleInfo(vehicleData); // Set vehicle info from modal
     const reqParam = {
       accessToken: accessToken,
-      vinNumber: Apipath.SAMPLE_VIN,
+      vinNumber:
+        vehicleData?.vinNumber.length > 0
+          ? vehicleData?.vinNumber
+          : Apipath.SAMPLE_VIN,
     };
     const respData = await retreiveVehicleData(reqParam);
-
     setIsLoading(false);
     setVehicleInfo({ ...respData?.vehicle?.vehicle_info, connected: true });
     setSessionID(respData?.session_id);
@@ -264,7 +261,15 @@ const ChatScreen: React.FC = () => {
 
   return (
     <SafeAreaView style={styles.mainContainer}>
-      <CustomHeader title="WSM Assistant" navigation={navigation} />
+      <CustomHeader
+        title="WSM Assistant"
+        navigation={navigation}
+        beginNewChat={() => {
+          modalVisible === false && setModalVisible(true);
+          setStepHistoryData(null);
+          setMessages([]);
+        }}
+      />
       {!isLoading && vehicleInfo && (
         <RenderVehicleInfo
           vehicleInfo={vehicleInfo}
@@ -275,27 +280,33 @@ const ChatScreen: React.FC = () => {
         />
       )}
       {isLoading && <Loader />}
-      <MessageList
-        messages={messages}
-        handleReaction={handleReaction}
-        messageReactions={messageReactions}
-      />
-      {/* <StepHistory itemID={"history"} /> */}
-
-      <KeyboardAvoidingView
-        behavior="padding"
-        style={{ paddingHorizontal: 10, marginVertical: 10 }}
-      >
-        <MessageInput
-          inputText={inputText}
-          setInputText={setInputText}
-          handleSend={handleSend}
-          pickImage={pickImage}
-          recording={recording}
-          startRecording={startRecording}
-          stopRecording={stopRecording}
-        />
-      </KeyboardAvoidingView>
+      {stepHistoryData?.step_history ? (
+        <View style={styles.historySteps}>
+          <StepHistory itemID={"history"} stepHistoryData={stepHistoryData} />
+        </View>
+      ) : (
+        <>
+          <MessageList
+            messages={messages}
+            handleReaction={handleReaction}
+            messageReactions={messageReactions}
+          />
+          <KeyboardAvoidingView
+            behavior="padding"
+            style={{ paddingHorizontal: 10, marginVertical: 10 }}
+          >
+            <MessageInput
+              inputText={inputText}
+              setInputText={setInputText}
+              handleSend={handleSend}
+              pickImage={pickImage}
+              recording={recording}
+              startRecording={startRecording}
+              stopRecording={stopRecording}
+            />
+          </KeyboardAvoidingView>
+        </>
+      )}
       {modalVisible && (
         <VehicleInfoModal visible={modalVisible} onClose={handleVinClose} />
       )}

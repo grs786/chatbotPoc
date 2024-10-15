@@ -1,8 +1,6 @@
-// import ApiPaths from '@/Configs/api-paths';
 import { useCallback } from "react";
 import ApiPaths from "../../../environment";
 import { post, get } from "../../Utilities/ApiCall"; // Adjust the path as necessary
-import { v4 as uuidv4 } from "uuid";
 
 export const useUserSession = () => {
   const createUserSession = useCallback(async () => {
@@ -231,7 +229,6 @@ export const useFetchThreadHistory = () => {
   const fetchThreadHistory = useCallback(
     async (historyData: IFetchThreadHistory, accessToken: string) => {
       const bodyParams = historyData;
-      console.log(bodyParams, "bodyParamsbodyParamsbodyParams");
       try {
         const response = await post(
           ApiPaths.THREAD_HISTORY,

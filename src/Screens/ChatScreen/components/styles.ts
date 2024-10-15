@@ -61,7 +61,7 @@ export const styles = StyleSheet.create({
     textAlignVertical: "center",
   },
   receiverIcon: {
-    fontSize: 14,
+    fontSize: 10,
     fontWeight: "600",
     color: Colors.NAVYBLUE,
     textAlign: "center",
@@ -72,7 +72,7 @@ export const styles = StyleSheet.create({
     padding: 10,
     borderRadius: 10,
     flexDirection: "row",
-    alignItems: "center",
+    // alignItems: "center",
   },
   rmessageBubble: {
     width: "70%",
@@ -204,6 +204,13 @@ export const styles = StyleSheet.create({
   arrowButton: {
     padding: 11,
     backgroundColor: Colors.NAVYBLUE,
+    borderTopRightRadius: 5,
+    borderBottomRightRadius: 5,
+    marginLeft: 10,
+  },
+  disbaledArrowButton: {
+    padding: 11,
+    backgroundColor: Colors.DISABLED_BUTTON,
     borderTopRightRadius: 5,
     borderBottomRightRadius: 5,
     marginLeft: 10,

@@ -1,10 +1,12 @@
 import { StyleSheet } from "react-native";
+import { Colors } from "src/Assets/colors";
 
 export const styles = StyleSheet.create({
   container: {
     backgroundColor:'#fff',
-    alignItems:'center'
+    alignItems:'center',
+    
   },
-  headertext: { fontSize: 16, color: "#1E3A8A",fontWeight:'600',marginTop:40},
+  headertext: { fontSize: 16, color: Colors.NAVYBLUE,fontWeight:'600',marginTop:40},
   
 });

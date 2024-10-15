@@ -3,22 +3,16 @@ import {
   View,
   Text,
   TextInput,
-  FlatList,
   TouchableOpacity,
   ScrollView,
 } from "react-native";
 import { MaterialIcons } from "@expo/vector-icons";
 import { styles } from "./styles";
-import {
-  useRetreiveVehicleData,
-  useFetchAllThreadData,
-  useUserSession,
-} from "../ChatScreen/useChatOperations";
+import { useFetchAllThreadData } from "../ChatScreen/useChatOperations";
 import { useNavigation } from "@react-navigation/native";
 import { SCREENS } from "../../Common/screens";
 import CustomHeader from "src/components/CustomHeader";
 import Apipath from "../../../environment";
-// import chatHistorys from "../../components/chathistory.json";
 import { getItem } from "src/Utilities/StorageClasses";
 
 export interface IChatHistory {
@@ -42,27 +36,17 @@ const PastConversationsScreen = (
   const { fetchAllThreadData } = useFetchAllThreadData();
 
   const intialSession = async () => {
-    // const data = await createUserSession();
-    // const reqParam = {
-    //   accessToken: data?.access_token,
-    //   vinNumber: Apipath.SAMPLE_VIN,
-    // };
-    // const respData = await retreiveVehicleData(reqParam);
     const accessTokenId = await getItem(Apipath.ACCESS_TOKEN);
     const user_Id = await getItem(Apipath.USER_ID);
-    console.log(accessTokenId, "accessTokenIdaccessTokenId", user_Id);
 
     if (user_Id && accessTokenId) {
       const threadListing = {
         accessToken: accessTokenId,
         sessionId: "0fa853e6-3485-4626-9f13-1f4c718bfe5c", //user_Id,
       };
-      console.log(threadListing, "threadListingthreadListing");
       const historyData = await fetchAllThreadData(threadListing);
-      console.log(historyData, "historyDatahistoryData");
       setChatHistory(historyData?.history);
     }
-    // Set initial messages
   };
 
   useEffect(() => {
@@ -101,8 +85,6 @@ const PastConversationsScreen = (
   );
 
   const renderChatItem = (item: IChatHistory) => {
-    console.log(JSON.stringify(item, null, 2), "dfsdfsdfsdf");
-
     return (
       <View style={styles.chatItemContainer}>
         <TouchableOpacity
@@ -163,13 +145,6 @@ const PastConversationsScreen = (
           </View>
         )}
       </ScrollView>
-      {/* Chat List */}
-      {/* <FlatList
-        data={chatHistory}
-        keyExtractor={(item) => item.id}
-        renderItem={renderChatItem}
-        extraData={chatHistory}
-      /> */}
     </View>
   );
 };

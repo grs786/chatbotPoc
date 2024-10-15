@@ -42,6 +42,9 @@ export const styles = StyleSheet.create({
     backgroundColor: "green",
     borderRadius: 5,
   },
+  historySteps:{
+    flex:1
+  },
   vehicleInfo: {
     marginBottom: 15,
     backgroundColor: Colors.WHITE,

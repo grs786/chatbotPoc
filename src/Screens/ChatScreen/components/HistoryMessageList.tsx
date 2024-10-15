@@ -1,13 +1,11 @@
 import React, { memo } from "react";
 import { View, Text, FlatList, Dimensions, FlatListProps } from "react-native";
-import RenderHtml from "react-native-render-html"; 
-import stepHistory from "../../../components/history.json"; // Adjust the path if necessary
+import RenderHtml from "react-native-render-html";
 import { styles } from "./styles";
-
 
 interface IStepHistory {
   id: string;
-  type: "assistant_message" | "user_message";
+  type: "assistant_message" | "user_message" | "undefined";
   output: string;
 }
 
@@ -20,13 +18,18 @@ const contentWidth = Dimensions.get("window").width * 0.5;
 const ASSISTANT_NAME = "WSM BOT";
 const USER_NAME = "Tech";
 
-
-const MessageBubble = ({ name, content, isUser }:IMessageBubble) => (
+const MessageBubble = ({ name, content, isUser }: IMessageBubble) => (
   <View style={isUser ? styles.messageContainer : styles.rmessageContainer}>
-    <View style={isUser ? styles.sentMessageContainer : styles.receiveMessageContainer}>
+    <View
+      style={
+        isUser ? styles.sentMessageContainer : styles.receiveMessageContainer
+      }
+    >
       <View style={[styles.messageBubble]}>
-        <View style={[styles.iconContainer, { width:60 }]}>
-          <Text numberOfLines={2} style={styles.receiverIcon}>{name}</Text>
+        <View style={[styles.iconContainer, { width: 60 }]}>
+          <Text numberOfLines={2} style={styles.receiverIcon}>
+            {name}
+          </Text>
         </View>
         <RenderHtml contentWidth={contentWidth} source={{ html: content }} />
       </View>
@@ -34,9 +37,16 @@ const MessageBubble = ({ name, content, isUser }:IMessageBubble) => (
   </View>
 );
 
-const StepHistory = memo(() => {
-  const renderMessage: FlatListProps<IStepHistory>["renderItem"] = ({ item }) => {
-    const isUser = item.type === "user_message";
+const StepHistory = memo((stepHistoryData) => {
+  const filteredData = stepHistoryData?.stepHistoryData?.step_history.filter(
+    (item: { type: string }) =>
+      item?.type === "user_message" || item?.type === "assistant_message"
+  );
+
+  const renderMessage: FlatListProps<IStepHistory>["renderItem"] = ({
+    item,
+  }) => {
+    let isUser: boolean = item.type === "user_message";
     return (
       <MessageBubble
         name={isUser ? USER_NAME : ASSISTANT_NAME}
@@ -48,7 +58,7 @@ const StepHistory = memo(() => {
 
   return (
     <FlatList
-      data={stepHistory.step_history}
+      data={filteredData}
       keyExtractor={(item) => item.id}
       renderItem={renderMessage}
       showsVerticalScrollIndicator={false}

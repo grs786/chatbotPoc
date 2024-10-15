@@ -6,7 +6,6 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
  * @param {any} value - The value to store
  */
 export const setItem = async (key: string, value: string) => {
-  console.log(key, value, "setter_methods)_1212");
   try {
     const jsonValue = JSON.stringify(value); // Convert value to string
     await AsyncStorage.setItem(key, jsonValue);

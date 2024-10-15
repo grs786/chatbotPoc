@@ -10,6 +10,7 @@ import {
 import { styles } from "./styles";
 import { styles as styles2 } from "../styles";
 import Loader from "src/components/Loader";
+import { Colors } from "src/Assets/colors";
 
 interface VehicleInfoModalProps {
   onClose: (
@@ -54,7 +55,7 @@ const VehicleInfoModal: React.FC<VehicleInfoModalProps> = ({ onClose }) => {
       });
       onClose({
         model: "2021 F-150",
-        vinNumber: "1FTFW1E85MFA63398",
+        vinNumber: vin, // "1FTFW1E85MFA63398",
         connected: connectedViaButton,
       });
     }, 2000);
@@ -114,7 +115,12 @@ const VehicleInfoModal: React.FC<VehicleInfoModalProps> = ({ onClose }) => {
                     onSubmitEditing={handleVinSubmit}
                   />
                   <TouchableOpacity
-                    style={styles.arrowButton}
+                    disabled={vin?.length === 17 ? false : true}
+                    style={[
+                      vin?.length === 17
+                        ? styles.arrowButton
+                        : styles?.disbaledArrowButton,
+                    ]}
                     onPress={handleVinSubmit}
                   >
                     <Text style={styles2.submittext}>Submit</Text>
