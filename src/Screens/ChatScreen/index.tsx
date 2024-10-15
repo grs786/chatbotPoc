@@ -241,6 +241,7 @@ const ChatScreen: React.FC = () => {
         />
       )}
       {isLoading && <Loader />}
+
       {stepHistoryData?.step_history ? (
         <View style={styles.historySteps}>
           <StepHistory itemID={"history"} stepHistoryData={stepHistoryData} />

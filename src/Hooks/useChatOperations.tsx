@@ -142,30 +142,28 @@ export const usePostChatData = () => {
   };
 };
 
-interface IThreadList {
-  accessToken: string;
-  sessionId: string;
-}
-
 export const useFetchAllThreadData = () => {
-  const fetchAllThreadData = useCallback(async (data: IThreadList) => {
-    const bodyParams = {
-      id: data?.sessionId ?? "6f46a86c-a8fb-414e-b916-759de5dfdb2f", //`${data?.sessionId}`,
-    };
+  const fetchAllThreadData = useCallback(
+    async (userId: string, accessToken: string) => {
+      const bodyParams = {
+        id: userId, //`${data?.sessionId}`,
+      };
 
-    try {
-      const response = await post(
-        ApiPaths.THREAD_LIST,
-        { ...bodyParams },
-        {
-          Authorization: `Bearer ${data?.accessToken}`,
-        },
-        ApiPaths.BASE_URL
-      );
+      try {
+        const response = await post(
+          ApiPaths.THREAD_LIST,
+          { ...bodyParams },
+          {
+            Authorization: `Bearer ${accessToken}`,
+          },
+          ApiPaths.BASE_URL
+        );
 
-      return response;
-    } catch (error: any) {}
-  }, []);
+        return response;
+      } catch (error: any) {}
+    },
+    []
+  );
   return {
     fetchAllThreadData,
   };
