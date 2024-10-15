@@ -1,5 +1,5 @@
 import React from "react";
-import { Image, Text, TouchableOpacity, View } from "react-native";
+import { Image, ScrollView, Text, TouchableOpacity, View } from "react-native";
 import { styles } from "../styles";
 import { Colors } from "src/Assets/colors";
 import { IVehicle} from "../types";
@@ -9,7 +9,7 @@ const RenderVehicleInfo: React.FC<IVehicle> = ({
   onPress,
 }: IVehicle) => {
   return (
-    <View style={styles.vehicleDetailsContainer}>
+    <ScrollView contentContainerStyle={styles.content} style={styles.vehicleDetailsContainer}>
       <View style={styles.connectedHeader}>
         <View style={styles.vehicleRowView}>
           <Image
@@ -49,7 +49,7 @@ const RenderVehicleInfo: React.FC<IVehicle> = ({
           <Text style={styles.submittext}>Change VIN</Text>
         </TouchableOpacity>
       </View>
-    </View>
+    </ScrollView>
   );
 };
 
