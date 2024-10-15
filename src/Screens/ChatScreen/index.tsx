@@ -74,6 +74,8 @@ const ChatScreen: React.FC = () => {
   }, []);
 
   const retreiveHistoryData = async (itemData: object) => {
+    setDisplayVehicleInfo(false);
+    setIsLoading(true);
     const historyData = {
       history: [
         {
@@ -83,6 +85,7 @@ const ChatScreen: React.FC = () => {
     };
     const historyRespVal = await fetchThreadHistory(historyData, accessToken);
     setStepHistoryData(historyRespVal);
+    setIsLoading(false);
   };
 
   useEffect(() => {

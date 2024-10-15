@@ -20,10 +20,6 @@ export const DrawerNavigator = () => {
       initialRouteName={SCREENS.ChatScreen}
     >
       <Drawer.Screen name={SCREENS.ChatScreen} component={ChatScreen} />
-      <Drawer.Screen
-        name={SCREENS.PastConversationScreen}
-        component={PastConversationsScreen}
-      />
     </Drawer.Navigator>
   );
 };
