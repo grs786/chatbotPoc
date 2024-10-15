@@ -8,6 +8,13 @@ interface IStepHistory {
   type: "assistant_message" | "user_message" | "undefined";
   output: string;
 }
+interface IStepHistoryData {
+  stepHistoryData: {
+    stepHistoryData: {
+      step_history: {};
+    };
+  };
+}
 
 interface IMessageBubble {
   name: string;
@@ -37,8 +44,8 @@ const MessageBubble = ({ name, content, isUser }: IMessageBubble) => (
   </View>
 );
 
-const StepHistory = memo((stepHistoryData) => {
-  const filteredData = stepHistoryData?.stepHistoryData?.step_history.filter(
+const StepHistory = memo((stepHistoryData: IStepHistoryData) => {
+  const filteredData = stepHistoryData?.stepHistoryData?.step_history?.filter(
     (item: { type: string }) =>
       item?.type === "user_message" || item?.type === "assistant_message"
   );

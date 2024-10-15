@@ -166,6 +166,9 @@ export const styles = StyleSheet.create({
     width: "100%",
     alignItems: "center",
   },
+  tintcolor:{
+    tintColor: "blue" 
+  },
 
   modalBackground: {
     alignItems: "center",

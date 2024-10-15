@@ -12,17 +12,18 @@ import { styles as styles2 } from "../styles";
 import Loader from "src/components/Loader";
 import { Colors } from "src/Assets/colors";
 
-interface VehicleInfoModalProps {
-  onClose: (
-    vehicleDetails: {
-      model: string;
-      vinNumber: string;
-      connected: boolean;
-    } | null
-  ) => void;
+export interface IVehicleDetail {
+  model: string;
+  vinNumber: string;
+  connected: boolean;
 }
 
-const VehicleInfoModal: React.FC<VehicleInfoModalProps> = ({ onClose }) => {
+export interface VehicleInfo {
+  visible: any;
+  onClose: (vehicleDetail: IVehicleDetail | null) => void;
+}
+
+const VehicleInfoModal: React.FC<VehicleInfo> = ({ onClose, visible }) => {
   const [vin, setVin] = useState<string>("");
   const [loading, setLoading] = useState<boolean>(false);
   const [connectedViaButton, setConnectedViaButton] = useState<boolean>(true);

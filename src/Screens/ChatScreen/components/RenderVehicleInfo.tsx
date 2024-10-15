@@ -2,17 +2,12 @@ import React from "react";
 import { Image, Text, TouchableOpacity, View } from "react-native";
 import { styles } from "../styles";
 import { Colors } from "src/Assets/colors";
-import { IVehicleInfo } from "../types";
+import { IVehicle} from "../types";
 
-interface IRenderVehicleInfoProps {
-  vehicleInfo: IVehicleInfo;
-  onPress: () => void;
-}
-
-const RenderVehicleInfo: React.FC<IRenderVehicleInfoProps> = ({
+const RenderVehicleInfo: React.FC<IVehicle> = ({
   vehicleInfo,
   onPress,
-}: IRenderVehicleInfoProps) => {
+}: IVehicle) => {
   return (
     <View style={styles.vehicleDetailsContainer}>
       <View style={styles.connectedHeader}>

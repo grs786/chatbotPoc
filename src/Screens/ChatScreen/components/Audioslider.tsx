@@ -8,7 +8,7 @@ import React from "react";
 interface AudioMessageProps {
   currentMessage: {
     audio: string;
-    [key: string]: any;
+    [key: string]: string;
   };
 }
 

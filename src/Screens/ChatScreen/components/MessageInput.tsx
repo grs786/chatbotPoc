@@ -2,15 +2,16 @@ import React, { Dispatch, SetStateAction } from "react";
 import { View, TextInput, TouchableOpacity } from "react-native";
 import { MaterialIcons } from "@expo/vector-icons";
 import { styles } from "./styles";
+import { Audio } from "expo-av";
 
 interface IMessageInputProps {
   inputText: string;
   setInputText: Dispatch<SetStateAction<string>>;
-  handleSend: () => void;
+  handleSend:any;
   pickImage: () => void;
-  recording: boolean;
-  startRecording: () => void;
-  stopRecording: () => void;
+  recording?:Audio.Recording|null;
+  startRecording?: () => void;
+  stopRecording?: () => void;
 }
 
 const MessageInput = ({

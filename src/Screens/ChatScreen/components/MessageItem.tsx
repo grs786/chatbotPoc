@@ -24,14 +24,12 @@ interface IMessageItemProps {
   item: Message;
   handleReaction: (messageId: number, reaction: string) => void;
   reaction?: string;
-  messageReactions?: any;
 }
 
 const MessageItem: React.FC<IMessageItemProps> = ({
   item,
   handleReaction,
   reaction,
-  messageReactions,
 }) => {
   const copyToClipboard = async (text: string) => {
     await Clipboard.setStringAsync(text);
@@ -96,7 +94,7 @@ const MessageItem: React.FC<IMessageItemProps> = ({
                     source={require("../../../Assets/images/thumbup.png")}
                     style={[
                       styles.reactionText,
-                      reaction === "👍" && { tintColor: "blue" },
+                      reaction === "👍" && styles.tintcolor,
                     ]}
                   />
                 </TouchableOpacity>
@@ -108,7 +106,7 @@ const MessageItem: React.FC<IMessageItemProps> = ({
                     source={require("../../../Assets/images/thumbdown.png")}
                     style={[
                       styles.reactionText,
-                      reaction === "👎" && { tintColor: "blue" },
+                      reaction === "👎" && styles.tintcolor,
                     ]}
                   />
                 </TouchableOpacity>

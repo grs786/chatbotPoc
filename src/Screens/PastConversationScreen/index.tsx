@@ -8,7 +8,7 @@ import {
 } from "react-native";
 import { MaterialIcons } from "@expo/vector-icons";
 import { styles } from "./styles";
-import { useFetchAllThreadData } from "../ChatScreen/useChatOperations";
+import { useFetchAllThreadData } from "../../Hooks/useChatOperations";
 import { useNavigation } from "@react-navigation/native";
 import { SCREENS } from "../../Common/screens";
 import CustomHeader from "src/components/CustomHeader";
@@ -107,16 +107,7 @@ const PastConversationsScreen = (
 
   return (
     <View style={styles.container}>
-      <CustomHeader
-        containerStyle={{
-          paddingHorizontal: 0,
-          shadowColor: "#fff",
-          backgroundColor: "transparent",
-          marginBottom: 20,
-        }}
-        title=""
-        {...props}
-      />
+      <CustomHeader containerStyle={styles.headerstyle} title= "" {...props} />
       <Text style={styles.heading}>Past Chats</Text>
       {/* Search Bar */}
       <View style={styles.searchContainer}>

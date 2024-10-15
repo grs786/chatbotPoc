@@ -18,6 +18,7 @@ export const styles = StyleSheet.create({
     justifyContent: "center",
     height: "81%",
   },
+  keyboard: { paddingHorizontal: 10, marginVertical: 10 },
 
   connectedHeader: {
     flexDirection: "row",
@@ -42,8 +43,8 @@ export const styles = StyleSheet.create({
     backgroundColor: "green",
     borderRadius: 5,
   },
-  historySteps:{
-    flex:1
+  historySteps: {
+    flex: 1,
   },
   vehicleInfo: {
     marginBottom: 15,
@@ -128,36 +129,33 @@ export const styles = StyleSheet.create({
   buttonContainer: {
     alignItems: "center",
     marginBottom: 20,
-  },  
+  },
 
-
-
-
-    container: {
-      padding: 10,
-    },
-    assistantMessage: {
-      backgroundColor: '#e6f7ff',
-      borderRadius: 10,
-      padding: 10,
-      marginVertical: 5,
-      alignSelf: 'flex-start',
-      maxWidth: '80%',
-    },
-    assistantText: {
-      color: '#005b9f',
-      fontSize: 16,
-    },
-    userMessage: {
-      backgroundColor: '#dcf8c6',
-      borderRadius: 10,
-      padding: 10,
-      marginVertical: 5,
-      alignSelf: 'flex-end',
-      maxWidth: '80%',
-    },
-    userText: {
-      color: '#2e2e2e',
-      fontSize: 16,
-    },
+  container: {
+    padding: 10,
+  },
+  assistantMessage: {
+    backgroundColor: "#e6f7ff",
+    borderRadius: 10,
+    padding: 10,
+    marginVertical: 5,
+    alignSelf: "flex-start",
+    maxWidth: "80%",
+  },
+  assistantText: {
+    color: "#005b9f",
+    fontSize: 16,
+  },
+  userMessage: {
+    backgroundColor: "#dcf8c6",
+    borderRadius: 10,
+    padding: 10,
+    marginVertical: 5,
+    alignSelf: "flex-end",
+    maxWidth: "80%",
+  },
+  userText: {
+    color: "#2e2e2e",
+    fontSize: 16,
+  },
 });

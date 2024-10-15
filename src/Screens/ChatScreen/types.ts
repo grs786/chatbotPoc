@@ -1,27 +1,34 @@
 export interface MessageReaction {
-    id: number;
-    emoji: string;
-  }
-  
-export interface Message  {
-    audio?: string; 
-  }
-  
- export interface Reactions {
-    [key: string]: string[]; // Stores reactions for each message by message _id
-  }
-//  export interface IVehicleInfo {
-//   model: string;
-//   vinNumber: string;
-//   connected: boolean;
-// }
-  
- export interface IVehicleInfo {
-  vin: string,
-  model: string,
-  modelyear: string,
-  transmission: string,
-  engine: string,
-  connected?: boolean,       
+  id: number;
+  emoji: string;
 }
-  
+
+export interface Message {
+  _id?: string;
+  text?: string;
+  createdAt?: Date;
+  user?: { _id: number; name: string };
+  image?: string;
+  audio?: string;
+}
+
+export interface HistoryData {
+  step_history?: object;
+}
+
+export interface Reactions {
+  [key: string]: string[]; 
+}
+export interface IVehicle {
+  vehicleInfo: IVehicleInfo;
+  onPress: () => void;
+}
+
+export interface IVehicleInfo {
+  vin?: string;
+  model?: string;
+  modelyear?: string;
+  transmission?: string;
+  engine?: string;
+  connected?: boolean;
+}

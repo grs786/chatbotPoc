@@ -2,6 +2,8 @@ import React, { useRef, useState } from "react";
 import {
   FlatList,
   ListRenderItem,
+  NativeScrollEvent,
+  NativeSyntheticEvent,
   Text,
   TouchableOpacity,
   View,
@@ -10,7 +12,7 @@ import MessageItem from "./MessageItem";
 import { styles } from "./styles";
 import { MaterialIcons } from "@expo/vector-icons";
 
-interface IMessage {
+export interface IMessage {
   _id: string | number;
   text?: string;
   image?: string;
@@ -48,7 +50,7 @@ const MessageList: React.FC<IMessageListProps> = ({
   const flatListRef = useRef<FlatList>(null);
   const [isScrollToBottomVisible, setScrollToBottomVisible] = useState(false);
 
-  const handleScroll = (event: any) => {
+  const handleScroll = (event: NativeSyntheticEvent<NativeScrollEvent>) => {
     const offsetY = event.nativeEvent.contentOffset.y;
     const contentHeight = event.nativeEvent.contentSize.height;
     const layoutHeight = event.nativeEvent.layoutMeasurement.height;
@@ -85,9 +87,8 @@ const MessageList: React.FC<IMessageListProps> = ({
         onContentSizeChange={() => {
           if (messages[messages.length - 1]?.user._id === 1) {
             flatListRef.current?.scrollToEnd({ animated: true });
-          }
-          else{
-          scrollToNearEnd()
+          } else {
+            scrollToNearEnd();
           }
         }}
         onScroll={handleScroll}

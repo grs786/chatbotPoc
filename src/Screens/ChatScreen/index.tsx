@@ -1,19 +1,13 @@
 import React, { useState, useEffect } from "react";
-import {
-  SafeAreaView,
-  KeyboardAvoidingView,
-  Text,
-  FlatList,
-  View,
-} from "react-native";
-import { Audio } from "expo-av";
-import * as ImagePicker from "expo-image-picker";
+import { SafeAreaView, KeyboardAvoidingView, View } from "react-native";
 import CustomHeader from "../../components/CustomHeader";
-import MessageList from "./components/MessageList";
+import MessageList, { IMessage } from "./components/MessageList";
 import MessageInput from "./components/MessageInput";
 import { styles } from "./styles";
-import VehicleInfoModal from "./components/VechileInfoModal";
-import { useNavigation, useRoute } from "@react-navigation/native";
+import VehicleInfoModal, {
+  IVehicleDetail,
+} from "./components/VechileInfoModal";
+import { RouteProp, useNavigation, useRoute } from "@react-navigation/native";
 import {
   useUserSession,
   useRetreiveVehicleData,
@@ -22,35 +16,38 @@ import {
   useUpdateThreadData,
   useCreateUserStep,
   useFetchThreadHistory,
-} from "./useChatOperations";
-import { IVehicleInfo } from "./types";
+} from "../../Hooks/useChatOperations";
+import { IVehicleInfo, Message } from "./types";
 import Apipath from "../../../environment";
 import RenderVehicleInfo from "./components/RenderVehicleInfo";
 import Loader from "src/components/Loader";
 import uuid from "uuid-random";
 import { setItem } from "src/Utilities/StorageClasses";
 import StepHistory from "./components/HistoryMessageList";
+import { useImagePicker } from "../../Hooks/useImagePicker";
+import { useAudioRecorder } from "../../Hooks/useAudioRecorder";
 
 const ChatScreen: React.FC = () => {
-  const [messages, setMessages] = useState<any[]>([]);
+  const [messages, setMessages] = useState<IMessage[]>([]);
   const [inputText, setInputText] = useState("");
-  const [recording, setRecording] = useState<Audio.Recording | null>(null);
   const [sessionId, setSessionID] = useState<string>("");
   const [userId, setUserID] = useState<string>("");
   const [userIdentifier, setUserIdentifier] = useState<string>("");
 
   const [isLoading, setIsLoading] = useState<boolean>(false);
-  const [selectedMessageId, setSelectedMessageId] = useState<string | null>(
-    null
-  );
-  const [messageReactions, setMessageReactions] = useState<any>({});
-  const [modalVisible, setModalVisible] = useState<boolean>(true);
+  const [selectedMessageId, setSelectedMessageId] = useState<string | number>();
+  const [messageReactions, setMessageReactions] = useState<
+    Record<string, string>
+  >({});
+  const [modalVisible, setModalVisible] = useState<boolean>(false);
   const [accessToken, setAccessToken] = useState<string>("");
   const [vehicleInfo, setVehicleInfo] = useState<IVehicleInfo | null>(null); // Store vehicle information
   const [stepHistoryData, setStepHistoryData] = useState(null); // Store vehicle information
-  const route = useRoute();
+  const route =
+    useRoute<RouteProp<{ params: { id?: string; itemData?: object } }>>();
   const historyId = route?.params?.id;
   const navigation = useNavigation();
+  const { recording, startRecording, stopRecording } = useAudioRecorder();
 
   const { createUserSession } = useUserSession();
   const { retreiveVehicleData } = useRetreiveVehicleData();
@@ -59,6 +56,7 @@ const ChatScreen: React.FC = () => {
   const { PostChatData } = usePostChatData();
   const { createUserStep } = useCreateUserStep();
   const { fetchThreadHistory } = useFetchThreadHistory();
+  const { pickImage } = useImagePicker();
 
   const initialSession = async () => {
     const data = await createUserSession();
@@ -70,7 +68,7 @@ const ChatScreen: React.FC = () => {
     initialSession();
   }, []);
 
-  const retreiveHistoryData = async (itemData: any) => {
+  const retreiveHistoryData = async (itemData: object) => {
     const historyData = {
       history: [
         {
@@ -171,71 +169,15 @@ const ChatScreen: React.FC = () => {
     }
   };
 
-  const pickImage = async () => {
-    let result = await ImagePicker.launchImageLibraryAsync({
-      mediaTypes: ImagePicker.MediaTypeOptions.All,
-      allowsEditing: true,
-      aspect: [4, 3],
-      quality: 1,
-    });
-
-    if (!result.canceled) {
-      const newMessage = {
-        _id: Math.random().toString(),
-        text: "",
-        createdAt: new Date(),
-        user: { _id: 1, name: "Y" },
-        image: result.assets[0].uri,
-      };
-      setMessages((prevMessages) => [...prevMessages, newMessage]);
-    }
-  };
-
-  const startRecording = async () => {
-    try {
-      const status = await Audio.requestPermissionsAsync();
-      if (status.granted) {
-        await Audio.setAudioModeAsync({
-          allowsRecordingIOS: true,
-          playsInSilentModeIOS: true,
-          shouldDuckAndroid: true,
-          playThroughEarpieceAndroid: false,
-        });
-        const { recording } = await Audio.Recording.createAsync(
-          Audio.RECORDING_OPTIONS_PRESET_HIGH_QUALITY
-        );
-        setRecording(recording);
-      }
-    } catch (err) {
-      console.error("Failed to start recording", err);
-    }
-  };
-
-  const stopRecording = async () => {
-    if (recording) {
-      await recording.stopAndUnloadAsync();
-      const uri = recording.getURI();
-      setRecording(null);
-      const newMessage = {
-        _id: Math.random().toString(),
-        text: "",
-        createdAt: new Date(),
-        user: { _id: 1, name: "Y" },
-        audio: uri,
-      };
-      setMessages((prevMessages) => [...prevMessages, newMessage]);
-    }
-  };
-
   const handleReaction = (messageId: string | number, reaction: string) => {
-    setMessageReactions((prevReactions: any) => ({
+    setMessageReactions((prevReactions) => ({
       ...prevReactions,
       [messageId]: reaction,
     }));
     setSelectedMessageId(messageId);
   };
 
-  const handleVinClose = async (vehicleData: string | null) => {
+  const handleVinClose = async (vehicleData: IVehicleDetail) => {
     setStepHistoryData(null);
     setIsLoading(true);
     setModalVisible(false); // Close the modal
@@ -291,18 +233,37 @@ const ChatScreen: React.FC = () => {
             handleReaction={handleReaction}
             messageReactions={messageReactions}
           />
-          <KeyboardAvoidingView
-            behavior="padding"
-            style={{ paddingHorizontal: 10, marginVertical: 10 }}
-          >
+          <KeyboardAvoidingView behavior="padding" style={styles.keyboard}>
             <MessageInput
               inputText={inputText}
               setInputText={setInputText}
               handleSend={handleSend}
-              pickImage={pickImage}
+              pickImage={async () => {
+                const uri = await pickImage();
+                if (uri) {
+                  const imageMessage = {
+                    _id: Math.random().toString(),
+                    image: uri,
+                    createdAt: new Date(),
+                    user: { _id: 1, name: "User" },
+                  };
+                  setMessages((prev) => [...prev, imageMessage]);
+                }
+              }}
               recording={recording}
               startRecording={startRecording}
-              stopRecording={stopRecording}
+              stopRecording={async () => {
+                const uri = await stopRecording();
+                if (uri) {
+                  const audioMessage = {
+                    _id: Math.random().toString(),
+                    audio: uri,
+                    createdAt: new Date(),
+                    user: { _id: 1, name: "User" },
+                  };
+                  setMessages((prev) => [...prev, audioMessage]);
+                }
+              }}
             />
           </KeyboardAvoidingView>
         </>
