@@ -14,6 +14,7 @@ import { SCREENS } from "../../Common/screens";
 import CustomHeader from "src/components/CustomHeader";
 import Apipath from "../../../environment";
 import { getItem } from "src/Utilities/StorageClasses";
+import Loader from "src/components/Loader";
 
 export interface IChatHistory {
   id: string;
@@ -32,25 +33,24 @@ const PastConversationsScreen = (
 ) => {
   const [searchText, setSearchText] = useState("");
   const [chatHistory, setChatHistory] = useState<IChatHistory[]>();
+  const [isLoading, setIsLoading] = useState<boolean>(false);
   const navigation = useNavigation();
   const { fetchAllThreadData } = useFetchAllThreadData();
 
-  const intialSession = async () => {
+  const initialSession = async () => {
     const accessTokenId = await getItem(Apipath.ACCESS_TOKEN);
     const user_Id = await getItem(Apipath.USER_ID);
 
     if (user_Id && accessTokenId) {
-      const threadListing = {
-        accessToken: accessTokenId,
-        sessionId: "0fa853e6-3485-4626-9f13-1f4c718bfe5c", //user_Id,
-      };
-      const historyData = await fetchAllThreadData(threadListing);
+      setIsLoading(true);
+      const historyData = await fetchAllThreadData(user_Id, accessTokenId);
       setChatHistory(historyData?.history);
+      setIsLoading(false);
     }
   };
 
   useEffect(() => {
-    intialSession();
+    initialSession();
   }, []);
 
   const filteredChats = chatHistory?.filter((chat) =>
@@ -98,9 +98,10 @@ const PastConversationsScreen = (
             {item?.name}
           </Text>
         </TouchableOpacity>
-        <TouchableOpacity>
+        {/* Commented as of now because its not in scope in this sprint */}
+        {/* <TouchableOpacity>
           <MaterialIcons name="delete" size={20} color="gray" />
-        </TouchableOpacity>
+        </TouchableOpacity> */}
       </View>
     );
   };
@@ -135,6 +136,10 @@ const PastConversationsScreen = (
             {previousChats?.map((item) => renderChatItem(item))}
           </View>
         )}
+        {todayChats?.length === 0 && previousChats?.length === 0 && (
+          <Text style={styles.noHistoryText}>No history available</Text>
+        )}
+        {isLoading && <Loader />}
       </ScrollView>
     </View>
   );

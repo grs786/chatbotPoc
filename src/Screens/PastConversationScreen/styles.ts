@@ -60,4 +60,9 @@ export const styles = StyleSheet.create({
     color: "#aaa",
     paddingVertical: 5,
   },
+  noHistoryText:{
+    margin:24,
+    fontSize:16,
+    fontWeight:'600'
+  }
 });
