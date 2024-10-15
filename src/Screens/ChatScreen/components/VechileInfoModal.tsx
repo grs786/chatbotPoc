@@ -10,7 +10,6 @@ import {
 import { styles } from "./styles";
 import { styles as styles2 } from "../styles";
 import Loader from "src/components/Loader";
-import { Colors } from "src/Assets/colors";
 
 export interface IVehicleDetail {
   model: string;

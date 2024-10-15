@@ -17,7 +17,7 @@ import {
   useCreateUserStep,
   useFetchThreadHistory,
 } from "../../Hooks/useChatOperations";
-import { IVehicleInfo, Message } from "./types";
+import { IVehicleInfo } from "./types";
 import Apipath from "../../../environment";
 import RenderVehicleInfo from "./components/RenderVehicleInfo";
 import Loader from "src/components/Loader";
@@ -39,7 +39,8 @@ const ChatScreen: React.FC = () => {
   const [messageReactions, setMessageReactions] = useState<
     Record<string, string>
   >({});
-  const [modalVisible, setModalVisible] = useState<boolean>(false);
+  const [modalVisible, setModalVisible] = useState<boolean>(true);
+  const [displayVehicleInfo, setDisplayVehicleInfo] = useState<boolean>(true);
   const [accessToken, setAccessToken] = useState<string>("");
   const [vehicleInfo, setVehicleInfo] = useState<IVehicleInfo | null>(null); // Store vehicle information
   const [stepHistoryData, setStepHistoryData] = useState(null); // Store vehicle information
@@ -89,7 +90,7 @@ const ChatScreen: React.FC = () => {
   }, [route]);
 
   const handleSend = async () => {
-    setVehicleInfo(null);
+    setDisplayVehicleInfo(false);
     setInputText("");
 
     if (inputText.trim()) {
@@ -165,7 +166,7 @@ const ChatScreen: React.FC = () => {
       }
 
       setInputText(""); // Clear the input field
-      setVehicleInfo(null);
+      setDisplayVehicleInfo(false);
     }
   };
 
@@ -206,17 +207,18 @@ const ChatScreen: React.FC = () => {
       <CustomHeader
         title="WSM Assistant"
         navigation={navigation}
+        navigateToHome={() => setDisplayVehicleInfo(true)}
         beginNewChat={() => {
           modalVisible === false && setModalVisible(true);
           setStepHistoryData(null);
           setMessages([]);
         }}
       />
-      {!isLoading && vehicleInfo && (
+      {!isLoading && displayVehicleInfo && (
         <RenderVehicleInfo
           vehicleInfo={vehicleInfo}
           onPress={() => {
-            setVehicleInfo(null);
+            setDisplayVehicleInfo(false);
             setModalVisible(true);
           }}
         />

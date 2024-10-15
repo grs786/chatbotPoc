@@ -7,11 +7,13 @@ const CustomHeader = ({
   navigation,
   containerStyle,
   beginNewChat,
+  navigateToHome,
 }: {
   title: string;
   navigation: any;
   containerStyle?: undefined;
   beginNewChat: () => void;
+  navigateToHome: () => void;
 }) => {
   return (
     <View style={[styles.container, containerStyle]}>
@@ -22,9 +24,9 @@ const CustomHeader = ({
             style={{ width: 25, height: 25 }}
           />
         </TouchableOpacity>
-        <Text onPress={beginNewChat} style={styles.headertext}>
-          {title ?? ""}
-        </Text>
+        <TouchableOpacity onPress={navigateToHome}>
+          <Text style={styles.headertext}>{title ?? ""}</Text>
+        </TouchableOpacity>
         <TouchableOpacity onPress={beginNewChat}>
           <Image
             source={require("../../Assets/images/editIcon.png")}
