@@ -7,7 +7,7 @@ const Loader = ({ title }: { title?: string }) => {
   return (
     <View style={styles.container}>
       <ActivityIndicator size="large" color={Colors.NAVYBLUE} />
-      {title && <Text style={styles.headertext}>{title ?? ""}</Text>}
+      {title && <Text style={styles.headertext}>{title}</Text>}
     </View>
   );
 };
