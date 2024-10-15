@@ -24,7 +24,7 @@ interface Message {
 interface IMessageItemProps {
   item: Message;
   handleReaction: (
-    messageId: string,
+    messageId: number,
     question_id: number,
     reaction: string,
     value: number | undefined

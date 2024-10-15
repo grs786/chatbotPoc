@@ -4,6 +4,7 @@ import { useState, useEffect } from "react";
 import { Text, TouchableOpacity, View, StyleSheet } from "react-native";
 import { Audio } from "expo-av";
 import React from "react";
+import { Colors } from "src/Assets/colors";
 
 interface AudioMessageProps {
   currentMessage: {
@@ -12,13 +13,23 @@ interface AudioMessageProps {
   };
 }
 
+interface AudioStatus {
+  isPlaying: boolean;
+  didJustFinish: boolean;
+  isLoaded: boolean;
+  durationMillis?: number;
+  positionMillis?: number;
+  // Add other necessary properties according to the expected response from expo-av
+}
+
 export const AudioMessage: React.FC<AudioMessageProps> = ({
   currentMessage,
 }) => {
   const [sound, setSound] = useState<Audio.Sound | null>(null);
   const [isPlaying, setIsPlaying] = useState<boolean>(false);
-  const [playbackStatus, setPlaybackStatus] =
-    useState<Audio.AudioStatus | null>(null);
+  const [playbackStatus, setPlaybackStatus] = useState<AudioStatus | null>(
+    null
+  );
   const [duration, setDuration] = useState<number>(0);
 
   useEffect(() => {
@@ -55,7 +66,7 @@ export const AudioMessage: React.FC<AudioMessageProps> = ({
     }
   };
 
-  const onPlaybackStatusUpdate = (status: Audio.AudioStatus) => {
+  const onPlaybackStatusUpdate = (status: AudioStatus) => {
     setPlaybackStatus(status);
     if (status.didJustFinish) {
       setIsPlaying(false);
@@ -73,7 +84,7 @@ export const AudioMessage: React.FC<AudioMessageProps> = ({
           value={playbackStatus.positionMillis}
           minimumValue={0}
           maximumValue={duration}
-          thumbTintColor="#f39c12" 
+          thumbTintColor="#f39c12"
           minimumTrackTintColor="white"
           maximumTrackTintColor="black"
           onSlidingComplete={async (value) => {
@@ -126,5 +137,8 @@ const styles = StyleSheet.create({
     height: 40,
     marginLeft: 10,
   },
- 
+  timeText: {
+    fontSize: 8,
+    color: Colors.NAVYBLUE,
+  },
 });

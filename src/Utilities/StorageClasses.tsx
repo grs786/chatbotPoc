@@ -23,7 +23,7 @@ export const setItem = async (key: string, value: string) => {
 export const getItem = async (key: string): Promise<string | unknown> => {
   try {
     const jsonValue = await AsyncStorage.getItem(key);
-    return jsonValue != null ? JSON.parse(jsonValue) : null; // Parse string back to original type
+    return jsonValue != null ? JSON.parse(jsonValue) : ""; // Parse string back to original type
   } catch (error) {
     console.error("Error getting item from AsyncStorage:", error);
     return error;

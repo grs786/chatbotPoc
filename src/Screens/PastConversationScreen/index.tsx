@@ -8,15 +8,15 @@ import {
 } from "react-native";
 import { MaterialIcons } from "@expo/vector-icons";
 import { styles } from "./styles";
-import { useFetchAllThreadData } from "../../Hooks/useChatOperations";
+import { useFetchAllThreadData } from "src/Hooks/useChatOperations";
 import { NavigationProp, useNavigation } from "@react-navigation/native";
-import { SCREENS } from "../../Common/screens";
 import CustomHeader from "src/components/CustomHeader";
 import Apipath from "../../../environment";
 import { getItem } from "src/Utilities/StorageClasses";
 import Loader from "src/components/Loader";
 import { ApplicationStackParamList } from "src/types/navigation";
 import uuid from "uuid-random";
+import { SCREENS } from "src/Common/screens";
 export interface IChatHistory {
   id: string;
   createdAt: string;
@@ -45,7 +45,10 @@ const PastConversationsScreen = (
 
     if (user_Id && accessTokenId) {
       setIsLoading(true);
-      const historyData = await fetchAllThreadData(user_Id, accessTokenId);
+      const historyData = await fetchAllThreadData(
+        `${user_Id}`,
+        `${accessTokenId}`
+      );
       setChatHistory(historyData?.history);
       setIsLoading(false);
     }

@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from "react";
 import { SafeAreaView, KeyboardAvoidingView, View } from "react-native";
-import CustomHeader from "../../components/CustomHeader";
 import MessageList, { IMessage } from "./components/MessageList";
 import MessageInput from "./components/MessageInput";
 import { styles } from "./styles";
@@ -17,7 +16,8 @@ import {
   useCreateUserStep,
   useFetchThreadHistory,
   useUpsertUserFeedback,
-} from "../../Hooks/useChatOperations";
+  IStepHistoryData,
+} from "src/Hooks/useChatOperations";
 import { IVehicleInfo } from "./types";
 import Apipath from "../../../environment";
 import RenderVehicleInfo from "./components/RenderVehicleInfo";
@@ -25,8 +25,9 @@ import Loader from "src/components/Loader";
 import uuid from "uuid-random";
 import { setItem } from "src/Utilities/StorageClasses";
 import StepHistory from "./components/HistoryMessageList";
-import { useImagePicker } from "../../Hooks/useImagePicker";
-import { useAudioRecorder } from "../../Hooks/useAudioRecorder";
+import { useImagePicker } from "src/Hooks/useImagePicker";
+import { useAudioRecorder } from "src/Hooks/useAudioRecorder";
+import CustomHeader from "src/components/CustomHeader";
 
 const ChatScreen: React.FC = () => {
   const [messages, setMessages] = useState<IMessage[]>([]);
@@ -44,7 +45,9 @@ const ChatScreen: React.FC = () => {
   const [displayVehicleInfo, setDisplayVehicleInfo] = useState<boolean>(true);
   const [accessToken, setAccessToken] = useState<string>("");
   const [vehicleInfo, setVehicleInfo] = useState<IVehicleInfo | null>(null); // Store vehicle information
-  const [stepHistoryData, setStepHistoryData] = useState(null); // Store vehicle information
+  const [stepHistoryData, setStepHistoryData] = useState<
+    IStepHistoryData | undefined
+  >(); // Store vehicle information
   const route =
     useRoute<RouteProp<{ params: { id?: string; itemData?: object } }>>();
 
@@ -96,15 +99,21 @@ const ChatScreen: React.FC = () => {
   }, [route]);
 
   const handleSend = async () => {
+    setIsLoading(true);
     setDisplayVehicleInfo(false);
     setInputText("");
 
     if (inputText.trim()) {
-      const newMessage = {
+      const newMessage: IMessage = {
         _id: Math.random().toString(),
         text: inputText,
         createdAt: new Date(),
-        user: { _id: 1, name: "Tech" },
+        user: {
+          _id: 1,
+          name: "Tech",
+          fullname: "",
+        },
+        question_id: "",
       };
 
       // Update state with the new user message
@@ -129,10 +138,11 @@ const ChatScreen: React.FC = () => {
 
       try {
         const chatRespData = await PostChatData(chatParam); // Call the API
+        setIsLoading(false);
 
         // Parse the API response
         const parsedResponse = chatRespData;
-        const botMessage = {
+        const botMessage: IMessage = {
           _id: Math.random().toString(),
           text: parsedResponse.answer, // Use the answer from the API response
           question_id: parsedResponse.question_id,
@@ -178,11 +188,12 @@ const ChatScreen: React.FC = () => {
   };
 
   const handleReaction = async (
-    messageId: string | undefined,
+    messageId: string,
     questionId: string | number,
     reaction: string,
     value: number
   ) => {
+    setIsLoading(true);
     setMessageReactions((prevReactions) => ({
       ...prevReactions,
       [messageId]: reaction,
@@ -196,13 +207,13 @@ const ChatScreen: React.FC = () => {
     };
 
     const userFeedback = await upsertUserFeedback(paramsBody, accessToken);
+    setIsLoading(false);
   };
 
   const handleVinClose = async (vehicleData: IVehicleDetail) => {
-    setStepHistoryData(null);
+    setStepHistoryData(undefined);
     setIsLoading(true);
     setModalVisible(false); // Close the modal
-    // setVehicleInfo(vehicleData); // Set vehicle info from modal
     const reqParam = {
       accessToken: accessToken,
       vinNumber:
@@ -227,10 +238,14 @@ const ChatScreen: React.FC = () => {
       <CustomHeader
         title="WSM Assistant"
         navigation={navigation}
-        navigateToHome={() => setDisplayVehicleInfo(true)}
+        navigateToHome={() => {
+          setDisplayVehicleInfo(true);
+          setStepHistoryData(undefined);
+          setMessages([]);
+        }}
         beginNewChat={() => {
           modalVisible === false && setModalVisible(true);
-          setStepHistoryData(null);
+          setStepHistoryData(undefined);
           setMessages([]);
         }}
       />
@@ -247,7 +262,7 @@ const ChatScreen: React.FC = () => {
 
       {stepHistoryData?.step_history ? (
         <View style={styles.historySteps}>
-          <StepHistory itemID = {"history"} stepHistoryData={stepHistoryData} />
+          <StepHistory itemID={"history"} stepHistoryData={stepHistoryData} />
         </View>
       ) : (
         <>
@@ -264,11 +279,16 @@ const ChatScreen: React.FC = () => {
               pickImage={async () => {
                 const uri = await pickImage();
                 if (uri) {
-                  const imageMessage = {
+                  const imageMessage: IMessage = {
                     _id: Math.random().toString(),
                     image: uri,
                     createdAt: new Date(),
-                    user: { _id: 1, name: "User" },
+                    user: {
+                      _id: 1,
+                      name: "User",
+                      fullname: "",
+                    },
+                    question_id: "",
                   };
                   setMessages((prev) => [...prev, imageMessage]);
                 }
@@ -278,11 +298,16 @@ const ChatScreen: React.FC = () => {
               stopRecording={async () => {
                 const uri = await stopRecording();
                 if (uri) {
-                  const audioMessage = {
+                  const audioMessage: IMessage = {
                     _id: Math.random().toString(),
                     audio: uri,
                     createdAt: new Date(),
-                    user: { _id: 1, name: "User" },
+                    user: {
+                      _id: 1,
+                      name: "User",
+                      fullname: "",
+                    },
+                    question_id: "",
                   };
                   setMessages((prev) => [...prev, audioMessage]);
                 }

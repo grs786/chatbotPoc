@@ -10,7 +10,7 @@ import {
 import { styles } from "./styles";
 import { styles as styles2 } from "../styles";
 import Loader from "src/components/Loader";
-
+import Apipath from "../../../../environment";
 export interface IVehicleDetail {
   model: string;
   vinNumber: string;
@@ -19,7 +19,7 @@ export interface IVehicleDetail {
 
 export interface VehicleInfo {
   visible: any;
-  onClose: (vehicleDetail: IVehicleDetail | null) => void;
+  onClose: (vehicleDetail: IVehicleDetail) => void;
 }
 
 const VehicleInfoModal: React.FC<VehicleInfo> = ({ onClose, visible }) => {
@@ -50,12 +50,12 @@ const VehicleInfoModal: React.FC<VehicleInfo> = ({ onClose, visible }) => {
       setLoading(false);
       setVehicleDetails({
         model: "2021 F-150",
-        vinNumber: "1FTFW1E85MFA63398",
+        vinNumber: vin ?? Apipath.SAMPLE_VIN,
         connected: connectedViaButton,
       });
       onClose({
         model: "2021 F-150",
-        vinNumber: vin, // "1FTFW1E85MFA63398",
+        vinNumber: vin ?? Apipath.SAMPLE_VIN,
         connected: connectedViaButton,
       });
     }, 2000);
