@@ -134,18 +134,5 @@ const StepHistory = memo(({ itemID, stepHistoryData }: { itemID: string; stepHis
     />
   );
 });
-    if (filteredData.length === 0) {
-      return <Text style={styles.noResultFound}>No result found</Text>;
-    }
-    return (
-      <FlatList
-        data={filteredData}
-        keyExtractor={(item) => item.id}
-        renderItem={renderMessage}
-        showsVerticalScrollIndicator={false}
-      />
-    );
-  }
-);
 
 export default StepHistory;
