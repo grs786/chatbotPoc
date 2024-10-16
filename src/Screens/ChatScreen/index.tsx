@@ -28,6 +28,7 @@ import StepHistory from "./components/HistoryMessageList";
 import { useImagePicker } from "src/Hooks/useImagePicker";
 import { useAudioRecorder } from "src/Hooks/useAudioRecorder";
 import CustomHeader from "src/components/CustomHeader";
+import Toast from "react-native-toast-message";
 
 const ChatScreen: React.FC = () => {
   const [messages, setMessages] = useState<IMessage[]>([]);
@@ -222,15 +223,28 @@ const ChatScreen: React.FC = () => {
           : Apipath.SAMPLE_VIN,
     };
     const respData = await retreiveVehicleData(reqParam);
-    setIsLoading(false);
-    setVehicleInfo({ ...respData?.vehicle?.vehicle_info, connected: true });
-    setSessionID(respData?.session_id);
-    await setItem(Apipath.SESSION_ID, respData?.session_id);
 
-    const userData = await fetchUserData(Apipath.USER_MAIL, accessToken);
-    await setItem(Apipath.USER_ID, userData?.id);
-    setUserID(userData?.id);
-    setUserIdentifier(userData?.identifier);
+    console.log(JSON.stringify(respData, null, 2), "retreiveVehicleData");
+
+    setIsLoading(false);
+    if (respData?.session_id) {
+      setVehicleInfo({ ...respData?.vehicle?.vehicle_info, connected: true });
+      setSessionID(respData?.session_id);
+      await setItem(Apipath.SESSION_ID, respData?.session_id);
+
+      const userData = await fetchUserData(Apipath.USER_MAIL, accessToken);
+      await setItem(Apipath.USER_ID, userData?.id);
+      setUserID(userData?.id);
+      setUserIdentifier(userData?.identifier);
+    } else {
+      // Toast.show({
+      //   type: "error",
+      //   position: "bottom",
+      //   text1: "Invalid VIN entered. Please try again.",
+      // });
+      // alert("Vehicle not found");
+      setModalVisible(true);
+    }
   };
 
   return (
@@ -258,7 +272,6 @@ const ChatScreen: React.FC = () => {
           }}
         />
       )}
-      {isLoading && <Loader />}
 
       {stepHistoryData?.step_history ? (
         <View style={styles.historySteps}>
@@ -319,6 +332,7 @@ const ChatScreen: React.FC = () => {
       {modalVisible && (
         <VehicleInfoModal visible={modalVisible} onClose={handleVinClose} />
       )}
+      {isLoading && <Loader />}
     </SafeAreaView>
   );
 };
