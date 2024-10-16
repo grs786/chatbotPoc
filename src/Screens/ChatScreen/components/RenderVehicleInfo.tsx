@@ -9,7 +9,7 @@ const RenderVehicleInfo: React.FC<IVehicle> = ({
   onPress,
 }: IVehicle) => {
   return (
-    <ScrollView contentContainerStyle={styles.content} style={styles.vehicleDetailsContainer}>
+    <ScrollView  contentContainerStyle={styles.content} keyboardShouldPersistTaps='handled' showsVerticalScrollIndicator={false}  style={styles.vehicleDetailsContainer}>
       <View style={styles.connectedHeader}>
         <View style={styles.vehicleRowView}>
           <Image

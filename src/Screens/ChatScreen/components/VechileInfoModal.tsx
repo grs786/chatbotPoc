@@ -6,6 +6,9 @@ import {
   Image,
   Keyboard,
   TouchableOpacity,
+  KeyboardAvoidingView,
+  Platform,
+  ScrollView,
 } from "react-native";
 import { styles } from "./styles";
 import { styles as styles2 } from "../styles";
@@ -70,73 +73,83 @@ const VehicleInfoModal: React.FC<VehicleInfo> = ({ onClose, visible }) => {
   const handleVinSubmit = () => {
     if (vin.length > 10) {
       setConnectedViaButton(false);
-
       handleVehicleDataFetch();
     }
   };
 
   return (
-    <View style={styles.modalBackground}>
+    <KeyboardAvoidingView
+      behavior={Platform.OS === "ios" ? "padding" : undefined}
+      style={styles.modalBackground}
+      keyboardVerticalOffset={180}
+    >
       <View style={styles.vechilemodalContainer}>
-        <View style={{ paddingHorizontal: 20 }}>
-          <View style={styles.logoContainer}>
-            <Image
-              source={require("../../../Assets/images/fordLogo.png")}
-              style={styles.logo}
-            />
-          </View>
+        <ScrollView
+        style={{marginBottom:50,}}
+          contentContainerStyle={{ flexGrow: 1}}
+          keyboardShouldPersistTaps="handled"
+          bounces
+        >
+          <View style={{ paddingHorizontal: 20 }}>
+            <View style={styles.logoContainer}>
+              <Image
+                source={require("../../../Assets/images/fordLogo.png")}
+                style={styles.logo}
+              />
+            </View>
 
-          {!loading ? (
-            <>
-              <TouchableOpacity
-                style={[styles2.bluebutton]}
-                onPress={handleConnectVehicle}
-                disabled={loading}
-              >
-                <Text style={styles2.submittext}>Connect to vehicle</Text>
-                <Image
-                  source={require("../../../Assets/images/sensorsIcon.png")}
-                  style={{ width: 25, height: 25, marginLeft: 5 }}
-                />
-              </TouchableOpacity>
-
-              <Text style={styles2.orText}>OR</Text>
-
-              <View style={styles.inputContainers}>
-                <Text style={styles2.label}>Enter VIN</Text>
-                <View style={styles.textInputContainer}>
-                  <TextInput
-                    style={styles2.input}
-                    placeholder="VIN"
-                    value={vin}
-                    onChangeText={handleVinChange}
-                    maxLength={17}
-                    returnKeyType="done"
-                    onSubmitEditing={handleVinSubmit}
+            {!loading ? (
+              <>
+                <TouchableOpacity
+                  style={[styles2.bluebutton]}
+                  onPress={handleConnectVehicle}
+                  disabled={loading}
+                >
+                  <Text style={styles2.submittext}>Connect to vehicle</Text>
+                  <Image
+                    source={require("../../../Assets/images/sensorsIcon.png")}
+                    style={{ width: 25, height: 25, marginLeft: 5 }}
                   />
-                  <TouchableOpacity
-                    disabled={vin?.length === 17 ? false : true}
-                    style={[
-                      vin?.length === 17
-                        ? styles.arrowButton
-                        : styles?.disbaledArrowButton,
-                    ]}
-                    onPress={handleVinSubmit}
-                  >
-                    <Text style={styles2.submittext}>Submit</Text>
-                  </TouchableOpacity>
+                </TouchableOpacity>
+
+                <Text style={styles2.orText}>OR</Text>
+
+                <View style={styles.inputContainers}>
+                  <Text style={styles2.label}>Enter VIN</Text>
+                  <View style={styles.textInputContainer}>
+                    <TextInput
+                      style={styles2.input}
+                      placeholder="VIN"
+                      value={vin}
+                      onChangeText={handleVinChange}
+                      maxLength={17}
+                      returnKeyType="done"
+                      onSubmitEditing={handleVinSubmit}
+                    />
+                    <TouchableOpacity
+                      disabled={vin?.length === 17 ? false : true}
+                      style={[
+                        vin?.length === 17
+                          ? styles.arrowButton
+                          : styles?.disbaledArrowButton,
+                      ]}
+                      onPress={handleVinSubmit}
+                    >
+                      <Text style={styles2.submittext}>Submit</Text>
+                    </TouchableOpacity>
+                  </View>
+                  <Text style={styles.vinDetails}>
+                    Has to be a 17 character alphanumeric
+                  </Text>
                 </View>
-                <Text style={styles.vinDetails}>
-                  Has to be a 17 character alphanumeric
-                </Text>
-              </View>
-            </>
-          ) : (
-            <Loader title="Connecting with vehicle..." />
-          )}
-        </View>
+              </>
+            ) : (
+              <Loader title="Connecting with vehicle..." />
+            )}
+          </View>
+        </ScrollView>
       </View>
-    </View>
+    </KeyboardAvoidingView>
   );
 };
 
