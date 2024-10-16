@@ -42,6 +42,7 @@ const ChatScreen: React.FC = () => {
   >({});
   const [modalVisible, setModalVisible] = useState<boolean>(true);
   const [displayVehicleInfo, setDisplayVehicleInfo] = useState<boolean>(true);
+  const [isChatIconDisable, setIsChatIconDisable] = useState<boolean>(true);
   const [accessToken, setAccessToken] = useState<string>("");
   const [vehicleInfo, setVehicleInfo] = useState<IVehicleInfo | null>(null); // Store vehicle information
   const [stepHistoryData, setStepHistoryData] = useState<
@@ -215,6 +216,7 @@ const ChatScreen: React.FC = () => {
   };
 
   const handleVinClose = async (vehicleData: IVehicleDetail) => {
+    setIsChatIconDisable(false);
     setStepHistoryData(undefined);
     setIsLoading(true);
     setModalVisible(false); // Close the modal
@@ -264,10 +266,12 @@ const ChatScreen: React.FC = () => {
           setMessages([]);
         }}
         beginNewChat={() => {
+          setIsChatIconDisable(true);
           modalVisible === false && setModalVisible(true);
           setStepHistoryData(undefined);
           setMessages([]);
         }}
+        isChatIconDisable={isChatIconDisable}
       />
       {!isLoading && displayVehicleInfo && (
         <RenderVehicleInfo

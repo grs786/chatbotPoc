@@ -60,6 +60,7 @@ export const styles = StyleSheet.create({
     textAlign: "center",
     textAlignVertical: "center",
   },
+  heightAdjuster:{ height: 300 },
   receiverIcon: {
     fontSize: 10,
     fontWeight: "600",

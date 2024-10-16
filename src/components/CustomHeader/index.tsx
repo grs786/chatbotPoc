@@ -8,12 +8,14 @@ const CustomHeader = ({
   containerStyle,
   beginNewChat,
   navigateToHome,
+  isChatIconDisable,
 }: {
   title: string;
   navigation: any;
   containerStyle?: any;
   beginNewChat?: () => void;
   navigateToHome?: () => void;
+  isChatIconDisable?: boolean;
 }) => {
   return (
     <View style={[styles.container, containerStyle]}>
@@ -27,10 +29,14 @@ const CustomHeader = ({
         <TouchableOpacity onPress={navigateToHome}>
           <Text style={styles.headertext}>{title ?? ""}</Text>
         </TouchableOpacity>
-        <TouchableOpacity onPress={beginNewChat}>
+        <TouchableOpacity onPress={beginNewChat} disabled={isChatIconDisable}>
           <Image
             source={require("../../Assets/images/editIcon.png")}
-            style={{ width: 25, height: 25 }}
+            style={{
+              width: 25,
+              height: 25,
+              tintColor: isChatIconDisable ? "grey" : undefined,
+            }}
           />
         </TouchableOpacity>
       </View>

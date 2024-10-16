@@ -7,8 +7,8 @@ export const useAudioRecorder = () => {
   const recordingSettings = {
     android: {
       extension: ".m4a",
-      outputFormat: 2, 
-      audioEncoder: 3, 
+      outputFormat: 2,
+      audioEncoder: 3,
       sampleRate: 44100,
       numberOfChannels: 2,
       bitRate: 128000,
@@ -23,6 +23,7 @@ export const useAudioRecorder = () => {
       linearPCMIsBigEndian: false,
       linearPCMIsFloat: false,
     },
+    web: {},
   };
 
   const startRecording = async () => {
@@ -37,7 +38,9 @@ export const useAudioRecorder = () => {
         playThroughEarpieceAndroid: false,
       });
 
-      const { recording } = await Audio.Recording.createAsync(recordingSettings);
+      const { recording } = await Audio.Recording.createAsync(
+        recordingSettings
+      );
       setRecording(recording);
     } catch (err) {
       console.error("Failed to start recording", err);

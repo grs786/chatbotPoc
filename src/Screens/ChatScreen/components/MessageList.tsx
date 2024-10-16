@@ -76,7 +76,7 @@ const MessageList: React.FC<IMessageListProps> = ({
   const scrollToNearEnd = () => {
     // Scroll to 100px above the bottom
     flatListRef.current?.scrollToOffset({
-      offset: flatListRef.current?.contentSize?.height + 100,
+      offset: flatListRef.current?.contentSize?.height - 300,
       animated: true,
     });
   };

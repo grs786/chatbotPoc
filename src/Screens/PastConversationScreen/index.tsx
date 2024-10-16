@@ -5,6 +5,7 @@ import {
   TextInput,
   TouchableOpacity,
   ScrollView,
+  RefreshControl,
 } from "react-native";
 import { MaterialIcons } from "@expo/vector-icons";
 import { styles } from "./styles";
@@ -126,7 +127,18 @@ const PastConversationsScreen = (
           onChangeText={setSearchText}
         />
       </View>
-      <ScrollView showsVerticalScrollIndicator={false} key={`${uuid()}`}>
+      <ScrollView
+        refreshControl={
+          <RefreshControl
+            refreshing={false}
+            onRefresh={() => {
+              initialSession();
+            }}
+          />
+        }
+        showsVerticalScrollIndicator={false}
+        key={`${uuid()}`}
+      >
         {/* Today's Chats Section */}
         {todayChats && todayChats?.length > 0 && (
           <View>
