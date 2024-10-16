@@ -19,7 +19,6 @@ import {
   IStepHistoryData,
 } from "src/Hooks/useChatOperations";
 import { IVehicleInfo } from "./types";
-import Apipath from "../../../environment";
 import RenderVehicleInfo from "./components/RenderVehicleInfo";
 import Loader from "src/components/Loader";
 import uuid from "uuid-random";
@@ -28,7 +27,6 @@ import StepHistory from "./components/HistoryMessageList";
 import { useImagePicker } from "src/Hooks/useImagePicker";
 import { useAudioRecorder } from "src/Hooks/useAudioRecorder";
 import CustomHeader from "src/components/CustomHeader";
-import Toast from "react-native-toast-message";
 
 const ChatScreen: React.FC = () => {
   const [messages, setMessages] = useState<IMessage[]>([]);
@@ -55,6 +53,11 @@ const ChatScreen: React.FC = () => {
   const navigation = useNavigation();
   const { recording, startRecording, stopRecording } = useAudioRecorder();
 
+  console.log(
+    process.env.SESSION_BASE_URL,
+    "SESSION_BASE_URLSESSION_BASE_URLSESSION_BASE_URL"
+  );
+
   const { createUserSession } = useUserSession();
   const { retreiveVehicleData } = useRetreiveVehicleData();
   const { fetchUserData } = useFetchUserData();
@@ -69,7 +72,7 @@ const ChatScreen: React.FC = () => {
     const data = await createUserSession();
 
     data?.access_token &&
-      (await setItem(Apipath.ACCESS_TOKEN, data?.access_token));
+      (await setItem(process.env.ACCESS_TOKEN ?? "", data?.access_token));
     setAccessToken(data?.access_token);
   };
 
@@ -123,7 +126,7 @@ const ChatScreen: React.FC = () => {
       // Call the API to get the response
       const chatParam = {
         accessToken,
-        vinNumber: Apipath.SAMPLE_VIN, // Adjust the vinNumber as needed
+        vinNumber: process.env.SAMPLE_VIN ?? "", // Adjust the vinNumber as needed
         question: inputText, // Send the user's question
       };
       // const uniqueID = uuid();
@@ -220,7 +223,7 @@ const ChatScreen: React.FC = () => {
       vinNumber:
         vehicleData?.vinNumber.length > 0
           ? vehicleData?.vinNumber
-          : Apipath.SAMPLE_VIN,
+          : process.env.SAMPLE_VIN ?? "",
     };
     const respData = await retreiveVehicleData(reqParam);
 
@@ -230,10 +233,13 @@ const ChatScreen: React.FC = () => {
     if (respData?.session_id) {
       setVehicleInfo({ ...respData?.vehicle?.vehicle_info, connected: true });
       setSessionID(respData?.session_id);
-      await setItem(Apipath.SESSION_ID, respData?.session_id);
+      await setItem(process.env.SESSION_ID ?? "", respData?.session_id);
 
-      const userData = await fetchUserData(Apipath.USER_MAIL, accessToken);
-      await setItem(Apipath.USER_ID, userData?.id);
+      const userData = await fetchUserData(
+        process.env.USER_MAIL ?? "",
+        accessToken
+      );
+      await setItem(process.env.USER_ID ?? "", userData?.id);
       setUserID(userData?.id);
       setUserIdentifier(userData?.identifier);
     } else {
@@ -332,7 +338,11 @@ const ChatScreen: React.FC = () => {
       {modalVisible && (
         <VehicleInfoModal visible={modalVisible} onClose={handleVinClose} />
       )}
-      {isLoading && <Loader />}
+      {isLoading && (
+        <View style={styles.loaderView}>
+          <Loader />
+        </View>
+      )}
     </SafeAreaView>
   );
 };
