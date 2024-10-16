@@ -24,12 +24,13 @@ export const styles = StyleSheet.create({
   scrollToBottomButton: {
     position: "absolute",
     right: "46%",
-    bottom: -10,
+    bottom: 4,
     padding: 8,
     backgroundColor: Colors.NAVYBLUE,
     borderRadius: 40,
     justifyContent: "center",
     alignItems: "center",
+    zIndex:1
   },
   messageContainer: {
     marginVertical: 5,
@@ -177,10 +178,10 @@ export const styles = StyleSheet.create({
     height: "100%",
     width: "100%",
     marginTop: "30%",
+    zIndex:4
   },
   vechilemodalContainer: {
     backgroundColor: "white",
-    // paddingVertical: 20,
     elevation: 10,
     height: "85%",
     width: "100%",

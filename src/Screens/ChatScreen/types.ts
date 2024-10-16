@@ -22,6 +22,7 @@ export interface Reactions {
 export interface IVehicle {
   vehicleInfo: IVehicleInfo;
   onPress: () => void;
+  onVehicleTabPress: () => void;
 }
 
 export interface IVehicleInfo {

@@ -15,10 +15,12 @@ export const styles = StyleSheet.create({
     shadowOpacity: 0.1,
     shadowRadius: 5,
     elevation: 3,
-    paddingTop:80
+    paddingTop:80,
+    height:"100%",
+    zIndex:2
   },
   content:{justifyContent:'center',paddingHorizontal:20,paddingTop:80},
-  keyboard: { paddingHorizontal: 10, marginVertical: 10 },
+  keyboard: { paddingHorizontal: 10,},
   loaderView:{
     position:"absolute",
     width:'100%',

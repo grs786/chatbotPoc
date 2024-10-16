@@ -257,7 +257,6 @@ const ChatScreen: React.FC = () => {
             ? setDisplayVehicleInfo(true)
             : setModalVisible(true);
           setStepHistoryData(undefined);
-          setMessages([]);
         }}
         beginNewChat={() => {
           setIsChatIconDisable(true);
@@ -273,6 +272,11 @@ const ChatScreen: React.FC = () => {
           onPress={() => {
             setDisplayVehicleInfo(false);
             setModalVisible(true);
+          }}
+          onVehicleTabPress={() => {
+            if (messages.length > 0) {
+              setDisplayVehicleInfo(false);
+            }
           }}
         />
       )}

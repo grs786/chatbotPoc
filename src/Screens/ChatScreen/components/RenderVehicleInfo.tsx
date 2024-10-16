@@ -2,14 +2,18 @@ import React from "react";
 import { Image, ScrollView, Text, TouchableOpacity, View } from "react-native";
 import { styles } from "../styles";
 import { Colors } from "src/Assets/colors";
-import { IVehicle} from "../types";
+import { IVehicle } from "../types";
 
 const RenderVehicleInfo: React.FC<IVehicle> = ({
   vehicleInfo,
   onPress,
+  onVehicleTabPress,
 }: IVehicle) => {
   return (
-    <ScrollView  contentContainerStyle={styles.content} keyboardShouldPersistTaps='handled' showsVerticalScrollIndicator={false}  style={styles.vehicleDetailsContainer}>
+    <ScrollView
+      contentContainerStyle={styles.content}
+      style={styles.vehicleDetailsContainer}
+    >
       <View style={styles.connectedHeader}>
         <View style={styles.vehicleRowView}>
           <Image
@@ -26,13 +30,17 @@ const RenderVehicleInfo: React.FC<IVehicle> = ({
         )}
       </View>
 
-      <View style={styles.vehicleInfo}>
+      <TouchableOpacity
+        style={styles.vehicleInfo}
+        activeOpacity={0.8}
+        onPress={onVehicleTabPress}
+      >
         <Text style={styles.vehicleModel}>
           {vehicleInfo?.modelyear}
           {vehicleInfo?.model}
         </Text>
         <Text style={styles.vinNumber}>{vehicleInfo?.vin}</Text>
-      </View>
+      </TouchableOpacity>
       <TouchableOpacity style={styles.viewDataButton}>
         <Text style={styles.viewDataText}>View Vehicle Data</Text>
       </TouchableOpacity>
