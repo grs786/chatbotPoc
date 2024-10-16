@@ -6,16 +6,17 @@ export const useUserSession = () => {
   const createUserSession = useCallback(async () => {
     try {
       const response = await post(
-        ApiPaths.AUTH_SESSION,
+        `${process.env.AUTH_SESSION}`,
         { ...ApiPaths.USERSESSION_BODY },
         {
           "Content-Type": "application/x-www-form-urlencoded",
         },
-        ApiPaths.SESSION_BASE_URL
+        `${process.env.SESSION_BASE_URL}`
       );
-
       return response;
     } catch (error: unknown) {
+      console.log(error, "errorerror");
+
       return error;
     }
   }, []);
@@ -32,12 +33,12 @@ export const useRetreiveVehicleData = () => {
       };
       try {
         const response = await post(
-          ApiPaths.RETRIVE_VEHICLE_INFO,
+          `${process.env.RETRIVE_VEHICLE_INFO}`,
           { ...bodyparam },
           {
             Authorization: `Bearer ${data?.accessToken}`,
           },
-          ApiPaths.BASE_URL
+          `${process.env.BASE_URL}`
         );
         return response;
       } catch (error: unknown) {
@@ -56,12 +57,12 @@ export const useFetchUserData = () => {
     async (UUID: string, access_token: string) => {
       try {
         const response = await get(
-          `${ApiPaths.USER_SESSION}${UUID}`,
+          `${process.env.USER_SESSION}${UUID}`,
           {},
           {
             Authorization: `Bearer ${access_token}`,
           },
-          ApiPaths.BASE_URL
+          `${process.env.BASE_URL}`
         );
         return response;
       } catch (error: unknown) {
@@ -96,12 +97,12 @@ export const useUpdateThreadData = () => {
 
     try {
       const response = await post(
-        ApiPaths.UPDATE_THREAD,
+        `${process.env.UPDATE_THREAD}`,
         { ...bodyParams },
         {
           Authorization: `Bearer ${data?.accessToken}`,
         },
-        ApiPaths.BASE_URL
+        `${process.env.BASE_URL}`
       );
 
       return response;
@@ -140,12 +141,12 @@ export const usePostChatData = () => {
 
     try {
       const response = await post(
-        ApiPaths.CHAT_API,
+        `${process.env.CHAT_API}`,
         { ...bodyParams },
         {
           Authorization: `Bearer ${data?.accessToken}`,
         },
-        ApiPaths.BASE_URL
+        `${process.env.BASE_URL}`
       );
 
       return response;
@@ -167,12 +168,12 @@ export const useFetchAllThreadData = () => {
 
       try {
         const response = await post(
-          ApiPaths.THREAD_LIST,
+          `${process.env.THREAD_LIST}`,
           { ...bodyParams },
           {
             Authorization: `Bearer ${accessToken}`,
           },
-          ApiPaths.BASE_URL
+          `${process.env.BASE_URL}`
         );
 
         return response;
@@ -213,12 +214,12 @@ export const useCreateUserStep = () => {
 
     try {
       const response = await post(
-        ApiPaths.CREATE_USERSTEP,
+        `${process.env.CREATE_USERSTEP}`,
         { ...bodyParams },
         {
           Authorization: `Bearer ${data?.accessToken}`,
         },
-        ApiPaths.BASE_URL
+        `${process.env.BASE_URL}`
       );
 
       return response;
@@ -278,12 +279,12 @@ export const useFetchThreadHistory = () => {
       const bodyParams = historyData;
       try {
         const response = await post(
-          ApiPaths.THREAD_HISTORY,
+          `${process.env.THREAD_HISTORY}`,
           { ...bodyParams },
           {
             Authorization: `Bearer ${accessToken}`,
           },
-          ApiPaths.BASE_URL
+          `${process.env.BASE_URL}`
         );
 
         return response;
@@ -311,12 +312,12 @@ export const useUpsertUserFeedback = () => {
       const bodyParams = feedback;
       try {
         const response = await post(
-          ApiPaths.USER_FEEBDACK,
+          `${process.env.USER_FEEBDACK}`,
           { ...bodyParams },
           {
             Authorization: `Bearer ${accessToken}`,
           },
-          ApiPaths.BASE_URL
+          `${process.env.BASE_URL}`
         );
 
         return response;

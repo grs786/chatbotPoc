@@ -243,5 +243,12 @@ export const styles = StyleSheet.create({
     paddingVertical:4,
     paddingLeft:2,
     marginTop:1
+  },
+  noResultFound:{
+    fontSize: 20,
+    fontWeight: "500",
+    color: Colors.BLACK,
+    alignSelf:"center",
+    marginTop:'40%'
   }
 });

@@ -12,7 +12,6 @@ import { styles } from "./styles";
 import { useFetchAllThreadData } from "src/Hooks/useChatOperations";
 import { NavigationProp, useNavigation } from "@react-navigation/native";
 import CustomHeader from "src/components/CustomHeader";
-import Apipath from "../../../environment";
 import { getItem } from "src/Utilities/StorageClasses";
 import Loader from "src/components/Loader";
 import { ApplicationStackParamList } from "src/types/navigation";
@@ -41,8 +40,8 @@ const PastConversationsScreen = (
   const { fetchAllThreadData } = useFetchAllThreadData();
 
   const initialSession = async () => {
-    const accessTokenId = await getItem(Apipath.ACCESS_TOKEN);
-    const user_Id = await getItem(Apipath.USER_ID);
+    const accessTokenId = await getItem(process.env.ACCESS_TOKEN ?? "");
+    const user_Id = await getItem(process.env.USER_ID ?? "");
 
     if (user_Id && accessTokenId) {
       setIsLoading(true);
@@ -92,11 +91,10 @@ const PastConversationsScreen = (
 
   const renderChatItem = (item: IChatHistory) => {
     return (
-      <View style={styles.chatItemContainer}>
+      <View key={uuid()} style={styles.chatItemContainer}>
         <TouchableOpacity
           style={styles.chatItem}
           onPress={() => {
-            console.log(item, "itemdhjdajhsdgasjhdgahjsdghj");
             navigation.navigate(`${SCREENS.ChatScreen}`, { itemData: item });
           }}
         >
@@ -137,7 +135,6 @@ const PastConversationsScreen = (
           />
         }
         showsVerticalScrollIndicator={false}
-        key={`${uuid()}`}
       >
         {/* Today's Chats Section */}
         {todayChats && todayChats?.length > 0 && (

@@ -6,14 +6,11 @@ import {
   Image,
   Keyboard,
   TouchableOpacity,
-  KeyboardAvoidingView,
-  Platform,
   ScrollView,
 } from "react-native";
 import { styles } from "./styles";
 import { styles as styles2 } from "../styles";
 import Loader from "src/components/Loader";
-import Apipath from "../../../../environment";
 export interface IVehicleDetail {
   model: string;
   vinNumber: string;
@@ -55,12 +52,12 @@ const VehicleInfoModal: React.FC<VehicleInfo> = ({ onClose, visible }) => {
       setLoading(false);
       setVehicleDetails({
         model: "2021 F-150",
-        vinNumber: vin ?? Apipath.SAMPLE_VIN,
+        vinNumber: vin ?? process.env.SAMPLE_VIN,
         connected: connectedViaButton,
       });
       onClose({
         model: "2021 F-150",
-        vinNumber: vin ?? Apipath.SAMPLE_VIN,
+        vinNumber: vin ?? process.env.SAMPLE_VIN,
         connected: connectedViaButton,
       });
     }, 2000);

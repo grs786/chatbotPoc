@@ -54,11 +54,6 @@ const ChatScreen: React.FC = () => {
   const navigation = useNavigation();
   const { recording, startRecording, stopRecording } = useAudioRecorder();
 
-  console.log(
-    process.env.SESSION_BASE_URL,
-    "SESSION_BASE_URLSESSION_BASE_URLSESSION_BASE_URL"
-  );
-
   const { createUserSession } = useUserSession();
   const { retreiveVehicleData } = useRetreiveVehicleData();
   const { fetchUserData } = useFetchUserData();
@@ -99,6 +94,7 @@ const ChatScreen: React.FC = () => {
   useEffect(() => {
     if (route?.params?.itemData) {
       setModalVisible(false);
+      setIsChatIconDisable(false);
       retreiveHistoryData(route?.params?.itemData);
     }
   }, [route]);
@@ -193,26 +189,28 @@ const ChatScreen: React.FC = () => {
   };
 
   const handleReaction = async (
-    messageId: string,
+    messageId: number,
     questionId: string | number,
     reaction: string,
-    value: number
+    value: number | undefined
   ) => {
-    setIsLoading(true);
-    setMessageReactions((prevReactions) => ({
-      ...prevReactions,
-      [messageId]: reaction,
-    }));
-    setSelectedMessageId(messageId);
-    const paramsBody = {
-      id: uuid(), // create from mobile_end uuid
-      forId: `${questionId}`, //QuestionID
-      value: value,
-      comment: "",
-    };
+    if (value) {
+      setIsLoading(true);
+      setMessageReactions((prevReactions) => ({
+        ...prevReactions,
+        [messageId]: reaction,
+      }));
+      setSelectedMessageId(messageId);
+      const paramsBody = {
+        id: uuid(), // create from mobile_end uuid
+        forId: `${questionId}`, //QuestionID
+        value: value,
+        comment: "",
+      };
 
-    const userFeedback = await upsertUserFeedback(paramsBody, accessToken);
-    setIsLoading(false);
+      const userFeedback = await upsertUserFeedback(paramsBody, accessToken);
+      setIsLoading(false);
+    }
   };
 
   const handleVinClose = async (vehicleData: IVehicleDetail) => {
@@ -229,10 +227,9 @@ const ChatScreen: React.FC = () => {
     };
     const respData = await retreiveVehicleData(reqParam);
 
-    console.log(JSON.stringify(respData, null, 2), "retreiveVehicleData");
-
     setIsLoading(false);
     if (respData?.session_id) {
+      setDisplayVehicleInfo(true);
       setVehicleInfo({ ...respData?.vehicle?.vehicle_info, connected: true });
       setSessionID(respData?.session_id);
       await setItem(process.env.SESSION_ID ?? "", respData?.session_id);
@@ -245,13 +242,8 @@ const ChatScreen: React.FC = () => {
       setUserID(userData?.id);
       setUserIdentifier(userData?.identifier);
     } else {
-      // Toast.show({
-      //   type: "error",
-      //   position: "bottom",
-      //   text1: "Invalid VIN entered. Please try again.",
-      // });
-      // alert("Vehicle not found");
       setModalVisible(true);
+      setIsChatIconDisable(true);
     }
   };
 
@@ -261,7 +253,9 @@ const ChatScreen: React.FC = () => {
         title="WSM Assistant"
         navigation={navigation}
         navigateToHome={() => {
-          setDisplayVehicleInfo(true);
+          vehicleInfo?.vin
+            ? setDisplayVehicleInfo(true)
+            : setModalVisible(true);
           setStepHistoryData(undefined);
           setMessages([]);
         }}

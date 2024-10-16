@@ -95,7 +95,6 @@ const MessageItem: React.FC<IMessageItemProps> = ({
               >
                 <TouchableOpacity
                   onPress={() => {
-                    console.log(item, "handle reactiondata");
                     handleReaction(item._id, item.question_id, "👍", 1);
                   }}
                 >

@@ -44,7 +44,6 @@ const MessageList: React.FC<IMessageListProps> = ({
 }) => {
   const renderMessage: ListRenderItem<IMessage> = ({ item }) => {
     const reaction = messageReactions[item._id];
-    console.log(item, "renderMessagerenderMessage");
     return (
       <MessageItem
         item={item}

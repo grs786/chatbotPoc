@@ -58,6 +58,9 @@ const StepHistory = memo(
       );
     };
 
+    if (filteredData.length === 0) {
+      return <Text style={styles.noResultFound}>No result found</Text>;
+    }
     return (
       <FlatList
         data={filteredData}
