@@ -251,5 +251,10 @@ export const styles = StyleSheet.create({
     color: Colors.BLACK,
     alignSelf:"center",
     marginTop:'40%'
+  },
+  messageReactionView:{
+    flexDirection: "row",
+    alignItems: "center",
+    paddingLeft: "20%",
   }
 });

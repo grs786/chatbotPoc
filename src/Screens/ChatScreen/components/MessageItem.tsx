@@ -121,17 +121,7 @@ const MessageItem: React.FC<IMessageItemProps> = ({
                   />
                 </TouchableOpacity>
 
-                <TouchableOpacity
-                  onPress={() => {
-                    handleReaction(
-                      item._id,
-                      item.question_id,
-                      "Copy",
-                      undefined
-                    ),
-                      copyToClipboard(item.text);
-                  }}
-                >
+                <TouchableOpacity onPress={() => copyToClipboard(item.text)}>
                   <Image
                     source={require("../../../Assets/images/copy.png")}
                     style={[styles.reactionText]}
