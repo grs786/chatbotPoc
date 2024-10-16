@@ -15,6 +15,7 @@ export const styles = StyleSheet.create({
     shadowOpacity: 0.1,
     shadowRadius: 5,
     elevation: 3,
+    paddingTop:80
   },
   content:{justifyContent:'center',paddingHorizontal:20,paddingTop:80},
   keyboard: { paddingHorizontal: 10, marginVertical: 10 },

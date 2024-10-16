@@ -4,22 +4,41 @@ import { Audio } from "expo-av";
 export const useAudioRecorder = () => {
   const [recording, setRecording] = useState<Audio.Recording | null>(null);
 
+  const recordingSettings = {
+    android: {
+      extension: ".m4a",
+      outputFormat: 2, 
+      audioEncoder: 3, 
+      sampleRate: 44100,
+      numberOfChannels: 2,
+      bitRate: 128000,
+    },
+    ios: {
+      extension: ".m4a",
+      audioQuality: Audio.IOSAudioQuality.HIGH,
+      sampleRate: 44100,
+      numberOfChannels: 2,
+      bitRate: 128000,
+      linearPCMBitDepth: 16,
+      linearPCMIsBigEndian: false,
+      linearPCMIsFloat: false,
+    },
+  };
+
   const startRecording = async () => {
     try {
-      const status = await Audio.requestPermissionsAsync();
-      if (status.granted) {
-        await Audio.setAudioModeAsync({
-          allowsRecordingIOS: true,
-          playsInSilentModeIOS: true,
-          shouldDuckAndroid: true,
-          playThroughEarpieceAndroid: false,
-        });
+      const { granted } = await Audio.requestPermissionsAsync();
+      if (!granted) throw new Error("Permission to access microphone denied");
 
-        const { recording } = await Audio.Recording.createAsync(
-          Audio.RECORDING_OPTIONS_PRESET_HIGH_QUALITY
-        );
-        setRecording(recording);
-      }
+      await Audio.setAudioModeAsync({
+        allowsRecordingIOS: true,
+        playsInSilentModeIOS: true,
+        shouldDuckAndroid: true,
+        playThroughEarpieceAndroid: false,
+      });
+
+      const { recording } = await Audio.Recording.createAsync(recordingSettings);
+      setRecording(recording);
     } catch (err) {
       console.error("Failed to start recording", err);
     }
