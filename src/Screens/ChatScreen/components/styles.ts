@@ -54,7 +54,7 @@ export const styles = StyleSheet.create({
     padding: 8,
   },
   senderIcon: {
-    fontSize: 14,
+    fontSize: 10,
     fontWeight: "600",
     color: Colors.NAVYBLUE,
     textAlign: "center",

@@ -2,18 +2,12 @@ import React, { memo } from "react";
 import { View, Text, FlatList, Dimensions, FlatListProps } from "react-native";
 import RenderHtml from "react-native-render-html";
 import { styles } from "./styles";
+import { IStepHistoryData } from "src/Hooks/useChatOperations";
 
 interface IStepHistory {
   id: string;
-  type: "assistant_message" | "user_message" | "undefined";
+  type: string | "assistant_message" | "user_message" | "undefined";
   output: string;
-}
-interface IStepHistoryData {
-  stepHistoryData: {
-    stepHistoryData: {
-      step_history: {};
-    };
-  };
 }
 
 interface IMessageBubble {
@@ -44,33 +38,35 @@ const MessageBubble = ({ name, content, isUser }: IMessageBubble) => (
   </View>
 );
 
-const StepHistory = memo((stepHistoryData: IStepHistoryData) => {
-  const filteredData = stepHistoryData?.stepHistoryData?.step_history?.filter(
-    (item: { type: string }) =>
-      item?.type === "user_message" || item?.type === "assistant_message"
-  );
+const StepHistory = memo(
+  (data: { itemID: string; stepHistoryData: IStepHistoryData }) => {
+    const filteredData = data?.stepHistoryData?.step_history?.filter(
+      (item: { type: string }) =>
+        item?.type === "user_message" || item?.type === "assistant_message"
+    );
 
-  const renderMessage: FlatListProps<IStepHistory>["renderItem"] = ({
-    item,
-  }) => {
-    let isUser: boolean = item.type === "user_message";
+    const renderMessage: FlatListProps<IStepHistory>["renderItem"] = ({
+      item,
+    }) => {
+      let isUser: boolean = item.type === "user_message";
+      return (
+        <MessageBubble
+          name={isUser ? USER_NAME : ASSISTANT_NAME}
+          content={item.output}
+          isUser={isUser}
+        />
+      );
+    };
+
     return (
-      <MessageBubble
-        name={isUser ? USER_NAME : ASSISTANT_NAME}
-        content={item.output}
-        isUser={isUser}
+      <FlatList
+        data={filteredData}
+        keyExtractor={(item) => item.id}
+        renderItem={renderMessage}
+        showsVerticalScrollIndicator={false}
       />
     );
-  };
-
-  return (
-    <FlatList
-      data={filteredData}
-      keyExtractor={(item) => item.id}
-      renderItem={renderMessage}
-      showsVerticalScrollIndicator={false}
-    />
-  );
-});
+  }
+);
 
 export default StepHistory;

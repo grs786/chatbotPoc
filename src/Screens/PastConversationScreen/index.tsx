@@ -8,14 +8,15 @@ import {
 } from "react-native";
 import { MaterialIcons } from "@expo/vector-icons";
 import { styles } from "./styles";
-import { useFetchAllThreadData } from "../../Hooks/useChatOperations";
-import { useNavigation } from "@react-navigation/native";
-import { SCREENS } from "../../Common/screens";
+import { useFetchAllThreadData } from "src/Hooks/useChatOperations";
+import { NavigationProp, useNavigation } from "@react-navigation/native";
 import CustomHeader from "src/components/CustomHeader";
 import Apipath from "../../../environment";
 import { getItem } from "src/Utilities/StorageClasses";
 import Loader from "src/components/Loader";
-
+import { ApplicationStackParamList } from "src/types/navigation";
+import uuid from "uuid-random";
+import { SCREENS } from "src/Common/screens";
 export interface IChatHistory {
   id: string;
   createdAt: string;
@@ -34,7 +35,8 @@ const PastConversationsScreen = (
   const [searchText, setSearchText] = useState("");
   const [chatHistory, setChatHistory] = useState<IChatHistory[]>();
   const [isLoading, setIsLoading] = useState<boolean>(false);
-  const navigation = useNavigation();
+  const navigation = useNavigation<NavigationProp<ApplicationStackParamList>>();
+
   const { fetchAllThreadData } = useFetchAllThreadData();
 
   const initialSession = async () => {
@@ -43,7 +45,10 @@ const PastConversationsScreen = (
 
     if (user_Id && accessTokenId) {
       setIsLoading(true);
-      const historyData = await fetchAllThreadData(user_Id, accessTokenId);
+      const historyData = await fetchAllThreadData(
+        `${user_Id}`,
+        `${accessTokenId}`
+      );
       setChatHistory(historyData?.history);
       setIsLoading(false);
     }
@@ -89,9 +94,10 @@ const PastConversationsScreen = (
       <View style={styles.chatItemContainer}>
         <TouchableOpacity
           style={styles.chatItem}
-          onPress={() =>
-            navigation.navigate(SCREENS.ChatScreen, { itemData: item })
-          }
+          onPress={() => {
+            console.log(item, "itemdhjdajhsdgasjhdgahjsdghj");
+            navigation.navigate(`${SCREENS.ChatScreen}`, { itemData: item });
+          }}
         >
           <MaterialIcons name="chat" size={22} color="gray" />
           <Text numberOfLines={1} style={styles.chatTitle}>
@@ -120,7 +126,7 @@ const PastConversationsScreen = (
           onChangeText={setSearchText}
         />
       </View>
-      <ScrollView showsVerticalScrollIndicator={false}>
+      <ScrollView showsVerticalScrollIndicator={false} key={`${uuid()}`}>
         {/* Today's Chats Section */}
         {todayChats && todayChats?.length > 0 && (
           <View>

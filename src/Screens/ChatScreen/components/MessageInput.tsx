@@ -7,11 +7,11 @@ import { Audio } from "expo-av";
 interface IMessageInputProps {
   inputText: string;
   setInputText: Dispatch<SetStateAction<string>>;
-  handleSend:any;
+  handleSend: any;
   pickImage: () => void;
-  recording?:Audio.Recording|null;
-  startRecording?: () => void;
-  stopRecording?: () => void;
+  recording?: Audio.Recording | null;
+  startRecording: () => void;
+  stopRecording: () => void;
 }
 
 const MessageInput = ({

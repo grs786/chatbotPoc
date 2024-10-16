@@ -15,7 +15,9 @@ export const useUserSession = () => {
       );
 
       return response;
-    } catch (error: any) {}
+    } catch (error: unknown) {
+      return error;
+    }
   }, []);
   return {
     createUserSession,
@@ -38,7 +40,9 @@ export const useRetreiveVehicleData = () => {
           ApiPaths.BASE_URL
         );
         return response;
-      } catch (error: any) {}
+      } catch (error: unknown) {
+        return error;
+      }
     },
     []
   );
@@ -60,7 +64,9 @@ export const useFetchUserData = () => {
           ApiPaths.BASE_URL
         );
         return response;
-      } catch (error: any) {}
+      } catch (error: unknown) {
+        return error;
+      }
     },
     []
   );
@@ -99,18 +105,26 @@ export const useUpdateThreadData = () => {
       );
 
       return response;
-    } catch (error: any) {}
+    } catch (error: unknown) {
+      return error;
+    }
   }, []);
   return {
     updateThreadData,
   };
 };
 
+interface IPostChatDataProps {
+  question: string;
+  vinNumber: string;
+  accessToken: string;
+}
+
 export const usePostChatData = () => {
-  const PostChatData = useCallback(async (data: any) => {
+  const PostChatData = useCallback(async (data: IPostChatDataProps) => {
     const bodyParams = {
-      question: `${data?.question}`,
-      VIN: `${data?.vinNumber}`,
+      question: `${data.question}`,
+      VIN: `${data.vinNumber}`,
       role: "user",
       session_id: "",
       question_id: "",
@@ -135,7 +149,9 @@ export const usePostChatData = () => {
       );
 
       return response;
-    } catch (error: any) {}
+    } catch (error: unknown) {
+      return error;
+    }
   }, []);
   return {
     PostChatData,
@@ -160,7 +176,9 @@ export const useFetchAllThreadData = () => {
         );
 
         return response;
-      } catch (error: any) {}
+      } catch (error: unknown) {
+        return error;
+      }
     },
     []
   );
@@ -204,14 +222,16 @@ export const useCreateUserStep = () => {
       );
 
       return response;
-    } catch (error: any) {}
+    } catch (error: unknown) {
+      return error;
+    }
   }, []);
   return {
     createUserStep,
   };
 };
 
-interface IFetchThreadHistory {
+export interface IFetchThreadHistory {
   history: [
     {
       id: string;
@@ -219,6 +239,35 @@ interface IFetchThreadHistory {
       name: string;
       userId: string;
       userIdentifier: string;
+    }
+  ];
+}
+
+export interface IStepHistoryData {
+  step_history: [
+    {
+      id: string;
+      name: string;
+      type: string;
+      threadId: string;
+      parentId: string;
+      disableFeedback: boolean;
+      streaming: boolean;
+      waitForAnswer: boolean;
+      isError: boolean;
+      input: string;
+      output: string;
+      createdAt: string;
+      start: string;
+      end: string;
+    }
+  ];
+  feedback_history: [
+    {
+      id: null;
+      forId: string;
+      value: null;
+      comment: string;
     }
   ];
 }
@@ -238,7 +287,9 @@ export const useFetchThreadHistory = () => {
         );
 
         return response;
-      } catch (error: any) {}
+      } catch (error: unknown) {
+        return error;
+      }
     },
     []
   );
@@ -269,7 +320,9 @@ export const useUpsertUserFeedback = () => {
         );
 
         return response;
-      } catch (error: any) {}
+      } catch (error: unknown) {
+        return error;
+      }
     },
     []
   );

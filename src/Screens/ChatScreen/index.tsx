@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from "react";
 import { SafeAreaView, KeyboardAvoidingView, View } from "react-native";
-import CustomHeader from "../../components/CustomHeader";
 import MessageList, { IMessage } from "./components/MessageList";
 import MessageInput from "./components/MessageInput";
 import { styles } from "./styles";
@@ -17,7 +16,8 @@ import {
   useCreateUserStep,
   useFetchThreadHistory,
   useUpsertUserFeedback,
-} from "../../Hooks/useChatOperations";
+  IStepHistoryData,
+} from "src/Hooks/useChatOperations";
 import { IVehicleInfo } from "./types";
 import Apipath from "../../../environment";
 import RenderVehicleInfo from "./components/RenderVehicleInfo";
@@ -25,8 +25,10 @@ import Loader from "src/components/Loader";
 import uuid from "uuid-random";
 import { setItem } from "src/Utilities/StorageClasses";
 import StepHistory from "./components/HistoryMessageList";
-import { useImagePicker } from "../../Hooks/useImagePicker";
-import { useAudioRecorder } from "../../Hooks/useAudioRecorder";
+import { useImagePicker } from "src/Hooks/useImagePicker";
+import { useAudioRecorder } from "src/Hooks/useAudioRecorder";
+import CustomHeader from "src/components/CustomHeader";
+import Toast from "react-native-toast-message";
 
 const ChatScreen: React.FC = () => {
   const [messages, setMessages] = useState<IMessage[]>([]);
@@ -44,7 +46,9 @@ const ChatScreen: React.FC = () => {
   const [displayVehicleInfo, setDisplayVehicleInfo] = useState<boolean>(true);
   const [accessToken, setAccessToken] = useState<string>("");
   const [vehicleInfo, setVehicleInfo] = useState<IVehicleInfo | null>(null); // Store vehicle information
-  const [stepHistoryData, setStepHistoryData] = useState(null); // Store vehicle information
+  const [stepHistoryData, setStepHistoryData] = useState<
+    IStepHistoryData | undefined
+  >(); // Store vehicle information
   const route =
     useRoute<RouteProp<{ params: { id?: string; itemData?: object } }>>();
 
@@ -74,6 +78,8 @@ const ChatScreen: React.FC = () => {
   }, []);
 
   const retreiveHistoryData = async (itemData: object) => {
+    setDisplayVehicleInfo(false);
+    setIsLoading(true);
     const historyData = {
       history: [
         {
@@ -83,6 +89,7 @@ const ChatScreen: React.FC = () => {
     };
     const historyRespVal = await fetchThreadHistory(historyData, accessToken);
     setStepHistoryData(historyRespVal);
+    setIsLoading(false);
   };
 
   useEffect(() => {
@@ -93,15 +100,21 @@ const ChatScreen: React.FC = () => {
   }, [route]);
 
   const handleSend = async () => {
+    setIsLoading(true);
     setDisplayVehicleInfo(false);
     setInputText("");
 
     if (inputText.trim()) {
-      const newMessage = {
+      const newMessage: IMessage = {
         _id: Math.random().toString(),
         text: inputText,
         createdAt: new Date(),
-        user: { _id: 1, name: "Tech" },
+        user: {
+          _id: 1,
+          name: "Tech",
+          fullname: "",
+        },
+        question_id: "",
       };
 
       // Update state with the new user message
@@ -126,10 +139,11 @@ const ChatScreen: React.FC = () => {
 
       try {
         const chatRespData = await PostChatData(chatParam); // Call the API
+        setIsLoading(false);
 
         // Parse the API response
         const parsedResponse = chatRespData;
-        const botMessage = {
+        const botMessage: IMessage = {
           _id: Math.random().toString(),
           text: parsedResponse.answer, // Use the answer from the API response
           question_id: parsedResponse.question_id,
@@ -175,11 +189,12 @@ const ChatScreen: React.FC = () => {
   };
 
   const handleReaction = async (
-    messageId: string | undefined,
+    messageId: string,
     questionId: string | number,
     reaction: string,
     value: number
   ) => {
+    setIsLoading(true);
     setMessageReactions((prevReactions) => ({
       ...prevReactions,
       [messageId]: reaction,
@@ -193,13 +208,13 @@ const ChatScreen: React.FC = () => {
     };
 
     const userFeedback = await upsertUserFeedback(paramsBody, accessToken);
+    setIsLoading(false);
   };
 
   const handleVinClose = async (vehicleData: IVehicleDetail) => {
-    setStepHistoryData(null);
+    setStepHistoryData(undefined);
     setIsLoading(true);
     setModalVisible(false); // Close the modal
-    // setVehicleInfo(vehicleData); // Set vehicle info from modal
     const reqParam = {
       accessToken: accessToken,
       vinNumber:
@@ -208,15 +223,28 @@ const ChatScreen: React.FC = () => {
           : Apipath.SAMPLE_VIN,
     };
     const respData = await retreiveVehicleData(reqParam);
-    setIsLoading(false);
-    setVehicleInfo({ ...respData?.vehicle?.vehicle_info, connected: true });
-    setSessionID(respData?.session_id);
-    await setItem(Apipath.SESSION_ID, respData?.session_id);
 
-    const userData = await fetchUserData(Apipath.USER_MAIL, accessToken);
-    await setItem(Apipath.USER_ID, userData?.id);
-    setUserID(userData?.id);
-    setUserIdentifier(userData?.identifier);
+    console.log(JSON.stringify(respData, null, 2), "retreiveVehicleData");
+
+    setIsLoading(false);
+    if (respData?.session_id) {
+      setVehicleInfo({ ...respData?.vehicle?.vehicle_info, connected: true });
+      setSessionID(respData?.session_id);
+      await setItem(Apipath.SESSION_ID, respData?.session_id);
+
+      const userData = await fetchUserData(Apipath.USER_MAIL, accessToken);
+      await setItem(Apipath.USER_ID, userData?.id);
+      setUserID(userData?.id);
+      setUserIdentifier(userData?.identifier);
+    } else {
+      // Toast.show({
+      //   type: "error",
+      //   position: "bottom",
+      //   text1: "Invalid VIN entered. Please try again.",
+      // });
+      // alert("Vehicle not found");
+      setModalVisible(true);
+    }
   };
 
   return (
@@ -224,10 +252,14 @@ const ChatScreen: React.FC = () => {
       <CustomHeader
         title="WSM Assistant"
         navigation={navigation}
-        navigateToHome={() => setDisplayVehicleInfo(true)}
+        navigateToHome={() => {
+          setDisplayVehicleInfo(true);
+          setStepHistoryData(undefined);
+          setMessages([]);
+        }}
         beginNewChat={() => {
           modalVisible === false && setModalVisible(true);
-          setStepHistoryData(null);
+          setStepHistoryData(undefined);
           setMessages([]);
         }}
       />
@@ -240,11 +272,10 @@ const ChatScreen: React.FC = () => {
           }}
         />
       )}
-      {isLoading && <Loader />}
 
       {stepHistoryData?.step_history ? (
         <View style={styles.historySteps}>
-          <StepHistory itemID = {"history"} stepHistoryData={stepHistoryData} />
+          <StepHistory itemID={"history"} stepHistoryData={stepHistoryData} />
         </View>
       ) : (
         <>
@@ -261,11 +292,16 @@ const ChatScreen: React.FC = () => {
               pickImage={async () => {
                 const uri = await pickImage();
                 if (uri) {
-                  const imageMessage = {
+                  const imageMessage: IMessage = {
                     _id: Math.random().toString(),
                     image: uri,
                     createdAt: new Date(),
-                    user: { _id: 1, name: "User" },
+                    user: {
+                      _id: 1,
+                      name: "User",
+                      fullname: "",
+                    },
+                    question_id: "",
                   };
                   setMessages((prev) => [...prev, imageMessage]);
                 }
@@ -275,11 +311,16 @@ const ChatScreen: React.FC = () => {
               stopRecording={async () => {
                 const uri = await stopRecording();
                 if (uri) {
-                  const audioMessage = {
+                  const audioMessage: IMessage = {
                     _id: Math.random().toString(),
                     audio: uri,
                     createdAt: new Date(),
-                    user: { _id: 1, name: "User" },
+                    user: {
+                      _id: 1,
+                      name: "User",
+                      fullname: "",
+                    },
+                    question_id: "",
                   };
                   setMessages((prev) => [...prev, audioMessage]);
                 }
@@ -291,6 +332,7 @@ const ChatScreen: React.FC = () => {
       {modalVisible && (
         <VehicleInfoModal visible={modalVisible} onClose={handleVinClose} />
       )}
+      {isLoading && <Loader />}
     </SafeAreaView>
   );
 };

@@ -13,21 +13,27 @@ import { styles } from "./styles";
 import { MaterialIcons } from "@expo/vector-icons";
 
 export interface IMessage {
-  _id: string | number;
+  _id: string;
   text?: string;
   image?: string;
   audio?: string;
+  createdAt: string | Date;
+  question_id: string;
   user: {
     _id: number;
     name: string;
-    fullname: string;
+    fullname?: string;
   };
-  createdAt: string;
 }
 
 interface IMessageListProps {
   messages: IMessage[];
-  handleReaction: (messageId: string | number, reaction: string) => void;
+  handleReaction: (
+    messageId: number,
+    question_id: number,
+    reaction: string,
+    value: number | undefined
+  ) => void;
   messageReactions: { [key: string]: string };
 }
 
@@ -70,11 +76,11 @@ const MessageList: React.FC<IMessageListProps> = ({
   const scrollToNearEnd = () => {
     // Scroll to 100px above the bottom
     flatListRef.current?.scrollToOffset({
-      offset: flatListRef.current?.contentSize?.height - 100,
+      offset: flatListRef.current?.contentSize?.height + 100,
       animated: true,
     });
   };
-  console.log(messages, "messagesmessagesmessages");
+
   return (
     <View style={{ flex: 1 }}>
       <FlatList

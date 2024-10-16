@@ -1,10 +1,11 @@
-import axios, { AxiosError } from "axios";
+import axios from "axios";
+import Toast from "react-native-toast-message";
 
 // Create an instance of Axios with default settings
 const createApiInstance = (baseURL: string) => {
   return axios.create({
     baseURL,
-    timeout: 100000, // Set a timeout (optional)
+    timeout: 1000 * 60 * 2, // Set a timeout (optional) chat api takes lot of time thats why we have added higher timeout time
     headers: {
       "Content-Type": "application/json", // Default content type
       // Add other default headers here
@@ -92,23 +93,38 @@ const handleError = (error: unknown) => {
     // Check if the error is an AxiosError
     if (error.response) {
       // Server responded with a status other than 200 range
-      console.error(
-        "Error response:",
-        JSON.stringify(error.response.data, null, 2)
-      );
+
+      Toast.show({
+        type: "error",
+        position: "bottom",
+        text1: `${error.response.data?.detail}`,
+      });
       throw new Error(error.response.data.message || "An error occurred");
     } else if (error.request) {
       // Request was made but no response received
-      console.error("Error request:", error.request);
+
+      Toast.show({
+        type: "error",
+        position: "bottom",
+        text1: `No response received from the server`,
+      });
       throw new Error("No response received from the server");
     } else {
+      Toast.show({
+        type: "error",
+        position: "bottom",
+        text1: `${error.message}`,
+      });
       // Something happened in setting up the request
-      console.error("Error message:", error.message);
       throw new Error(error.message);
     }
   } else {
     // If it's not an Axios error
-    console.error("Unknown error:", error);
+    Toast.show({
+      type: "error",
+      position: "bottom",
+      text1: `An unknown error occurred`,
+    });
     throw new Error("An unknown error occurred");
   }
 };

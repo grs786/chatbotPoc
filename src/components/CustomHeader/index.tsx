@@ -11,9 +11,9 @@ const CustomHeader = ({
 }: {
   title: string;
   navigation: any;
-  containerStyle?: undefined;
-  beginNewChat: () => void;
-  navigateToHome: () => void;
+  containerStyle?: any;
+  beginNewChat?: () => void;
+  navigateToHome?: () => void;
 }) => {
   return (
     <View style={[styles.container, containerStyle]}>
