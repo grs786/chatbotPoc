@@ -24,12 +24,13 @@ export const styles = StyleSheet.create({
   scrollToBottomButton: {
     position: "absolute",
     right: "46%",
-    bottom: -10,
+    bottom: 4,
     padding: 8,
     backgroundColor: Colors.NAVYBLUE,
     borderRadius: 40,
     justifyContent: "center",
     alignItems: "center",
+    zIndex:1
   },
   messageContainer: {
     marginVertical: 5,
@@ -60,6 +61,7 @@ export const styles = StyleSheet.create({
     textAlign: "center",
     textAlignVertical: "center",
   },
+  heightAdjuster:{ height: 300 },
   receiverIcon: {
     fontSize: 10,
     fontWeight: "600",
@@ -176,10 +178,10 @@ export const styles = StyleSheet.create({
     height: "100%",
     width: "100%",
     marginTop: "30%",
+    zIndex:4
   },
   vechilemodalContainer: {
     backgroundColor: "white",
-    // paddingVertical: 20,
     elevation: 10,
     height: "85%",
     width: "100%",
@@ -242,5 +244,12 @@ export const styles = StyleSheet.create({
     paddingVertical:4,
     paddingLeft:2,
     marginTop:1
+  },
+  noResultFound:{
+    fontSize: 20,
+    fontWeight: "500",
+    color: Colors.BLACK,
+    alignSelf:"center",
+    marginTop:'40%'
   }
 });

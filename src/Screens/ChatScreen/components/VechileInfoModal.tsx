@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useRef, useState } from "react";
 import {
   View,
   Text,
@@ -6,14 +6,11 @@ import {
   Image,
   Keyboard,
   TouchableOpacity,
-  KeyboardAvoidingView,
-  Platform,
   ScrollView,
 } from "react-native";
 import { styles } from "./styles";
 import { styles as styles2 } from "../styles";
 import Loader from "src/components/Loader";
-import Apipath from "../../../../environment";
 export interface IVehicleDetail {
   model: string;
   vinNumber: string;
@@ -28,12 +25,14 @@ export interface VehicleInfo {
 const VehicleInfoModal: React.FC<VehicleInfo> = ({ onClose, visible }) => {
   const [vin, setVin] = useState<string>("");
   const [loading, setLoading] = useState<boolean>(false);
+  const [showKeyboard, setShowKeyboard] = useState<boolean>(false);
   const [connectedViaButton, setConnectedViaButton] = useState<boolean>(true);
   const [vehicleDetails, setVehicleDetails] = useState<{
     model: string;
     vinNumber: string;
     connected: boolean;
   } | null>(null);
+  const scrollRef = useRef<ScrollView | null>(null);
 
   const handleVinChange = (value: string) => {
     setVin(value);
@@ -53,12 +52,12 @@ const VehicleInfoModal: React.FC<VehicleInfo> = ({ onClose, visible }) => {
       setLoading(false);
       setVehicleDetails({
         model: "2021 F-150",
-        vinNumber: vin ?? Apipath.SAMPLE_VIN,
+        vinNumber: vin ?? process.env.SAMPLE_VIN,
         connected: connectedViaButton,
       });
       onClose({
         model: "2021 F-150",
-        vinNumber: vin ?? Apipath.SAMPLE_VIN,
+        vinNumber: vin ?? process.env.SAMPLE_VIN,
         connected: connectedViaButton,
       });
     }, 2000);
@@ -78,15 +77,11 @@ const VehicleInfoModal: React.FC<VehicleInfo> = ({ onClose, visible }) => {
   };
 
   return (
-    <KeyboardAvoidingView
-      behavior={Platform.OS === "ios" ? "padding" : undefined}
-      style={styles.modalBackground}
-      keyboardVerticalOffset={180}
-    >
+    <View style={styles.modalBackground}>
       <View style={styles.vechilemodalContainer}>
         <ScrollView
-        style={{marginBottom:50,}}
-          contentContainerStyle={{ flexGrow: 1}}
+          ref={scrollRef}
+          contentContainerStyle={{ flexGrow: 1 }}
           keyboardShouldPersistTaps="handled"
           bounces
         >
@@ -125,6 +120,12 @@ const VehicleInfoModal: React.FC<VehicleInfo> = ({ onClose, visible }) => {
                       maxLength={17}
                       returnKeyType="done"
                       onSubmitEditing={handleVinSubmit}
+                      onFocus={() =>
+                        scrollRef.current?.scrollTo({ y: 300, animated: true })
+                      }
+                      onBlur={() =>
+                        scrollRef.current?.scrollTo({ y: 0, animated: true })
+                      }
                     />
                     <TouchableOpacity
                       disabled={vin?.length === 17 ? false : true}
@@ -142,6 +143,8 @@ const VehicleInfoModal: React.FC<VehicleInfo> = ({ onClose, visible }) => {
                     Has to be a 17 character alphanumeric
                   </Text>
                 </View>
+
+                <View style={styles.heightAdjuster} />
               </>
             ) : (
               <Loader title="Connecting with vehicle..." />
@@ -149,7 +152,7 @@ const VehicleInfoModal: React.FC<VehicleInfo> = ({ onClose, visible }) => {
           </View>
         </ScrollView>
       </View>
-    </KeyboardAvoidingView>
+    </View>
   );
 };
 

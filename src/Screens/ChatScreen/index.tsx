@@ -19,7 +19,6 @@ import {
   IStepHistoryData,
 } from "src/Hooks/useChatOperations";
 import { IVehicleInfo } from "./types";
-import Apipath from "../../../environment";
 import RenderVehicleInfo from "./components/RenderVehicleInfo";
 import Loader from "src/components/Loader";
 import uuid from "uuid-random";
@@ -45,6 +44,7 @@ const ChatScreen: React.FC = () => {
   >({});
   const [modalVisible, setModalVisible] = useState<boolean>(false);
   const [displayVehicleInfo, setDisplayVehicleInfo] = useState<boolean>(true);
+  const [isChatIconDisable, setIsChatIconDisable] = useState<boolean>(true);
   const [accessToken, setAccessToken] = useState<string>("");
   const [vehicleInfo, setVehicleInfo] = useState<IVehicleInfo | null>(null); // Store vehicle information
   const [stepHistoryData, setStepHistoryData] = useState<
@@ -70,7 +70,7 @@ const ChatScreen: React.FC = () => {
     const data = await createUserSession();
 
     data?.access_token &&
-      (await setItem(Apipath.ACCESS_TOKEN, data?.access_token));
+      (await setItem(process.env.ACCESS_TOKEN ?? "", data?.access_token));
     setAccessToken(data?.access_token);
   };
 
@@ -96,6 +96,7 @@ const ChatScreen: React.FC = () => {
   useEffect(() => {
     if (route?.params?.itemData) {
       setModalVisible(false);
+      setIsChatIconDisable(false);
       retreiveHistoryData(route?.params?.itemData);
     }
   }, [route]);
@@ -124,7 +125,7 @@ const ChatScreen: React.FC = () => {
       // Call the API to get the response
       const chatParam = {
         accessToken,
-        vinNumber: Apipath.SAMPLE_VIN, // Adjust the vinNumber as needed
+        vinNumber: process.env.SAMPLE_VIN ?? "", // Adjust the vinNumber as needed
         question: inputText, // Send the user's question
       };
       // const uniqueID = uuid();
@@ -163,9 +164,9 @@ const ChatScreen: React.FC = () => {
             type: "user_message", //user_message, assistant_message
             threadId: sessionId, //sessionID
             parentId: chatRespData.question_id, //questionID
-            disableFeedback: true,
+            disableFeedback: false,
             streaming: false,
-            waitForAnswer: true,
+            waitForAnswer: false,
             isError: true,
             input: inputText, // user Question
             output: chatRespData?.answer, // chatbot answer + source json Stringify
@@ -190,29 +191,32 @@ const ChatScreen: React.FC = () => {
   };
 
   const handleReaction = async (
-    messageId: string,
+    messageId: number,
     questionId: string | number,
     reaction: string,
-    value: number
+    value: number | undefined
   ) => {
-    setIsLoading(true);
-    setMessageReactions((prevReactions) => ({
-      ...prevReactions,
-      [messageId]: reaction,
-    }));
-    setSelectedMessageId(messageId);
-    const paramsBody = {
-      id: uuid(), // create from mobile_end uuid
-      forId: `${questionId}`, //QuestionID
-      value: value,
-      comment: "",
-    };
+    if (value) {
+      setIsLoading(true);
+      setMessageReactions((prevReactions) => ({
+        ...prevReactions,
+        [messageId]: reaction,
+      }));
+      setSelectedMessageId(messageId);
+      const paramsBody = {
+        id: uuid(), // create from mobile_end uuid
+        forId: `${questionId}`, //QuestionID
+        value: value,
+        comment: "",
+      };
 
-    const userFeedback = await upsertUserFeedback(paramsBody, accessToken);
-    setIsLoading(false);
+      const userFeedback = await upsertUserFeedback(paramsBody, accessToken);
+      setIsLoading(false);
+    }
   };
 
   const handleVinClose = async (vehicleData: IVehicleDetail) => {
+    setIsChatIconDisable(false);
     setStepHistoryData(undefined);
     setIsLoading(true);
     setModalVisible(false); // Close the modal
@@ -221,30 +225,27 @@ const ChatScreen: React.FC = () => {
       vinNumber:
         vehicleData?.vinNumber.length > 0
           ? vehicleData?.vinNumber
-          : Apipath.SAMPLE_VIN,
+          : process.env.SAMPLE_VIN ?? "",
     };
     const respData = await retreiveVehicleData(reqParam);
 
-    console.log(JSON.stringify(respData, null, 2), "retreiveVehicleData");
-
     setIsLoading(false);
     if (respData?.session_id) {
+      setDisplayVehicleInfo(true);
       setVehicleInfo({ ...respData?.vehicle?.vehicle_info, connected: true });
       setSessionID(respData?.session_id);
-      await setItem(Apipath.SESSION_ID, respData?.session_id);
+      await setItem(process.env.SESSION_ID ?? "", respData?.session_id);
 
-      const userData = await fetchUserData(Apipath.USER_MAIL, accessToken);
-      await setItem(Apipath.USER_ID, userData?.id);
+      const userData = await fetchUserData(
+        process.env.USER_MAIL ?? "",
+        accessToken
+      );
+      await setItem(process.env.USER_ID ?? "", userData?.id);
       setUserID(userData?.id);
       setUserIdentifier(userData?.identifier);
     } else {
-      // Toast.show({
-      //   type: "error",
-      //   position: "bottom",
-      //   text1: "Invalid VIN entered. Please try again.",
-      // });
-      // alert("Vehicle not found");
       setModalVisible(true);
+      setIsChatIconDisable(true);
     }
   };
 
@@ -254,15 +255,18 @@ const ChatScreen: React.FC = () => {
         title="WSM Assistant"
         navigation={navigation}
         navigateToHome={() => {
-          setDisplayVehicleInfo(true);
+          vehicleInfo?.vin
+            ? setDisplayVehicleInfo(true)
+            : setModalVisible(true);
           setStepHistoryData(undefined);
-          setMessages([]);
         }}
         beginNewChat={() => {
+          setIsChatIconDisable(true);
           modalVisible === false && setModalVisible(true);
           setStepHistoryData(undefined);
           setMessages([]);
         }}
+        isChatIconDisable={isChatIconDisable}
       />
       {/* {!isLoading && displayVehicleInfo && (
         <RenderVehicleInfo
@@ -270,6 +274,11 @@ const ChatScreen: React.FC = () => {
           onPress={() => {
             setDisplayVehicleInfo(false);
             setModalVisible(true);
+          }}
+          onVehicleTabPress={() => {
+            if (messages.length > 0) {
+              setDisplayVehicleInfo(false);
+            }
           }}
         />
       )} */}
@@ -334,7 +343,11 @@ const ChatScreen: React.FC = () => {
       {modalVisible && (
         <VehicleInfoModal visible={modalVisible} onClose={handleVinClose} />
       )}
-      {isLoading && <Loader />}
+      {isLoading && (
+        <View style={styles.loaderView}>
+          <Loader />
+        </View>
+      )}
     </SafeAreaView>
   );
 };

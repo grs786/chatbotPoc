@@ -44,7 +44,6 @@ const MessageList: React.FC<IMessageListProps> = ({
 }) => {
   const renderMessage: ListRenderItem<IMessage> = ({ item }) => {
     const reaction = messageReactions[item._id];
-    console.log(item, "renderMessagerenderMessage");
     return (
       <MessageItem
         item={item}
@@ -73,10 +72,10 @@ const MessageList: React.FC<IMessageListProps> = ({
     flatListRef.current?.scrollToEnd({ animated: true });
   };
 
-  const scrollToNearEnd = () => {
+  const scrollToNearEnd = (scrollheight: number) => {
     // Scroll to 100px above the bottom
     flatListRef.current?.scrollToOffset({
-      offset: flatListRef.current?.contentSize?.height + 100,
+      offset: scrollheight - 200,
       animated: true,
     });
   };
@@ -90,11 +89,13 @@ const MessageList: React.FC<IMessageListProps> = ({
         contentContainerStyle={styles.messageList}
         showsVerticalScrollIndicator={false}
         ref={flatListRef}
-        onContentSizeChange={() => {
+        onContentSizeChange={(width, height) => {
+          console.log("Content height:", height); // Now you know the total height of the content
+
           if (messages[messages.length - 1]?.user._id === 1) {
             flatListRef.current?.scrollToEnd({ animated: true });
           } else {
-            scrollToNearEnd();
+            scrollToNearEnd(height);
           }
         }}
         onScroll={handleScroll}
