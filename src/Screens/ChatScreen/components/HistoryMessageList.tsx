@@ -34,7 +34,7 @@ interface IMessageBubble {
   content: string;
   isUser: boolean;
   isThumbsUp: boolean;
-  isThumbsDown:boolean
+  isThumbsDown: boolean;
 }
 
 const contentWidth = Dimensions.get("window").width * 0.5;
@@ -45,7 +45,13 @@ const copyToClipboard = async (text: string) => {
   await Clipboard.setStringAsync(text);
 };
 
-const MessageBubble = ({ name, content, isUser, isThumbsUp,isThumbsDown }: IMessageBubble) => (
+const MessageBubble = ({
+  name,
+  content,
+  isUser,
+  isThumbsUp,
+  isThumbsDown,
+}: IMessageBubble) => (
   <View style={isUser ? styles.messageContainer : styles.rmessageContainer}>
     <View
       style={
@@ -62,13 +68,7 @@ const MessageBubble = ({ name, content, isUser, isThumbsUp,isThumbsDown }: IMess
       </View>
 
       {!isUser && (
-        <View
-          style={{
-            flexDirection: "row",
-            alignItems: "center",
-            paddingLeft: "20%",
-          }}
-        >
+        <View style={styles.messageReactionView}>
           <Image
             source={require("../../../Assets/images/thumbup.png")}
             style={[
@@ -79,7 +79,7 @@ const MessageBubble = ({ name, content, isUser, isThumbsUp,isThumbsDown }: IMess
 
           <Image
             source={require("../../../Assets/images/thumbdown.png")}
-            style={[styles.reactionText, isThumbsDown && styles.tintcolor, ]}
+            style={[styles.reactionText, isThumbsDown && styles.tintcolor]}
           />
 
           <TouchableOpacity onPress={() => copyToClipboard(content)}>
@@ -104,49 +104,75 @@ const StepHistory = memo(
   }) => {
     const { step_history, feedback_history } = stepHistoryData;
 
-  const getThumbsUpStatus = (messageId: string) => {
-    const feedback = feedback_history.find((fb) => fb.forId === messageId);
-    return feedback?.value === 1;
-  };
-  const getThumbsDownStatus = (messageId: string) => {
-    const feedback = feedback_history.find((fb) => fb.forId === messageId);
-    return feedback?.value === 0;
-  };
+    const getThumbsUpStatus = (messageId: string) => {
+      const feedback = feedback_history.find((fb) => fb.forId === messageId);
+      return feedback?.value === 1;
+    };
+    const getThumbsDownStatus = (messageId: string) => {
+      const feedback = feedback_history.find((fb) => fb.forId === messageId);
+      return feedback?.value === 0;
+    };
 
     const filteredData = step_history.filter(
       (item) =>
         item.type === "user_message" || item.type === "assistant_message"
     );
 
-  const renderMessage: FlatListProps<IStepHistory>["renderItem"] = ({ item }) => {
-    const isUser = item.type === "user_message";
-    const isThumbsUp = getThumbsUpStatus(item?.id);
-    const isThumbsDown =getThumbsDownStatus(item?.id)
+    const renderMessage: FlatListProps<IStepHistory>["renderItem"] = ({
+      item,
+    }) => {
+      const isUser = item.type === "user_message";
+      const isThumbsUp = getThumbsUpStatus(item?.id);
+      const isThumbsDown = getThumbsDownStatus(item?.id);
 
-    if (isUser) {
-      if (item.input === null) {
-        // Treat as user message with null input
-        return <MessageBubble name={USER_NAME} content={item.output} isUser={true} isThumbsUp={false} isThumbsDown={false} />;
+      if (isUser) {
+        if (item.input === null) {
+          // Treat as user message with null input
+          return (
+            <MessageBubble
+              name={USER_NAME}
+              content={item.output}
+              isUser={true}
+              isThumbsUp={false}
+              isThumbsDown={false}
+            />
+          );
+        } else {
+          // Split user input and bot output
+          return (
+            <>
+              <MessageBubble
+                name={USER_NAME}
+                content={item.input}
+                isUser={true}
+                isThumbsUp={false}
+                isThumbsDown={false}
+              />
+              <MessageBubble
+                name={ASSISTANT_NAME}
+                content={item.output}
+                isUser={false}
+                isThumbsUp={isThumbsUp}
+                isThumbsDown={false}
+              />
+            </>
+          );
+        }
       } else {
         // Assistant message
         return (
-          <>
-            <MessageBubble name={USER_NAME} content={item.input} isUser={true} isThumbsUp={false} isThumbsDown={false} />
-            <MessageBubble name={ASSISTANT_NAME} content={item.output} isUser={false} isThumbsUp={isThumbsUp}  isThumbsDown={false}/>
-          </>
+          <MessageBubble
+            name={ASSISTANT_NAME}
+            content={item.output}
+            isUser={false}
+            isThumbsUp={isThumbsUp}
+            isThumbsDown={isThumbsDown}
+          />
         );
       }
-    } else {
-      // Assistant message
-      return (
-        <MessageBubble
-          name={ASSISTANT_NAME}
-          content={item.output}
-          isUser={false}
-          isThumbsUp={isThumbsUp}
-          isThumbsDown={isThumbsDown}
-        />
-      );
+    };
+    if (filteredData.length === 0) {
+      return <Text style={styles.noResultFound}>No result found</Text>;
     }
 
     return (
