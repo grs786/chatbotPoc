@@ -15,8 +15,6 @@ export const useUserSession = () => {
       );
       return response;
     } catch (error: unknown) {
-      console.log(error, "errorerror");
-
       return error;
     }
   }, []);

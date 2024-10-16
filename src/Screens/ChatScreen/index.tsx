@@ -162,9 +162,9 @@ const ChatScreen: React.FC = () => {
             type: "user_message", //user_message, assistant_message
             threadId: sessionId, //sessionID
             parentId: chatRespData.question_id, //questionID
-            disableFeedback: true,
+            disableFeedback: false,
             streaming: false,
-            waitForAnswer: true,
+            waitForAnswer: false,
             isError: true,
             input: inputText, // user Question
             output: chatRespData?.answer, // chatbot answer + source json Stringify
