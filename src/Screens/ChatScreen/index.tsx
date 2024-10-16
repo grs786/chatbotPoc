@@ -29,6 +29,7 @@ import { useImagePicker } from "src/Hooks/useImagePicker";
 import { useAudioRecorder } from "src/Hooks/useAudioRecorder";
 import CustomHeader from "src/components/CustomHeader";
 import Toast from "react-native-toast-message";
+import stephistoryData from './components/stephis.json'
 
 const ChatScreen: React.FC = () => {
   const [messages, setMessages] = useState<IMessage[]>([]);
@@ -42,7 +43,7 @@ const ChatScreen: React.FC = () => {
   const [messageReactions, setMessageReactions] = useState<
     Record<string, string>
   >({});
-  const [modalVisible, setModalVisible] = useState<boolean>(true);
+  const [modalVisible, setModalVisible] = useState<boolean>(false);
   const [displayVehicleInfo, setDisplayVehicleInfo] = useState<boolean>(true);
   const [accessToken, setAccessToken] = useState<string>("");
   const [vehicleInfo, setVehicleInfo] = useState<IVehicleInfo | null>(null); // Store vehicle information
@@ -263,7 +264,7 @@ const ChatScreen: React.FC = () => {
           setMessages([]);
         }}
       />
-      {!isLoading && displayVehicleInfo && (
+      {/* {!isLoading && displayVehicleInfo && (
         <RenderVehicleInfo
           vehicleInfo={vehicleInfo}
           onPress={() => {
@@ -271,9 +272,10 @@ const ChatScreen: React.FC = () => {
             setModalVisible(true);
           }}
         />
-      )}
+      )} */}
+      <StepHistory stepHistoryData={stephistoryData}/>
 
-      {stepHistoryData?.step_history ? (
+      {/* {stepHistoryData?.step_history ? (
         <View style={styles.historySteps}>
           <StepHistory itemID={"history"} stepHistoryData={stepHistoryData} />
         </View>
@@ -328,7 +330,7 @@ const ChatScreen: React.FC = () => {
             />
           </KeyboardAvoidingView>
         </>
-      )}
+      )} */}
       {modalVisible && (
         <VehicleInfoModal visible={modalVisible} onClose={handleVinClose} />
       )}
