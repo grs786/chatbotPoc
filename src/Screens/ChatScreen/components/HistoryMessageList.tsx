@@ -34,6 +34,7 @@ interface IMessageBubble {
   content: string;
   isUser: boolean;
   isThumbsUp: boolean;
+  isThumbsDown: boolean;
 }
 
 const contentWidth = Dimensions.get("window").width * 0.5;
@@ -49,6 +50,7 @@ const MessageBubble = ({
   content,
   isUser,
   isThumbsUp,
+  isThumbsDown,
 }: IMessageBubble) => (
   <View style={isUser ? styles.messageContainer : styles.rmessageContainer}>
     <View
@@ -66,7 +68,13 @@ const MessageBubble = ({
       </View>
 
       {!isUser && (
-        <View style={styles.messageReactionView}>
+        <View
+          style={{
+            flexDirection: "row",
+            alignItems: "center",
+            paddingLeft: "20%",
+          }}
+        >
           <Image
             source={require("../../../Assets/images/thumbup.png")}
             style={[
@@ -77,7 +85,7 @@ const MessageBubble = ({
 
           <Image
             source={require("../../../Assets/images/thumbdown.png")}
-            style={[styles.reactionText]}
+            style={[styles.reactionText, isThumbsDown && styles.tintcolor]}
           />
 
           <TouchableOpacity onPress={() => copyToClipboard(content)}>
@@ -106,6 +114,10 @@ const StepHistory = memo(
       const feedback = feedback_history.find((fb) => fb.forId === messageId);
       return feedback?.value === 1;
     };
+    const getThumbsDownStatus = (messageId: string) => {
+      const feedback = feedback_history.find((fb) => fb.forId === messageId);
+      return feedback?.value === 0;
+    };
 
     const filteredData = step_history.filter(
       (item) =>
@@ -116,7 +128,8 @@ const StepHistory = memo(
       item,
     }) => {
       const isUser = item.type === "user_message";
-      const isThumbsUp = getThumbsUpStatus(item.id);
+      const isThumbsUp = getThumbsUpStatus(item?.id);
+      const isThumbsDown = getThumbsDownStatus(item?.id);
 
       if (isUser) {
         if (item.input === null) {
@@ -127,6 +140,7 @@ const StepHistory = memo(
               content={item.output}
               isUser={true}
               isThumbsUp={false}
+              isThumbsDown={false}
             />
           );
         } else {
@@ -138,12 +152,14 @@ const StepHistory = memo(
                 content={item.input}
                 isUser={true}
                 isThumbsUp={false}
+                isThumbsDown={false}
               />
               <MessageBubble
                 name={ASSISTANT_NAME}
                 content={item.output}
                 isUser={false}
                 isThumbsUp={isThumbsUp}
+                isThumbsDown={false}
               />
             </>
           );
@@ -156,6 +172,7 @@ const StepHistory = memo(
             content={item.output}
             isUser={false}
             isThumbsUp={isThumbsUp}
+            isThumbsDown={isThumbsDown}
           />
         );
       }
@@ -163,6 +180,7 @@ const StepHistory = memo(
     if (filteredData.length === 0) {
       return <Text style={styles.noResultFound}>No result found</Text>;
     }
+
     return (
       <FlatList
         data={filteredData}
