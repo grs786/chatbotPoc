@@ -1,12 +1,22 @@
-import React, { Dispatch, SetStateAction } from "react";
-import { View, TextInput, TouchableOpacity } from "react-native";
+import React, { useState, useRef } from "react";
+import {
+  View,
+  TextInput,
+  TouchableOpacity,
+  Animated,
+  KeyboardAvoidingView,
+  Platform,
+  Image,
+} from "react-native";
 import { MaterialIcons } from "@expo/vector-icons";
-import { styles } from "./styles";
 import { Audio } from "expo-av";
+import { styles } from "./styles";
+import { Colors } from "src/Assets/colors";
+import RecordingModal from "./RecordingModal";
 
 interface IMessageInputProps {
   inputText: string;
-  setInputText: Dispatch<SetStateAction<string>>;
+  setInputText: React.Dispatch<React.SetStateAction<string>>;
   handleSend: any;
   pickImage: () => void;
   recording?: Audio.Recording | null;
@@ -23,38 +33,83 @@ const MessageInput = ({
   startRecording,
   stopRecording,
 }: IMessageInputProps) => {
+  const [isRecording, setIsRecording] = useState(false);
+
+  const slideAnim = useRef(new Animated.Value(0)).current;
+
+  const handleStartRecording = () => {
+    setIsRecording(true);
+    startRecording();
+    slideUp();
+  };
+
+  const handleStopRecording = async () => {
+    await stopRecording();
+    setIsRecording(false);
+    slideDown();
+  };
+
+  const slideUp = () => {
+    Animated.timing(slideAnim, {
+      toValue: -180,
+      duration: 300,
+      useNativeDriver: true,
+    }).start();
+  };
+
+  const slideDown = () => {
+    Animated.timing(slideAnim, {
+      toValue: 0,
+      duration: 300,
+      useNativeDriver: true,
+    }).start();
+  };
+
   return (
-    <View style={styles.inputContainer}>
-      <TouchableOpacity onPress={pickImage}>
-        <MaterialIcons name="add" size={28} color="gray" />
-      </TouchableOpacity>
-      <TextInput
-        style={styles.textInput}
-        placeholder="Message WSM Assistant"
-        value={inputText}
-        onChangeText={(text) => setInputText(text)}
+    <KeyboardAvoidingView
+      behavior={Platform.OS === "ios" ? "padding" : undefined}
+    >
+      <View style={{ flex: 1 }} />
+
+      <RecordingModal
+        visible={isRecording}
+        onStopRecording={handleStopRecording}
       />
-      {inputText.trim() ? (
-        <TouchableOpacity onPress={handleSend}>
-          <MaterialIcons name="send" size={24} color="blue" />
-        </TouchableOpacity>
-      ) : (
-        <TouchableOpacity
-          style={{
-            padding: 10,
-            borderRadius: 4,
-            marginLeft: 5,
-          }}
-          onPress={() => (recording ? stopRecording() : startRecording())}
-        >
-          <MaterialIcons
-            name={recording ? "stop" : "mic"}
-            size={24}
-            color={recording ? "red" : "#1E3A8A"}
+
+      <Animated.View
+        style={[
+          styles.inputContainer,
+          { transform: [{ translateY: slideAnim }] },
+        ]}
+      >
+        <TouchableOpacity onPress={pickImage}>
+          <Image
+            source={require("../../../Assets/images/plusIcon.png")}
+            style={styles.plusIcon}
           />
         </TouchableOpacity>
-      )}
-    </View>
+        <TextInput
+          style={styles.textInput}
+          placeholder="Message WSM Assistant"
+          value={inputText}
+          onChangeText={(text) => setInputText(text)}
+        />
+        {inputText.trim() ? (
+          <TouchableOpacity style={{ marginTop: 6 }} onPress={handleSend}>
+            <Image
+              source={require("../../../Assets/images/sendIcon.png")}
+              style={styles.send}
+            />
+          </TouchableOpacity>
+        ) : (
+          <TouchableOpacity
+            onPress={isRecording ? handleStopRecording : handleStartRecording}
+          >
+            <MaterialIcons name={"mic"} size={24} color={Colors.NAVYBLUE} />
+          </TouchableOpacity>
+        )}
+      </Animated.View>
+    </KeyboardAvoidingView>
   );
 };
 
