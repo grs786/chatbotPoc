@@ -21,7 +21,7 @@ interface IStepHistory {
 
 interface IFeedbackHistory {
   forId: string;
-  value: number; // 1 for thumbs-up, 0 for thumbs-down
+  value: number; 
 }
 
 interface IStepHistoryData {

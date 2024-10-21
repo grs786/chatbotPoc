@@ -14,6 +14,7 @@ export const styles = StyleSheet.create({
   receiveMessageContainer: {
     borderRadius: 10,
   },
+
   messageText: {
     fontSize: 16,
     color: "#333",
@@ -27,7 +28,7 @@ export const styles = StyleSheet.create({
     borderRadius: 40,
     justifyContent: "center",
     alignItems: "center",
-    zIndex:1
+    zIndex: 1,
   },
   messageContainer: {
     marginVertical: 5,
@@ -65,7 +66,7 @@ export const styles = StyleSheet.create({
     textAlign: "center",
     textAlignVertical: "center",
   },
-  heightAdjuster:{ height: 300 },
+  heightAdjuster: { height: 300 },
   receiverIcon: {
     fontSize: 10,
     fontWeight: "600",
@@ -115,15 +116,16 @@ export const styles = StyleSheet.create({
   inputContainer: {
     flexDirection: "row",
     alignItems: "center",
-    paddingHorizontal: 10,
-    backgroundColor: Colors.SKY_BLUE,
+    paddingHorizontal: 15,
+    backgroundColor: Colors.INDIGO_BLUE,
     borderWidth: 1,
     borderColor: "#dddddd",
     borderRadius: 10,
+    marginBottom: 3,
   },
   textInput: {
     flex: 1,
-    backgroundColor: Colors.SKY_BLUE,
+    backgroundColor: Colors.INDIGO_BLUE,
     padding: 10,
     paddingVertical: 15,
     borderRadius: 20,
@@ -171,8 +173,8 @@ export const styles = StyleSheet.create({
     width: "100%",
     alignItems: "center",
   },
-  tintcolor:{
-    tintColor: "blue" 
+  tintcolor: {
+    tintColor: "blue",
   },
 
   modalBackground: {
@@ -182,7 +184,7 @@ export const styles = StyleSheet.create({
     height: "100%",
     width: "100%",
     marginTop: "30%",
-    zIndex:4
+    zIndex: 4,
   },
   vechilemodalContainer: {
     backgroundColor: "white",
@@ -240,25 +242,55 @@ export const styles = StyleSheet.create({
     textAlign: "center",
     paddingTop: 40,
   },
-  vinDetails:{
+  vinDetails: {
     fontSize: 10,
     fontWeight: "500",
     color: Colors.DISABLED_TEXT,
-    backgroundColor:Colors.LIGHT_BLUE,
-    paddingVertical:4,
-    paddingLeft:2,
-    marginTop:1
+    backgroundColor: Colors.LIGHT_BLUE,
+    paddingVertical: 4,
+    paddingLeft: 2,
+    marginTop: 1,
   },
-  noResultFound:{
+  noResultFound: {
     fontSize: 20,
     fontWeight: "500",
     color: Colors.BLACK,
-    alignSelf:"center",
-    marginTop:'40%'
+    alignSelf: "center",
+    marginTop: "40%",
   },
-  messageReactionView:{
+  messageReactionView: {
     flexDirection: "row",
     alignItems: "center",
     paddingLeft: "20%",
-  }
+  },
+  plusIcon: { width: 30, height: 30, tintColor: Colors.NAVYBLUE },
+
+  modalContainer: {
+    flex: 1,
+    justifyContent: "flex-end",
+  },
+  recordingView: {
+    height: 150,
+    backgroundColor: "#E5EDFB",
+    borderTopLeftRadius: 16,
+    borderTopRightRadius: 16,
+    alignItems: "center",
+    justifyContent: "space-evenly",
+    padding: 20,
+  },
+  recordingBar: {
+    backgroundColor: Colors.INDIGO_BLUE,
+    height: 170,
+    alignItems: "center",
+    justifyContent: "center",
+    marginTop: 10,
+  },
+  stopButton: {
+    marginTop: 10,
+  },
+  recordingText: {
+    fontSize: 18,
+    color: "#fff",
+  },
+  send: { width: 40, height: 50 },
 });
