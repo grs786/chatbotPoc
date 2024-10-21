@@ -40,7 +40,7 @@ const ChatScreen: React.FC = () => {
   const [messageReactions, setMessageReactions] = useState<
     Record<string, string>
   >({});
-  const [modalVisible, setModalVisible] = useState<boolean>(false);
+  const [modalVisible, setModalVisible] = useState<boolean>(true);
   const [displayVehicleInfo, setDisplayVehicleInfo] = useState<boolean>(false);
   const [isChatIconDisable, setIsChatIconDisable] = useState<boolean>(true);
   const [accessToken, setAccessToken] = useState<string>("");
