@@ -8,14 +8,11 @@ export const styles = StyleSheet.create({
   },
   sentMessageContainer: {
     alignSelf: "flex-start",
-    marginVertical: 5,
     borderRadius: 10,
     width: "100%",
   },
   receiveMessageContainer: {
-    alignSelf: "flex-start",
     borderRadius: 10,
-    marginVertical: 5,
   },
   messageText: {
     fontSize: 16,
@@ -35,24 +32,31 @@ export const styles = StyleSheet.create({
   messageContainer: {
     marginVertical: 5,
     padding: 5,
-    alignItems: "flex-start",
     backgroundColor: Colors.LIGHT_GREY,
   },
   rmessageContainer: {
-    marginVertical: 5,
-    padding: 5,
-    alignItems: "flex-start",
     borderRadius: 4,
+    marginBottom:16
   },
   iconContainer: {
-    marginRight: 4,
+    marginRight: 10,
     flexDirection: "row",
     justifyContent: "center",
     backgroundColor: Colors.LIGHT_BLUE,
-    height: 64,
+    height: 56,
     borderRadius: 6,
     alignItems: "center",
-    padding: 8,
+    paddingHorizontal: 10,
+    elevation: 5, // Android shadow
+    shadowColor: Colors.DISABLED_TEXT, // iOS shadow
+    shadowOffset: { width: 1, height: 2 }, // iOS shadow
+    shadowOpacity: 0.4, // iOS shadow
+    shadowRadius: 2, // iOS shadow
+    alignSelf:'flex-start'
+  },
+  htmlRenderContainer:{
+    width: "90%",
+    marginTop: -16,
   },
   senderIcon: {
     fontSize: 10,
@@ -66,22 +70,22 @@ export const styles = StyleSheet.create({
     fontSize: 10,
     fontWeight: "600",
     color: Colors.NAVYBLUE,
-    textAlign: "center",
-    textAlignVertical: "center",
   },
   messageBubble: {
-    width: "70%",
-    padding: 10,
     borderRadius: 10,
     flexDirection: "row",
+    paddingVertical:16,
+    paddingHorizontal:10,
+    alignItems:'center',
+    width: "90%",
   },
   rmessageBubble: {
-    width: "70%",
-    padding: 10,
     borderRadius: 10,
     flexDirection: "row",
+    paddingVertical:16,
+    paddingHorizontal:10, 
+    width:'90%'
   },
-
   textInputContainer: {
     flexDirection: "row", // To align TextInput and button horizontally
     alignItems: "center",
@@ -112,14 +116,14 @@ export const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     paddingHorizontal: 10,
-    backgroundColor: "#E1F6FF",
+    backgroundColor: Colors.SKY_BLUE,
     borderWidth: 1,
     borderColor: "#dddddd",
     borderRadius: 10,
   },
   textInput: {
     flex: 1,
-    backgroundColor: "#E1F6FF",
+    backgroundColor: Colors.SKY_BLUE,
     padding: 10,
     paddingVertical: 15,
     borderRadius: 20,
@@ -173,7 +177,7 @@ export const styles = StyleSheet.create({
 
   modalBackground: {
     alignItems: "center",
-    backgroundColor: "rgba(0, 0, 0, 0.5)", // Semi-transparent background
+    backgroundColor: "rgba(0, 0, 0, 0.3)", // Semi-transparent background
     position: "absolute",
     height: "100%",
     width: "100%",

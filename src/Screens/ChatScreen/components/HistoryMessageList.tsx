@@ -60,11 +60,18 @@ const MessageBubble = ({
     >
       <View style={[styles.messageBubble]}>
         <View style={[styles.iconContainer, { width: 60 }]}>
-          <Text numberOfLines={2} style={styles.receiverIcon}>
+          <Text
+            numberOfLines={2}
+            style={
+              name.includes("wsm") ? styles.senderIcon : styles.receiverIcon
+            }
+          >
             {name}
           </Text>
         </View>
-        <RenderHtml contentWidth={contentWidth} source={{ html: content }} />
+        <View style={[styles.htmlRenderContainer, { width: "80%" }]}>
+          <RenderHtml source={{ html: content }} />
+        </View>
       </View>
 
       {!isUser && (

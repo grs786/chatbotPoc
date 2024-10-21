@@ -140,12 +140,12 @@ const ChatScreen: React.FC = () => {
       try {
         const chatRespData = await PostChatData(chatParam); // Call the API
         setIsLoading(false);
-
+        if (!chatRespData.question_id) return;
         // Parse the API response
         const parsedResponse = chatRespData;
         const botMessage: IMessage = {
           _id: Math.random().toString(),
-          text: parsedResponse.answer, // Use the answer from the API response
+          text: parsedResponse.answer + parsedResponse?.sources, // Use the answer from the API response
           question_id: parsedResponse.question_id,
           createdAt: new Date(),
           user: {
@@ -167,7 +167,7 @@ const ChatScreen: React.FC = () => {
             waitForAnswer: false,
             isError: true,
             input: inputText, // user Question
-            output: chatRespData?.answer, // chatbot answer + source json Stringify
+            output: chatRespData?.answer + chatRespData?.sources, // chatbot answer + source json Stringify
             createdAt: new Date(),
             start: new Date(),
             end: new Date(),
@@ -255,10 +255,11 @@ const ChatScreen: React.FC = () => {
             ? setDisplayVehicleInfo(true)
             : setModalVisible(true);
           setStepHistoryData(undefined);
+          setMessages([]);
         }}
         beginNewChat={() => {
-          setIsChatIconDisable(true);
-          modalVisible === false && setModalVisible(true);
+          setIsChatIconDisable(false);
+          modalVisible === false && setDisplayVehicleInfo(true);
           setStepHistoryData(undefined);
           setMessages([]);
         }}
@@ -292,6 +293,7 @@ const ChatScreen: React.FC = () => {
           />
           <KeyboardAvoidingView behavior="padding" style={styles.keyboard}>
             <MessageInput
+              disableInput={modalVisible}
               inputText={inputText}
               setInputText={setInputText}
               handleSend={handleSend}

@@ -90,8 +90,6 @@ const MessageList: React.FC<IMessageListProps> = ({
         showsVerticalScrollIndicator={false}
         ref={flatListRef}
         onContentSizeChange={(width, height) => {
-          console.log("Content height:", height); // Now you know the total height of the content
-
           if (messages[messages.length - 1]?.user._id === 1) {
             flatListRef.current?.scrollToEnd({ animated: true });
           } else {

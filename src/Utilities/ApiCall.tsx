@@ -110,11 +110,6 @@ const handleError = (error: unknown) => {
       });
       throw new Error("No response received from the server");
     } else {
-      Toast.show({
-        type: "error",
-        position: "bottom",
-        text1: `${error.message}`,
-      });
       // Something happened in setting up the request
       throw new Error(error.message);
     }

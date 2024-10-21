@@ -3,6 +3,7 @@ import { View, TextInput, TouchableOpacity } from "react-native";
 import { MaterialIcons } from "@expo/vector-icons";
 import { styles } from "./styles";
 import { Audio } from "expo-av";
+import { Colors } from "src/Assets/colors";
 
 interface IMessageInputProps {
   inputText: string;
@@ -12,6 +13,7 @@ interface IMessageInputProps {
   recording?: Audio.Recording | null;
   startRecording: () => void;
   stopRecording: () => void;
+  disableInput: boolean;
 }
 
 const MessageInput = ({
@@ -22,14 +24,25 @@ const MessageInput = ({
   recording,
   startRecording,
   stopRecording,
+  disableInput,
 }: IMessageInputProps) => {
   return (
-    <View style={styles.inputContainer}>
+    <View
+      style={
+        disableInput
+          ? [styles.inputContainer, { backgroundColor: Colors.DISABLED_GREY }]
+          : styles.inputContainer
+      }
+    >
       <TouchableOpacity onPress={pickImage}>
         <MaterialIcons name="add" size={28} color="gray" />
       </TouchableOpacity>
       <TextInput
-        style={styles.textInput}
+        style={
+          disableInput
+            ? [styles.textInput, { backgroundColor: Colors.DISABLED_GREY }]
+            : styles.textInput
+        }
         placeholder="Message WSM Assistant"
         value={inputText}
         onChangeText={(text) => setInputText(text)}
