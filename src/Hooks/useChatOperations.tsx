@@ -193,7 +193,7 @@ interface IUserStepProps {
     name: string;
     type: string;
     threadId: string;
-    parentId: string;
+    parentId?: string;
     disableFeedback: boolean;
     streaming: boolean;
     waitForAnswer: boolean;
@@ -317,7 +317,6 @@ export const useUpsertUserFeedback = () => {
           },
           `${process.env.BASE_URL}`
         );
-
         return response;
       } catch (error: unknown) {
         return error;
@@ -327,5 +326,41 @@ export const useUpsertUserFeedback = () => {
   );
   return {
     upsertUserFeedback,
+  };
+};
+
+interface IconvertSpeechToText {}
+
+export const useConvertSpeechToText = () => {
+  const convertSpeechToText = useCallback(
+    async (attachment: IconvertSpeechToText) => {
+      console.log(JSON.stringify(attachment, null, 2), "attachmentattachment");
+      console.log(
+        `${process.env.TRANSCRIBE_ENDPOINT}` +
+          `${process.env.TRANSCRIBE_API_BASE_URL}`,
+        "TRANSCRIBE_ENDPOINT"
+      );
+
+      try {
+        const response = await post(
+          `${process.env.TRANSCRIBE_ENDPOINT}`,
+          attachment,
+          { "Content-Type": "multipart/form-data" },
+          `${process.env.TRANSCRIBE_API_BASE_URL}`
+        );
+        console.log(
+          JSON.stringify(response, null, 2),
+          "useConvertSpeechToTextuseConvertSpeechToText"
+        );
+        return response;
+      } catch (error: unknown) {
+        console.log(error, "errorerrorerror");
+        return error;
+      }
+    },
+    []
+  );
+  return {
+    convertSpeechToText,
   };
 };

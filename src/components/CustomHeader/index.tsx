@@ -9,6 +9,7 @@ const CustomHeader = ({
   beginNewChat,
   navigateToHome,
   isChatIconDisable,
+  iconName,
 }: {
   title: string;
   navigation: any;
@@ -16,13 +17,14 @@ const CustomHeader = ({
   beginNewChat?: () => void;
   navigateToHome?: () => void;
   isChatIconDisable?: boolean;
+  iconName?: string;
 }) => {
   return (
     <View style={[styles.container, containerStyle]}>
       <View style={styles.headerContainer}>
         <TouchableOpacity onPress={() => navigation.toggleDrawer()}>
           <Image
-            source={require("../../Assets/images/menuIcon.png")}
+            source={iconName ?? require("../../Assets/images/menuIcon.png")}
             style={{ width: 25, height: 25 }}
           />
         </TouchableOpacity>

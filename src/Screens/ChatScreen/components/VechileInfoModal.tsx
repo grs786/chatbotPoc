@@ -110,7 +110,7 @@ const VehicleInfoModal: React.FC<VehicleInfo> = ({ onClose, visible }) => {
                 <Text style={styles2.orText}>OR</Text>
 
                 <View style={styles.inputContainers}>
-                  <Text style={styles2.label}>Enter VIN</Text>
+                  <Text style={styles2.label}>Enter or Scan VIN</Text>
                   <View style={styles.textInputContainer}>
                     <TextInput
                       style={styles2.input}
@@ -127,22 +127,26 @@ const VehicleInfoModal: React.FC<VehicleInfo> = ({ onClose, visible }) => {
                         scrollRef.current?.scrollTo({ y: 0, animated: true })
                       }
                     />
-                    <TouchableOpacity
-                      disabled={vin?.length === 17 ? false : true}
-                      style={[
-                        vin?.length === 17
-                          ? styles.arrowButton
-                          : styles?.disbaledArrowButton,
-                      ]}
-                      onPress={handleVinSubmit}
-                    >
-                      <Text style={styles2.submittext}>Submit</Text>
-                    </TouchableOpacity>
+                    <Image
+                      source={require("../../../Assets/images/Scanner.png")}
+                      style={styles.scannerImg}
+                    />
                   </View>
                   <Text style={styles.vinDetails}>
                     Has to be a 17 character alphanumeric
                   </Text>
                 </View>
+                <TouchableOpacity
+                  disabled={vin?.length === 17 ? false : true}
+                  style={[
+                    vin?.length === 17
+                      ? styles.submitButton
+                      : styles?.disbaledsubmitButton,
+                  ]}
+                  onPress={handleVinSubmit}
+                >
+                  <Text style={styles2.submittext}>Submit</Text>
+                </TouchableOpacity>
 
                 <View style={styles.heightAdjuster} />
               </>

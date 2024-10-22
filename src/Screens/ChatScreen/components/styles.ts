@@ -179,7 +179,7 @@ export const styles = StyleSheet.create({
 
   modalBackground: {
     alignItems: "center",
-    backgroundColor: "rgba(0, 0, 0, 0.3)", // Semi-transparent background
+    backgroundColor: "rgba(0, 0, 0, 0.4)", // Semi-transparent background
     position: "absolute",
     height: "100%",
     width: "100%",
@@ -198,7 +198,8 @@ export const styles = StyleSheet.create({
   },
   logoContainer: {
     alignItems: "center",
-    marginVertical: 80,
+    marginTop: "10%",
+    marginBottom:"30%"
   },
   logo: {
     width: 50,
@@ -211,19 +212,21 @@ export const styles = StyleSheet.create({
   dropdownContainer: {
     marginBottom: 20,
   },
-  arrowButton: {
-    padding: 11,
+  submitButton: {
+    padding: 5,
     backgroundColor: Colors.NAVYBLUE,
-    borderTopRightRadius: 5,
-    borderBottomRightRadius: 5,
-    marginLeft: 10,
+    borderRadius: 8,
+    marginTop:10,
+    width:"40%",
+    alignSelf:"center"
   },
-  disbaledArrowButton: {
-    padding: 11,
+  disbaledsubmitButton: {
+    padding: 5,
     backgroundColor: Colors.DISABLED_BUTTON,
-    borderTopRightRadius: 5,
-    borderBottomRightRadius: 5,
-    marginLeft: 10,
+    borderRadius:8,
+    marginTop:10,
+    width:"40%",
+    alignSelf:"center"
   },
   dropdown: {
     borderColor: "#ccc",
@@ -248,8 +251,13 @@ export const styles = StyleSheet.create({
     color: Colors.DISABLED_TEXT,
     backgroundColor: Colors.LIGHT_BLUE,
     paddingVertical: 4,
-    paddingLeft: 2,
+    paddingLeft: 6,
     marginTop: 1,
+  },
+  scannerImg:{
+    width:24,
+    height:24,
+    marginRight:16
   },
   noResultFound: {
     fontSize: 20,
@@ -263,7 +271,7 @@ export const styles = StyleSheet.create({
     alignItems: "center",
     paddingLeft: "20%",
   },
-  plusIcon: { width: 30, height: 30, tintColor: Colors.NAVYBLUE },
+  plusIcon: { width: 30, height: 30,},
 
   modalContainer: {
     flex: 1,

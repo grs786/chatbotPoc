@@ -36,7 +36,7 @@ const RenderVehicleInfo: React.FC<IVehicle> = ({
         onPress={onVehicleTabPress}
       >
         <Text style={styles.vehicleModel}>
-          {vehicleInfo?.modelyear}
+          {`${vehicleInfo?.modelyear} `}
           {vehicleInfo?.model}
         </Text>
         <Text style={styles.vinNumber}>{vehicleInfo?.vin}</Text>

@@ -34,6 +34,7 @@ interface IMessageListProps {
     reaction: string,
     value: number | undefined
   ) => void;
+  hideArrow: boolean;
   messageReactions: { [key: string]: string };
 }
 
@@ -41,6 +42,7 @@ const MessageList: React.FC<IMessageListProps> = ({
   messages,
   handleReaction,
   messageReactions,
+  hideArrow,
 }) => {
   const renderMessage: ListRenderItem<IMessage> = ({ item }) => {
     const reaction = messageReactions[item._id];
@@ -99,7 +101,7 @@ const MessageList: React.FC<IMessageListProps> = ({
         onScroll={handleScroll}
       />
 
-      {isScrollToBottomVisible && (
+      {isScrollToBottomVisible && !hideArrow && (
         <TouchableOpacity
           style={styles.scrollToBottomButton}
           onPress={scrollToEnd}

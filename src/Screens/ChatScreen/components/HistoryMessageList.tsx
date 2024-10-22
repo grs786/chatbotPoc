@@ -21,7 +21,7 @@ interface IStepHistory {
 
 interface IFeedbackHistory {
   forId: string;
-  value: number; 
+  value: number;
 }
 
 interface IStepHistoryData {
@@ -70,7 +70,10 @@ const MessageBubble = ({
           </Text>
         </View>
         <View style={[styles.htmlRenderContainer, { width: "80%" }]}>
-          <RenderHtml source={{ html: content }} />
+          <RenderHtml
+            source={{ html: content }}
+            contentWidth={Dimensions.get("window").width * 0.5}
+          />
         </View>
       </View>
 
@@ -160,7 +163,7 @@ const StepHistory = memo(
                 content={item.output}
                 isUser={false}
                 isThumbsUp={isThumbsUp}
-                isThumbsDown={false}
+                isThumbsDown={isThumbsDown}
               />
             </>
           );

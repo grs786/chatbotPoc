@@ -8,15 +8,15 @@ export const styles = StyleSheet.create({
     paddingHorizontal: 10,
   },
   heading: {
-    fontSize: 16,
+    fontSize: 12,
     fontWeight: "bold",
-    marginVertical: 16,
+    marginVertical: 8,
   },
   headerstyle: {
     paddingHorizontal: 0,
     shadowColor: "#fff",
     backgroundColor: "transparent",
-    marginBottom: 20,
+    
   },
   searchContainer: {
     flexDirection: "row",

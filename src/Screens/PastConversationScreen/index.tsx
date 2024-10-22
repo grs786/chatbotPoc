@@ -78,7 +78,7 @@ const PastConversationsScreen = (
     const today = new Date();
     const diffInTime = today.getTime() - chatDate.getTime();
     const diffInDays = diffInTime / (1000 * 3600 * 24);
-    return diffInDays <= 2 && diffInDays > 0;
+    return diffInDays <= 2 && diffInDays > 1;
   };
 
   // Filter today's chats
@@ -113,7 +113,12 @@ const PastConversationsScreen = (
 
   return (
     <View style={styles.container}>
-      <CustomHeader containerStyle={styles.headerstyle} title="" {...props} />
+      <CustomHeader
+        containerStyle={styles.headerstyle}
+        title=""
+        {...props}
+        iconName={require("../../Assets/images/menuOpen.png")}
+      />
       <Text style={styles.heading}>Past Chats</Text>
       {/* Search Bar */}
       <View style={styles.searchContainer}>

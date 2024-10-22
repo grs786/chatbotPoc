@@ -1,5 +1,10 @@
 import React, { useState, useEffect } from "react";
-import { SafeAreaView, KeyboardAvoidingView, View } from "react-native";
+import {
+  SafeAreaView,
+  KeyboardAvoidingView,
+  View,
+  Platform,
+} from "react-native";
 import MessageList, { IMessage } from "./components/MessageList";
 import MessageInput from "./components/MessageInput";
 import { styles } from "./styles";
@@ -17,6 +22,7 @@ import {
   useFetchThreadHistory,
   useUpsertUserFeedback,
   IStepHistoryData,
+  useConvertSpeechToText,
 } from "src/Hooks/useChatOperations";
 import { IVehicleInfo } from "./types";
 import RenderVehicleInfo from "./components/RenderVehicleInfo";
@@ -27,6 +33,8 @@ import StepHistory from "./components/HistoryMessageList";
 import { useImagePicker } from "src/Hooks/useImagePicker";
 import { useAudioRecorder } from "src/Hooks/useAudioRecorder";
 import CustomHeader from "src/components/CustomHeader";
+import axios from "axios";
+import { get_url_extension } from "src/Utilities/utils";
 
 const ChatScreen: React.FC = () => {
   const [messages, setMessages] = useState<IMessage[]>([]);
@@ -44,7 +52,10 @@ const ChatScreen: React.FC = () => {
   const [displayVehicleInfo, setDisplayVehicleInfo] = useState<boolean>(false);
   const [isChatIconDisable, setIsChatIconDisable] = useState<boolean>(true);
   const [accessToken, setAccessToken] = useState<string>("");
+  const [parentID, setParentID] = useState<string>("");
   const [vehicleInfo, setVehicleInfo] = useState<IVehicleInfo | null>(null); // Store vehicle information
+  const [updateThreadCounter, setUpdateThreadCounter] = useState<number>(0);
+
   const [stepHistoryData, setStepHistoryData] = useState<
     IStepHistoryData | undefined
   >(); // Store vehicle information
@@ -62,6 +73,7 @@ const ChatScreen: React.FC = () => {
   const { createUserStep } = useCreateUserStep();
   const { fetchThreadHistory } = useFetchThreadHistory();
   const { upsertUserFeedback } = useUpsertUserFeedback();
+  const { convertSpeechToText } = useConvertSpeechToText();
   const { pickImage } = useImagePicker();
 
   const initialSession = async () => {
@@ -127,16 +139,19 @@ const ChatScreen: React.FC = () => {
         question: inputText, // Send the user's question
       };
       // const uniqueID = uuid();
-      const updateThreadBody = {
-        uuid: sessionId,
-        createdAt: new Date(),
-        name: inputText,
-        userId: userId,
-        userEmail: userIdentifier,
-        accessToken: accessToken,
-      };
-      const updateThreadList = await updateThreadData(updateThreadBody);
+      if (updateThreadCounter === 0) {
+        const updateThreadBody = {
+          uuid: sessionId,
+          createdAt: new Date(),
+          name: inputText,
+          userId: userId,
+          userEmail: userIdentifier,
+          accessToken: accessToken,
+        };
+        await updateThreadData(updateThreadBody);
+      }
 
+      setUpdateThreadCounter((prev) => prev + 1);
       try {
         const chatRespData = await PostChatData(chatParam); // Call the API
         setIsLoading(false);
@@ -157,11 +172,11 @@ const ChatScreen: React.FC = () => {
 
         const userStepBody = {
           paramsData: {
-            id: uuid(), //autogenerate_mobile_uuid
+            id: chatRespData.question_id, //uuid(), //autogenerate_mobile_uuid
             name: "chatbot", //RephraseAgent / chatbot
             type: "user_message", //user_message, assistant_message
             threadId: sessionId, //sessionID
-            parentId: chatRespData.question_id, //questionID
+            // parentId: chatRespData.question_id, //questionID
             disableFeedback: false,
             streaming: false,
             waitForAnswer: false,
@@ -174,6 +189,7 @@ const ChatScreen: React.FC = () => {
           },
           accessToken: accessToken,
         };
+
         // Update state with the bot's response
         setMessages((prevMessages) => [...prevMessages, botMessage]);
         const updateUserStep = await createUserStep(userStepBody);
@@ -206,7 +222,6 @@ const ChatScreen: React.FC = () => {
       value: value || 0,
       comment: "",
     };
-
     const userFeedback = await upsertUserFeedback(paramsBody, accessToken);
     setIsLoading(false);
   };
@@ -256,18 +271,30 @@ const ChatScreen: React.FC = () => {
             : setModalVisible(true);
           setStepHistoryData(undefined);
           setMessages([]);
+          setUpdateThreadCounter(0);
+          handleVinClose({
+            model: "2021 F-150",
+            vinNumber: process.env.SAMPLE_VIN || "",
+            connected: true,
+          });
         }}
         beginNewChat={() => {
           setIsChatIconDisable(false);
           modalVisible === false && setDisplayVehicleInfo(true);
           setStepHistoryData(undefined);
           setMessages([]);
+          setUpdateThreadCounter(0);
+          handleVinClose({
+            model: "2021 F-150",
+            vinNumber: process.env.SAMPLE_VIN || "",
+            connected: true,
+          });
         }}
         isChatIconDisable={isChatIconDisable}
       />
       {!isLoading && displayVehicleInfo && (
         <RenderVehicleInfo
-          vehicleInfo={vehicleInfo}
+          vehicleInfo={vehicleInfo ?? {}}
           onPress={() => {
             setDisplayVehicleInfo(false);
             setModalVisible(true);
@@ -287,6 +314,7 @@ const ChatScreen: React.FC = () => {
       ) : (
         <>
           <MessageList
+            hideArrow={modalVisible && vehicleInfo ? true : false}
             messages={messages}
             handleReaction={handleReaction}
             messageReactions={messageReactions}
@@ -317,20 +345,22 @@ const ChatScreen: React.FC = () => {
               recording={recording}
               startRecording={startRecording}
               stopRecording={async () => {
-                const uri = await stopRecording();
-                if (uri) {
-                  const audioMessage: IMessage = {
-                    _id: Math.random().toString(),
-                    audio: uri,
-                    createdAt: new Date(),
-                    user: {
-                      _id: 1,
-                      name: "User",
-                      fullname: " ",
-                    },
-                    question_id: "",
+                const recordingURI = await stopRecording();
+                if (recordingURI) {
+                  const formData = new FormData();
+                  const audioType = get_url_extension(recordingURI);
+                  const audioObject = {
+                    uri:
+                      Platform.OS === "ios"
+                        ? recordingURI.replace("file://", "")
+                        : recordingURI,
+                    name: `recording.${audioType}`,
+                    type: `audio/x-${audioType}`,
                   };
-                  setMessages((prev) => [...prev, audioMessage]);
+
+                  formData.append("file", audioObject);
+
+                  // const respData = await convertSpeechToText(formData);
                 }
               }}
             />

@@ -79,19 +79,36 @@ const MessageInput = ({
       />
 
       <Animated.View
-        style={[
-          styles.inputContainer,
-          { transform: [{ translateY: slideAnim }] },
-        ]}
+        style={
+          disableInput
+            ? [
+                styles.inputContainer,
+                {
+                  transform: [{ translateY: slideAnim }],
+                  backgroundColor: Colors.DISABLED_GREY,
+                },
+              ]
+            : [
+                styles.inputContainer,
+                { transform: [{ translateY: slideAnim }] },
+              ]
+        }
       >
         <TouchableOpacity onPress={pickImage}>
           <Image
             source={require("../../../Assets/images/plusIcon.png")}
-            style={styles.plusIcon}
+            style={[
+              styles.plusIcon,
+              { tintColor: disableInput ? "#CBD5E1" : Colors.BLACK },
+            ]}
           />
         </TouchableOpacity>
         <TextInput
-          style={styles.textInput}
+          style={
+            disableInput
+              ? [styles.textInput, { backgroundColor: Colors.DISABLED_GREY }]
+              : styles.textInput
+          }
           placeholder="Message WSM Assistant"
           value={inputText}
           onChangeText={(text) => setInputText(text)}
@@ -107,7 +124,14 @@ const MessageInput = ({
           <TouchableOpacity
             onPress={isRecording ? handleStopRecording : handleStartRecording}
           >
-            <MaterialIcons name={"mic"} size={24} color={Colors.NAVYBLUE} />
+            {disableInput ? (
+              <Image
+                source={require("../../../Assets/images/disabledMic.png")}
+                style={styles.send}
+              />
+            ) : (
+              <MaterialIcons name={"mic"} size={24} color={Colors.NAVYBLUE} />
+            )}
           </TouchableOpacity>
         )}
       </Animated.View>

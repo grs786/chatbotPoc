@@ -80,7 +80,10 @@ const MessageItem: React.FC<IMessageItemProps> = ({
                 </Text>
               </View>
               <View style={styles.htmlRenderContainer}>
-                <RenderHtml source={{ html: item?.text }} />
+                <RenderHtml
+                  source={{ html: item?.text }}
+                  contentWidth={Dimensions.get("window").width * 0.5}
+                />
               </View>
             </View>
             {item.user._id === 2 && (

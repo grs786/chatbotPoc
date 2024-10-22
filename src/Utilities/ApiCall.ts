@@ -89,6 +89,7 @@ export const del = async (
 
 // Function to handle errors
 const handleError = (error: unknown) => {
+  debugger;
   if (axios.isAxiosError(error)) {
     // Check if the error is an AxiosError
     if (error.response) {
