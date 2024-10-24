@@ -11,6 +11,7 @@ import {
 import { styles } from "./styles";
 import { styles as styles2 } from "../styles";
 import Loader from "src/components/Loader";
+import { Colors } from "src/Assets/colors";
 export interface IVehicleDetail {
   model: string;
   vinNumber: string;
@@ -76,6 +77,8 @@ const VehicleInfoModal: React.FC<VehicleInfo> = ({ onClose, visible }) => {
     }
   };
 
+  const isButtonDisabled = vin?.length !== 17;
+
   return (
     <View style={styles.modalBackground}>
       <View style={styles.vechilemodalContainer}>
@@ -139,13 +142,24 @@ const VehicleInfoModal: React.FC<VehicleInfo> = ({ onClose, visible }) => {
                 <TouchableOpacity
                   disabled={vin?.length === 17 ? false : true}
                   style={[
-                    vin?.length === 17
+                    !isButtonDisabled
                       ? styles.submitButton
                       : styles?.disbaledsubmitButton,
                   ]}
                   onPress={handleVinSubmit}
                 >
-                  <Text style={styles2.submittext}>Submit</Text>
+                  <Text
+                    style={[
+                      styles2.submittext,
+                      {
+                        color: isButtonDisabled
+                          ? Colors.DISABLED_TEXT
+                          : Colors.WHITE,
+                      },
+                    ]}
+                  >
+                    Submit
+                  </Text>
                 </TouchableOpacity>
 
                 <View style={styles.heightAdjuster} />

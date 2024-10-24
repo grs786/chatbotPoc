@@ -334,13 +334,6 @@ interface IconvertSpeechToText {}
 export const useConvertSpeechToText = () => {
   const convertSpeechToText = useCallback(
     async (attachment: IconvertSpeechToText) => {
-      console.log(JSON.stringify(attachment, null, 2), "attachmentattachment");
-      console.log(
-        `${process.env.TRANSCRIBE_ENDPOINT}` +
-          `${process.env.TRANSCRIBE_API_BASE_URL}`,
-        "TRANSCRIBE_ENDPOINT"
-      );
-
       try {
         const response = await post(
           `${process.env.TRANSCRIBE_ENDPOINT}`,
@@ -348,13 +341,9 @@ export const useConvertSpeechToText = () => {
           { "Content-Type": "multipart/form-data" },
           `${process.env.TRANSCRIBE_API_BASE_URL}`
         );
-        console.log(
-          JSON.stringify(response, null, 2),
-          "useConvertSpeechToTextuseConvertSpeechToText"
-        );
+
         return response;
       } catch (error: unknown) {
-        console.log(error, "errorerrorerror");
         return error;
       }
     },

@@ -1,10 +1,11 @@
-import { StyleSheet } from "react-native";
+import { Platform, StyleSheet } from "react-native";
 import { Colors } from "src/Assets/colors";
 
 export const styles = StyleSheet.create({
   mainContainer: {
     flex: 1,
     backgroundColor: "white",
+    paddingTop:Platform.OS==="android"?24:0
   },
   vehicleDetailsContainer: {
     padding: 20,

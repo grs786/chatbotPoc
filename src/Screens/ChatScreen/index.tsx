@@ -355,12 +355,18 @@ const ChatScreen: React.FC = () => {
                         ? recordingURI.replace("file://", "")
                         : recordingURI,
                     name: `recording.${audioType}`,
-                    type: `audio/x-${audioType}`,
+                    type: `audio/${audioType}`,
                   };
 
                   formData.append("file", audioObject);
-
-                  // const respData = await convertSpeechToText(formData);
+                  setIsLoading(true);
+                  const respData = await convertSpeechToText(formData);
+                  setIsLoading(false);
+                  if (respData?.channel_transcript?.transcript) {
+                    setInputText(
+                      (prev) => prev + respData?.channel_transcript?.transcript
+                    );
+                  }
                 }
               }}
             />

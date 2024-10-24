@@ -16,8 +16,8 @@ export const useAudioRecorder = () => {
     ios: {
       extension: ".m4a",
       audioQuality: Audio.IOSAudioQuality.HIGH,
-      sampleRate: 44100,
-      numberOfChannels: 2,
+      sampleRate: 8000,
+      numberOfChannels: 1,
       bitRate: 128000,
       linearPCMBitDepth: 16,
       linearPCMIsBigEndian: false,

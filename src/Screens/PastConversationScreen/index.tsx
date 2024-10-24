@@ -10,13 +10,18 @@ import {
 import { MaterialIcons } from "@expo/vector-icons";
 import { styles } from "./styles";
 import { useFetchAllThreadData } from "src/Hooks/useChatOperations";
-import { NavigationProp, useNavigation } from "@react-navigation/native";
+import {
+  NavigationProp,
+  useIsFocused,
+  useNavigation,
+} from "@react-navigation/native";
 import CustomHeader from "src/components/CustomHeader";
 import { getItem } from "src/Utilities/StorageClasses";
 import Loader from "src/components/Loader";
 import { ApplicationStackParamList } from "src/types/navigation";
 import uuid from "uuid-random";
 import { SCREENS } from "src/Common/screens";
+import { useDrawerStatus } from "@react-navigation/drawer";
 export interface IChatHistory {
   id: string;
   createdAt: string;
@@ -36,6 +41,8 @@ const PastConversationsScreen = (
   const [chatHistory, setChatHistory] = useState<IChatHistory[]>();
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const navigation = useNavigation<NavigationProp<ApplicationStackParamList>>();
+  const isFocused = useIsFocused();
+  const isDrawerOpen = useDrawerStatus() === "open";
 
   const { fetchAllThreadData } = useFetchAllThreadData();
 
@@ -56,7 +63,7 @@ const PastConversationsScreen = (
 
   useEffect(() => {
     initialSession();
-  }, []);
+  }, [isDrawerOpen]);
 
   const filteredChats = chatHistory?.filter((chat) =>
     chat?.name?.toLowerCase().includes(searchText.toLowerCase())

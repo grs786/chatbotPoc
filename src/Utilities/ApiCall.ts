@@ -7,7 +7,7 @@ const createApiInstance = (baseURL: string) => {
     baseURL,
     timeout: 1000 * 60 * 2, // Set a timeout (optional) chat api takes lot of time thats why we have added higher timeout time
     headers: {
-      "Content-Type": "application/json", // Default content type
+      "Accept": "application/json", // Default content type
       // Add other default headers here
     },
   });
@@ -89,7 +89,6 @@ export const del = async (
 
 // Function to handle errors
 const handleError = (error: unknown) => {
-  debugger;
   if (axios.isAxiosError(error)) {
     // Check if the error is an AxiosError
     if (error.response) {

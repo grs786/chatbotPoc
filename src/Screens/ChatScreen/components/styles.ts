@@ -179,22 +179,17 @@ export const styles = StyleSheet.create({
 
   modalBackground: {
     alignItems: "center",
-    backgroundColor: "rgba(0, 0, 0, 0.4)", // Semi-transparent background
     position: "absolute",
-    height: "100%",
+    height: "98%",
     width: "100%",
     marginTop: "30%",
     zIndex: 4,
   },
   vechilemodalContainer: {
     backgroundColor: "white",
-    elevation: 10,
     height: "85%",
     width: "100%",
-    shadowColor: "#000",
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.1,
-    shadowRadius: 6,
+    
   },
   logoContainer: {
     alignItems: "center",
@@ -213,19 +208,19 @@ export const styles = StyleSheet.create({
     marginBottom: 20,
   },
   submitButton: {
-    padding: 5,
+    padding: 8,
     backgroundColor: Colors.NAVYBLUE,
     borderRadius: 8,
     marginTop:10,
-    width:"40%",
+    width:"60%",
     alignSelf:"center"
   },
   disbaledsubmitButton: {
-    padding: 5,
+    padding: 8,
     backgroundColor: Colors.DISABLED_BUTTON,
     borderRadius:8,
     marginTop:10,
-    width:"40%",
+    width:"60%",
     alignSelf:"center"
   },
   dropdown: {
@@ -249,7 +244,6 @@ export const styles = StyleSheet.create({
     fontSize: 10,
     fontWeight: "500",
     color: Colors.DISABLED_TEXT,
-    backgroundColor: Colors.LIGHT_BLUE,
     paddingVertical: 4,
     paddingLeft: 6,
     marginTop: 1,
