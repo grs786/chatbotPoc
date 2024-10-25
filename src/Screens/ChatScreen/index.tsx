@@ -33,8 +33,8 @@ import StepHistory from "./components/HistoryMessageList";
 import { useImagePicker } from "src/Hooks/useImagePicker";
 import { useAudioRecorder } from "src/Hooks/useAudioRecorder";
 import CustomHeader from "src/components/CustomHeader";
-import axios from "axios";
 import { get_url_extension } from "src/Utilities/utils";
+import FeedbackModal from "./components/FeedbackModal";
 
 const ChatScreen: React.FC = () => {
   const [messages, setMessages] = useState<IMessage[]>([]);
@@ -42,8 +42,10 @@ const ChatScreen: React.FC = () => {
   const [sessionId, setSessionID] = useState<string>("");
   const [userId, setUserID] = useState<string>("");
   const [userIdentifier, setUserIdentifier] = useState<string>("");
+  const [feedbackQuestionID, setFeedbackQuestionID] = useState<string>("");
 
   const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [feedbackModal, setFeedbackModal] = useState<boolean>(false);
   const [selectedMessageId, setSelectedMessageId] = useState<string | number>();
   const [messageReactions, setMessageReactions] = useState<
     Record<string, string>
@@ -210,18 +212,34 @@ const ChatScreen: React.FC = () => {
     reaction: string,
     value: number | undefined
   ) => {
-    setIsLoading(true);
     setMessageReactions((prevReactions) => ({
       ...prevReactions,
       [messageId]: reaction,
     }));
     setSelectedMessageId(messageId);
+    setFeedbackQuestionID(`${questionId}`);
+    if (value === 1) {
+      handleReactionFeedback(value || 0, `${questionId}`);
+    } else {
+      setFeedbackModal(true);
+    }
+  };
+
+  const handleReactionFeedback = async (
+    value: number,
+    questionId: string,
+    useComment?: string
+  ) => {
+    setIsLoading(true);
+
     const paramsBody = {
       id: uuid(), // create from mobile_end uuid
-      forId: `${questionId}`, //QuestionID
-      value: value || 0,
-      comment: "",
+      forId: questionId, //QuestionID
+      value: value,
+      comment: useComment || "",
     };
+    console.log(paramsBody, "paramsBodyparamsBodyparamsBody");
+    // return;
     const userFeedback = await upsertUserFeedback(paramsBody, accessToken);
     setIsLoading(false);
   };
@@ -375,6 +393,15 @@ const ChatScreen: React.FC = () => {
       )}
       {modalVisible && (
         <VehicleInfoModal visible={modalVisible} onClose={handleVinClose} />
+      )}
+      {feedbackModal && (
+        <FeedbackModal
+          visible={feedbackModal}
+          onClose={() => setFeedbackModal(false)}
+          onSubmit={(feedbackValue) =>
+            handleReactionFeedback(0, feedbackQuestionID, feedbackValue)
+          }
+        />
       )}
       {isLoading && (
         <View style={styles.loaderView}>
