@@ -84,9 +84,9 @@ const FeedbackModal: React.FC<FeedbackModalProps> = ({
           ))}
 
           <View style={styles.buttonContainer}>
-            <TouchableOpacity style={styles.button} onPress={onClose}>
+            {/* <TouchableOpacity style={styles.button} onPress={onClose}>
               <Text style={styles.buttonText}>Cancel</Text>
-            </TouchableOpacity>
+            </TouchableOpacity> */}
             <TouchableOpacity style={styles.button} onPress={handleSubmit}>
               <Text style={styles.buttonText}>Submit feedback</Text>
             </TouchableOpacity>

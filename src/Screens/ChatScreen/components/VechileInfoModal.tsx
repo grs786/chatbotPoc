@@ -118,6 +118,7 @@ const VehicleInfoModal: React.FC<VehicleInfo> = ({ onClose, visible }) => {
                     <TextInput
                       style={styles2.input}
                       placeholder="VIN"
+                      placeholderTextColor={Colors.NAVYBLUE_SHADE1}
                       value={vin}
                       onChangeText={handleVinChange}
                       maxLength={17}

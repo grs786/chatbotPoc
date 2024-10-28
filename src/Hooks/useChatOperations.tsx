@@ -117,6 +117,8 @@ interface IPostChatDataProps {
   question: string;
   vinNumber: string;
   accessToken: string;
+  sessionId: string;
+  userId: string;
 }
 
 export const usePostChatData = () => {
@@ -125,9 +127,9 @@ export const usePostChatData = () => {
       question: `${data.question}`,
       VIN: `${data.vinNumber}`,
       role: "user",
-      session_id: "",
+      session_id: `${data.sessionId}`,
       question_id: "",
-      user_id: "userID",
+      user_id: data.userId,
       search_parameters: {
         retrieval_cap: 30,
         retrieval_depth: 10,
@@ -136,7 +138,6 @@ export const usePostChatData = () => {
       return_format: "html",
       streaming: false,
     };
-
     try {
       const response = await post(
         `${process.env.CHAT_API}`,

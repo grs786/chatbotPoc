@@ -57,7 +57,7 @@ export const styles = StyleSheet.create({
   },
   htmlRenderContainer:{
     width: "90%",
-    marginTop: -16,
+    // marginTop: -16,
   },
   senderIcon: {
     fontSize: 10,

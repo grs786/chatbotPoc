@@ -139,6 +139,8 @@ const ChatScreen: React.FC = () => {
         accessToken,
         vinNumber: process.env.SAMPLE_VIN ?? "", // Adjust the vinNumber as needed
         question: inputText, // Send the user's question
+        sessionId: sessionId,
+        userId: userId,
       };
       // const uniqueID = uuid();
       if (updateThreadCounter === 0) {
@@ -171,7 +173,6 @@ const ChatScreen: React.FC = () => {
             fullname: "Workshop Manual ChatBot",
           },
         };
-
         const userStepBody = {
           paramsData: {
             id: chatRespData.question_id, //uuid(), //autogenerate_mobile_uuid
@@ -191,7 +192,6 @@ const ChatScreen: React.FC = () => {
           },
           accessToken: accessToken,
         };
-
         // Update state with the bot's response
         setMessages((prevMessages) => [...prevMessages, botMessage]);
         const updateUserStep = await createUserStep(userStepBody);
@@ -238,7 +238,6 @@ const ChatScreen: React.FC = () => {
       value: value,
       comment: useComment || "",
     };
-    console.log(paramsBody, "paramsBodyparamsBodyparamsBody");
     // return;
     const userFeedback = await upsertUserFeedback(paramsBody, accessToken);
     setIsLoading(false);
