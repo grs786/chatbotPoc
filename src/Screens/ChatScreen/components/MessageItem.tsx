@@ -79,7 +79,12 @@ const MessageItem: React.FC<IMessageItemProps> = ({
                   {item.user.name}
                 </Text>
               </View>
-              <View style={styles.htmlRenderContainer}>
+              <View
+                style={[
+                  styles.htmlRenderContainer,
+                  { width: "80%", marginTop: item.user._id !== 1 ? -16 : 0 },
+                ]}
+              >
                 <RenderHtml
                   source={{ html: item?.text }}
                   contentWidth={Dimensions.get("window").width * 0.5}

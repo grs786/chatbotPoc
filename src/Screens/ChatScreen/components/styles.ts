@@ -180,9 +180,9 @@ export const styles = StyleSheet.create({
   modalBackground: {
     alignItems: "center",
     position: "absolute",
-    height: "98%",
+    height: "95%",
     width: "100%",
-    marginTop: "20%",
+    marginTop: "30%",
     zIndex: 4,
   },
   vechilemodalContainer: {

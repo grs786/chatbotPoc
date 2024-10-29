@@ -15,8 +15,9 @@ import * as Clipboard from "expo-clipboard";
 interface IStepHistory {
   id: string;
   type: string | "assistant_message" | "user_message" | "undefined";
-  input: string | null;
+  input: string;
   output: string;
+  name: string;
 }
 
 interface IFeedbackHistory {
@@ -69,7 +70,12 @@ const MessageBubble = ({
             {name}
           </Text>
         </View>
-        <View style={[styles.htmlRenderContainer, { width: "80%" }]}>
+        <View
+          style={[
+            styles.htmlRenderContainer,
+            { width: "80%", marginTop: !isUser ? -16 : 0 },
+          ]}
+        >
           <RenderHtml
             source={{ html: content }}
             contentWidth={Dimensions.get("window").width * 0.5}
@@ -104,6 +110,27 @@ const MessageBubble = ({
   </View>
 );
 
+// const MessageBubble = ({ name, content, isUser }: IMessageBubble) => (
+//   <View style={isUser ? styles.messageContainer : styles.rmessageContainer}>
+//     <View
+//       style={
+//         isUser ? styles.sentMessageContainer : styles.receiveMessageContainer
+//       }
+//     >
+//       <View style={[styles.messageBubble]}>
+//         <View style={[styles.iconContainer, { width: 60 }]}>
+//           <Text numberOfLines={2} style={styles.receiverIcon}>
+//             {name}
+//           </Text>
+//         </View>
+//         <View style={[styles.htmlRenderContainer, { width: "80%" }]}>
+//           <RenderHtml source={{ html: content }} contentWidth={contentWidth} />
+//         </View>
+//       </View>
+//     </View>
+//   </View>
+// );
+
 const StepHistory = memo(
   ({
     itemID,
@@ -128,63 +155,91 @@ const StepHistory = memo(
         item.type === "user_message" || item.type === "assistant_message"
     );
 
+    // const renderMessage: FlatListProps<IStepHistory>["renderItem"] = ({
+    //   item,
+    // }) => {
+    //   const isUser = item.type === "user_message";
+    //   const isThumbsUp = getThumbsUpStatus(item?.id);
+    //   const isThumbsDown = getThumbsDownStatus(item?.id);
+
+    //   if (isUser) {
+    //     if (item.input === null) {
+    //       // Treat as user message with null input
+    //       return (
+    //         <MessageBubble
+    //           name={USER_NAME}
+    //           content={item.output}
+    //           isUser={true}
+    //           isThumbsUp={false}
+    //           isThumbsDown={false}
+    //         />
+    //       );
+    //     } else {
+    //       // Split user input and bot output
+    //       return (
+    //         <>
+    //           <MessageBubble
+    //             name={USER_NAME}
+    //             content={item.input}
+    //             isUser={true}
+    //             isThumbsUp={false}
+    //             isThumbsDown={false}
+    //           />
+    //           <MessageBubble
+    //             name={ASSISTANT_NAME}
+    //             content={item.output}
+    //             isUser={false}
+    //             isThumbsUp={isThumbsUp}
+    //             isThumbsDown={isThumbsDown}
+    //           />
+    //         </>
+    //       );
+    //     }
+    //   } else {
+    //     // Assistant message
+    //     return (
+    //       <MessageBubble
+    //         name={ASSISTANT_NAME}
+    //         content={item.output}
+    //         isUser={false}
+    //         isThumbsUp={isThumbsUp}
+    //         isThumbsDown={isThumbsDown}
+    //       />
+    //     );
+    //   }
+    // };
+
     const renderMessage: FlatListProps<IStepHistory>["renderItem"] = ({
       item,
     }) => {
-      const isUser = item.type === "user_message";
+      if (item.name !== "chatbot") return <View />;
+      const isUser = item.name === "chatbot";
       const isThumbsUp = getThumbsUpStatus(item?.id);
       const isThumbsDown = getThumbsDownStatus(item?.id);
-
-      if (isUser) {
-        if (item.input === null) {
-          // Treat as user message with null input
-          return (
+      if (item.input) {
+        return (
+          <>
             <MessageBubble
               name={USER_NAME}
-              content={item.output}
-              isUser={true}
-              isThumbsUp={false}
+              content={item.input}
+              isUser={isUser}
               isThumbsDown={false}
+              isThumbsUp={false}
             />
-          );
-        } else {
-          // Split user input and bot output
-          return (
-            <>
-              <MessageBubble
-                name={USER_NAME}
-                content={item.input}
-                isUser={true}
-                isThumbsUp={false}
-                isThumbsDown={false}
-              />
-              <MessageBubble
-                name={ASSISTANT_NAME}
-                content={item.output}
-                isUser={false}
-                isThumbsUp={isThumbsUp}
-                isThumbsDown={isThumbsDown}
-              />
-            </>
-          );
-        }
-      } else {
-        // Assistant message
-        return (
-          <MessageBubble
-            name={ASSISTANT_NAME}
-            content={item.output}
-            isUser={false}
-            isThumbsUp={isThumbsUp}
-            isThumbsDown={isThumbsDown}
-          />
+            <MessageBubble
+              name={ASSISTANT_NAME}
+              content={item.output}
+              isUser={false}
+              isThumbsDown={isThumbsDown}
+              isThumbsUp={isThumbsUp}
+            />
+          </>
         );
       }
     };
     if (filteredData.length === 0) {
       return <Text style={styles.noResultFound}>No result found</Text>;
     }
-
     return (
       <FlatList
         data={filteredData}
