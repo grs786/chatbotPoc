@@ -14,6 +14,12 @@ const RenderVehicleInfo: React.FC<IVehicle> = ({
       contentContainerStyle={styles.content}
       style={styles.vehicleDetailsContainer}
     >
+      <View style={styles.logoContainer}>
+        <Image
+          source={require("../../../Assets/images/fordLogo.png")}
+          style={styles.logo}
+        />
+      </View>
       <View style={styles.connectedHeader}>
         <View style={styles.vehicleRowView}>
           <Image

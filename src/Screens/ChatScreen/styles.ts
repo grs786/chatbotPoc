@@ -15,12 +15,12 @@ export const styles = StyleSheet.create({
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.1,
     shadowRadius: 5,
-    elevation: 3,
+    // elevation: 3,
     paddingTop:80,
     height:"100%",
     zIndex:2
   },
-  content:{justifyContent:'center',paddingHorizontal:20,paddingTop:80},
+  content:{justifyContent:'center',paddingHorizontal:20,},
   keyboard: { paddingHorizontal: 10,},
   loaderView:{
     position:"absolute",
@@ -34,6 +34,15 @@ export const styles = StyleSheet.create({
     justifyContent: "space-between",
     alignItems: "center",
     marginBottom: 10,
+  },
+  logoContainer: {
+    alignItems: "center",
+    
+    marginBottom:"20%"
+  },
+  logo: {
+    width: 50,
+    height: 50,
   },
   vehicleTitle: {
     fontSize: 14,

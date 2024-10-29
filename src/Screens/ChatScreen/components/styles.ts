@@ -182,7 +182,7 @@ export const styles = StyleSheet.create({
     position: "absolute",
     height: "98%",
     width: "100%",
-    marginTop: "30%",
+    marginTop: "20%",
     zIndex: 4,
   },
   vechilemodalContainer: {

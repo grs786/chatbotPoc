@@ -12,22 +12,37 @@
       "backgroundColor": "#ffffff"
     },
     "ios": {
-      "supportsTablet": true,
+      "supportsTablet": false,
+      "bundleIdentifier": "com.ford.diagnowbot",
       "infoPlist": {
-        "NSMicrophoneUsageDescription": "This app needs access to the microphone to record audio messages."
-      }
+        "NSMicrophoneUsageDescription": "This app needs access to the microphone to record audio messages.",
+        "NSPhotoLibraryUsageDescription": "This app want to use the photo library permission for app attachment purpose.",
+        "NSPhotoLibraryAddUsageDescription": "This app want to use the photo library permission for app attachment purpose."
+      },
+      "buildNumber": "1"
     },
     "android": {
+      "package": "com.ford.diagnowbot",
       "permissions": [
-        "RECORD_AUDIO"
+        "android.permission.RECORD_AUDIO",
+        "android.permissions.READ_EXTERNAL_STORAGE",
+        "android.permissions.WRITE_EXTERNAL_STROAGE"
       ],
+      "jsEngine": "hermes",
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#ffffff"
-      }
+      },
+      "versionCode": "1"
     },
     "web": {
       "favicon": "./assets/favicon.png"
-    }
+    },
+    "extra": {
+      "eas": {
+        "projectId": "e2ca9b37-a49a-4fa3-a187-39988b1d2629"
+      }
+    },
+    "owner": "gauravinfo"
   }
 }
