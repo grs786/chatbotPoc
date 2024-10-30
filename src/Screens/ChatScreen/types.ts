@@ -33,3 +33,12 @@ export interface IVehicleInfo {
   engine?: string;
   connected?: boolean;
 }
+
+
+export interface IFeedbackArray{
+  [x: string]: any;
+  id: string, // create from mobile_end uuid
+  forId: string, //QuestionID
+  value: string,
+  comment: string ,
+}

@@ -3,19 +3,29 @@ import { Modal, View, Text, TextInput, TouchableOpacity } from "react-native";
 import CustomCheckbox from "./CustomCheckbox"; // Path to the custom checkbox component
 import styles from "./styles";
 import { Colors } from "src/Assets/colors";
+import { IFeedbackArray } from "../../types";
 
 interface FeedbackModalProps {
   visible: boolean;
+  localFeedbackArr: IFeedbackArray;
   onClose: () => void;
   onSubmit: (feedback: string) => void;
+  feedbackQuestionID: string;
 }
 
 const FeedbackModal: React.FC<FeedbackModalProps> = ({
   visible,
   onClose,
   onSubmit,
+  localFeedbackArr,
+  feedbackQuestionID,
 }) => {
-  const [feedback, setFeedback] = useState("");
+  let feedbackValue = "";
+  localFeedbackArr.forEach((item: { forId: string; comment: string }) => {
+    item.forId === feedbackQuestionID ? (feedbackValue = item.comment) : "";
+  });
+  console.log(feedbackValue, "feedbackValuefeedbackValue");
+  const [feedback, setFeedback] = useState(feedbackValue || "");
   const [selectedCheckbox, setSelectedCheckbox] = useState<number>(); // state to keep track of selected checkbox
 
   const [isNotTrue, setIsNotTrue] = useState(false);

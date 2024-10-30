@@ -24,7 +24,7 @@ import {
   IStepHistoryData,
   useConvertSpeechToText,
 } from "src/Hooks/useChatOperations";
-import { IVehicleInfo } from "./types";
+import { IFeedbackArray, IVehicleInfo } from "./types";
 import RenderVehicleInfo from "./components/RenderVehicleInfo";
 import Loader from "src/components/Loader";
 import uuid from "uuid-random";
@@ -33,11 +33,15 @@ import StepHistory from "./components/HistoryMessageList";
 import { useImagePicker } from "src/Hooks/useImagePicker";
 import { useAudioRecorder } from "src/Hooks/useAudioRecorder";
 import CustomHeader from "src/components/CustomHeader";
-import { get_url_extension } from "src/Utilities/utils";
+import { get_url_extension, updateArray } from "src/Utilities/utils";
 import FeedbackModal from "./components/FeedbackModal";
 
 const ChatScreen: React.FC = () => {
   const [messages, setMessages] = useState<IMessage[]>([]);
+  const [feedbackLocalArr, setFeedbackLocalArr] = useState<IFeedbackArray[]>(
+    []
+  );
+
   const [inputText, setInputText] = useState("");
   const [sessionId, setSessionID] = useState<string>("");
   const [userId, setUserID] = useState<string>("");
@@ -80,7 +84,6 @@ const ChatScreen: React.FC = () => {
 
   const initialSession = async () => {
     const data = await createUserSession();
-
     data?.access_token &&
       (await setItem(process.env.ACCESS_TOKEN ?? "", data?.access_token));
     setAccessToken(data?.access_token);
@@ -238,9 +241,12 @@ const ChatScreen: React.FC = () => {
       value: value,
       comment: useComment || "",
     };
-    // return;
+
+    const newData = updateArray(feedbackLocalArr, paramsBody);
+    setFeedbackLocalArr(newData);
     const userFeedback = await upsertUserFeedback(paramsBody, accessToken);
     setIsLoading(false);
+    return;
   };
 
   const handleVinClose = async (vehicleData: IVehicleDetail) => {
@@ -396,10 +402,12 @@ const ChatScreen: React.FC = () => {
       {feedbackModal && (
         <FeedbackModal
           visible={feedbackModal}
+          localFeedbackArr={feedbackLocalArr}
           onClose={() => setFeedbackModal(false)}
-          onSubmit={(feedbackValue) =>
-            handleReactionFeedback(0, feedbackQuestionID, feedbackValue)
-          }
+          feedbackQuestionID={feedbackQuestionID}
+          onSubmit={(feedbackValue) => {
+            handleReactionFeedback(0, feedbackQuestionID, feedbackValue);
+          }}
         />
       )}
       {isLoading && (

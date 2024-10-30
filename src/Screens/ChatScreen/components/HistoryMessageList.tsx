@@ -110,27 +110,6 @@ const MessageBubble = ({
   </View>
 );
 
-// const MessageBubble = ({ name, content, isUser }: IMessageBubble) => (
-//   <View style={isUser ? styles.messageContainer : styles.rmessageContainer}>
-//     <View
-//       style={
-//         isUser ? styles.sentMessageContainer : styles.receiveMessageContainer
-//       }
-//     >
-//       <View style={[styles.messageBubble]}>
-//         <View style={[styles.iconContainer, { width: 60 }]}>
-//           <Text numberOfLines={2} style={styles.receiverIcon}>
-//             {name}
-//           </Text>
-//         </View>
-//         <View style={[styles.htmlRenderContainer, { width: "80%" }]}>
-//           <RenderHtml source={{ html: content }} contentWidth={contentWidth} />
-//         </View>
-//       </View>
-//     </View>
-//   </View>
-// );
-
 const StepHistory = memo(
   ({
     itemID,

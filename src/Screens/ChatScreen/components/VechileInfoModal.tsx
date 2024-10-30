@@ -26,7 +26,6 @@ export interface VehicleInfo {
 const VehicleInfoModal: React.FC<VehicleInfo> = ({ onClose, visible }) => {
   const [vin, setVin] = useState<string>("");
   const [loading, setLoading] = useState<boolean>(false);
-  const [showKeyboard, setShowKeyboard] = useState<boolean>(false);
   const [connectedViaButton, setConnectedViaButton] = useState<boolean>(true);
   const [vehicleDetails, setVehicleDetails] = useState<{
     model: string;
@@ -38,7 +37,7 @@ const VehicleInfoModal: React.FC<VehicleInfo> = ({ onClose, visible }) => {
   const handleVinChange = (value: string) => {
     setVin(value);
 
-    if (value.length > 10) {
+    if (value.length > 20) {
       const typingDelay = setTimeout(() => {
         clearTimeout(typingDelay);
         Keyboard.dismiss();
