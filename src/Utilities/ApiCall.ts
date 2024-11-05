@@ -7,7 +7,7 @@ const createApiInstance = (baseURL: string) => {
     baseURL,
     timeout: 1000 * 60 * 2, // Set a timeout (optional) chat api takes lot of time thats why we have added higher timeout time
     headers: {
-      "Accept": "application/json", // Default content type
+      Accept: "application/json", // Default content type
       // Add other default headers here
     },
   });
@@ -93,13 +93,16 @@ const handleError = (error: unknown) => {
     // Check if the error is an AxiosError
     if (error.response) {
       // Server responded with a status other than 200 range
-
-      Toast.show({
-        type: "error",
-        position: "bottom",
-        text1: `${error.response.data?.detail}`,
-      });
-      throw new Error(error.response.data.message || "An error occurred");
+      if (error?.request?.responseURL.includes("userdb/create_user")) {
+        throw new Error(error.response.data.message);
+      } else {
+        Toast.show({
+          type: "error",
+          position: "bottom",
+          text1: `${error.response.data?.detail}`,
+        });
+        throw new Error(error.response.data.message || "An error occurred121");
+      }
     } else if (error.request) {
       // Request was made but no response received
 

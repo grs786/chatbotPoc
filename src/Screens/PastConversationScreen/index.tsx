@@ -38,6 +38,7 @@ const PastConversationsScreen = (
   }
 ) => {
   const [searchText, setSearchText] = useState("");
+  const [userUUID, setUserUUID] = useState<string>("");
   const [chatHistory, setChatHistory] = useState<IChatHistory[]>();
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const navigation = useNavigation<NavigationProp<ApplicationStackParamList>>();
@@ -59,6 +60,8 @@ const PastConversationsScreen = (
       setChatHistory(historyData?.history);
       setIsLoading(false);
     }
+    const userUUID = (await getItem(process.env.USER_IDENTIFIER ?? "")) ?? "";
+    setUserUUID(userUUID);
   };
 
   useEffect(() => {
@@ -125,7 +128,14 @@ const PastConversationsScreen = (
         title=""
         {...props}
         iconName={require("../../Assets/images/menuOpen.png")}
+        beginNewChat={() =>
+          navigation.navigate(`${SCREENS.ChatScreen}`, {
+            toggleEmailDialog: true,
+          })
+        }
+        rightIcon={require("../../Assets/images/editIc.png")}
       />
+      {/* <Text style={styles.uuidText}>{userUUID}</Text> */}
       <Text style={styles.heading}>Past Chats</Text>
       {/* Search Bar */}
       <View style={styles.searchContainer}>

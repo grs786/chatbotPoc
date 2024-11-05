@@ -11,6 +11,9 @@ import {
 import styles from "./styles";
 import styles2 from "../FeedbackModal/styles";
 import { useValidateUserMail } from "src/Hooks/useChatOperations";
+import { setItem } from "src/Utilities/StorageClasses";
+import { validateEmail } from "src/Utilities/utils";
+import { Colors } from "src/Assets/colors";
 
 interface IGetUserEmail {
   updateSubmit: () => void;
@@ -19,16 +22,16 @@ interface IGetUserEmail {
 
 const GetUserEmail = ({ updateSubmit, accessToken }: IGetUserEmail) => {
   const [modalVisible, setModalVisible] = useState(true);
+  const [EmailValidated, setEmailValidated] = useState(false);
   const [inputValue, setInputValue] = useState("");
   const { validateUserMail } = useValidateUserMail();
 
   const handleSubmit = async () => {
     // Handle the submit action here, e.g., log the input or pass it to a function
-    console.log("Submitted value:", inputValue);
     // setModalVisible(false);
-    // updateSubmit();
     const userData = await validateUserMail(inputValue, accessToken);
-    console.log(userData, "userdatasdnfggbsdmgbmdnsfgbm");
+    await setItem(process.env.USER_IDENTIFIER ?? "", inputValue);
+    updateSubmit();
   };
 
   return (
@@ -46,11 +49,37 @@ const GetUserEmail = ({ updateSubmit, accessToken }: IGetUserEmail) => {
               style={styles.input}
               placeholder="Email..."
               value={inputValue}
-              onChangeText={setInputValue}
+              onChangeText={(text) => {
+                const isValid = validateEmail(text);
+                isValid && setEmailValidated(true);
+                setInputValue(text);
+              }}
             />
             {/* <Button title="Submit" onPress={handleSubmit} /> */}
-            <TouchableOpacity style={styles2.button} onPress={handleSubmit}>
-              <Text style={styles2.buttonText}>Submit</Text>
+            <TouchableOpacity
+              disabled={!EmailValidated}
+              style={[
+                styles2.button,
+                {
+                  backgroundColor: !EmailValidated
+                    ? Colors.DISABLED_BUTTON
+                    : Colors.NAVYBLUE,
+                },
+              ]}
+              onPress={handleSubmit}
+            >
+              <Text
+                style={[
+                  styles2.buttonText,
+                  {
+                    color: !EmailValidated
+                      ? Colors.DISABLED_TEXT
+                      : Colors.WHITE,
+                  },
+                ]}
+              >
+                Submit
+              </Text>
             </TouchableOpacity>
           </View>
         </View>

@@ -28,7 +28,7 @@ import { IFeedbackArray, IVehicleInfo } from "./types";
 import RenderVehicleInfo from "./components/RenderVehicleInfo";
 import Loader from "src/components/Loader";
 import uuid from "uuid-random";
-import { setItem } from "src/Utilities/StorageClasses";
+import { getItem, setItem } from "src/Utilities/StorageClasses";
 import StepHistory from "./components/HistoryMessageList";
 import { useImagePicker } from "src/Hooks/useImagePicker";
 import { useAudioRecorder } from "src/Hooks/useAudioRecorder";
@@ -68,8 +68,11 @@ const ChatScreen: React.FC = () => {
   const [stepHistoryData, setStepHistoryData] = useState<
     IStepHistoryData | undefined
   >(); // Store vehicle information
-  const route =
-    useRoute<RouteProp<{ params: { id?: string; itemData?: object } }>>();
+  const route = useRoute<
+    RouteProp<{
+      params: { id?: string; itemData?: object; toggleEmailDialog?: boolean };
+    }>
+  >();
 
   const navigation = useNavigation();
   const { recording, startRecording, stopRecording } = useAudioRecorder();
@@ -90,7 +93,10 @@ const ChatScreen: React.FC = () => {
     data?.access_token &&
       (await setItem(process.env.ACCESS_TOKEN ?? "", data?.access_token));
     setAccessToken(data?.access_token);
-    setEnableUserInputDialog(true);
+    const getUserData = await getItem(process.env.USER_IDENTIFIER ?? "");
+    if (!getUserData) {
+      setEnableUserInputDialog(true);
+    }
   };
 
   useEffect(() => {
@@ -117,6 +123,10 @@ const ChatScreen: React.FC = () => {
       setModalVisible(false);
       setIsChatIconDisable(false);
       retreiveHistoryData(route?.params?.itemData);
+    }
+    if (route?.params?.toggleEmailDialog) {
+      setEnableUserInputDialog(true);
+      initiateNewChat();
     }
   }, [route]);
 
@@ -274,10 +284,8 @@ const ChatScreen: React.FC = () => {
       setSessionID(respData?.session_id);
       await setItem(process.env.SESSION_ID ?? "", respData?.session_id);
 
-      const userData = await fetchUserData(
-        process.env.USER_MAIL ?? "",
-        accessToken
-      );
+      const userUUID = await getItem(process.env.USER_IDENTIFIER ?? "");
+      const userData = await fetchUserData(userUUID, accessToken);
       await setItem(process.env.USER_ID ?? "", userData?.id);
       setUserID(userData?.id);
       setUserIdentifier(userData?.identifier);
@@ -285,6 +293,19 @@ const ChatScreen: React.FC = () => {
       setModalVisible(true);
       setIsChatIconDisable(true);
     }
+  };
+
+  const initiateNewChat = () => {
+    setIsChatIconDisable(false);
+    modalVisible === false && setDisplayVehicleInfo(true);
+    setStepHistoryData(undefined);
+    setMessages([]);
+    setUpdateThreadCounter(0);
+    handleVinClose({
+      model: "2021 F-150",
+      vinNumber: process.env.SAMPLE_VIN || "",
+      connected: true,
+    });
   };
 
   return (
@@ -305,18 +326,7 @@ const ChatScreen: React.FC = () => {
             connected: true,
           });
         }}
-        beginNewChat={() => {
-          setIsChatIconDisable(false);
-          modalVisible === false && setDisplayVehicleInfo(true);
-          setStepHistoryData(undefined);
-          setMessages([]);
-          setUpdateThreadCounter(0);
-          handleVinClose({
-            model: "2021 F-150",
-            vinNumber: process.env.SAMPLE_VIN || "",
-            connected: true,
-          });
-        }}
+        beginNewChat={initiateNewChat}
         isChatIconDisable={isChatIconDisable}
       />
       {!isLoading && displayVehicleInfo && (
@@ -374,7 +384,6 @@ const ChatScreen: React.FC = () => {
               stopRecording={async () => {
                 const recordingURI = await stopRecording();
                 if (recordingURI) {
-                  console.log(recordingURI, "recordingURI");
                   const formData = new FormData();
                   const audioType = get_url_extension(recordingURI);
                   const audioObject = {
@@ -417,12 +426,12 @@ const ChatScreen: React.FC = () => {
           <Loader />
         </View>
       )}
-      {/* {enableUserInputDialog && (
+      {enableUserInputDialog && (
         <GetUserEmail
           updateSubmit={() => setEnableUserInputDialog(false)}
           accessToken={accessToken}
         />
-      )} */}
+      )}
       {modalVisible && (
         <VehicleInfoModal visible={modalVisible} onClose={handleVinClose} />
       )}

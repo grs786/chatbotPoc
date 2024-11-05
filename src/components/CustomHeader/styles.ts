@@ -10,9 +10,9 @@ export const styles = StyleSheet.create({
     borderBottomColor: "white",
     // Adding shadow properties for both iOS and Android
     shadowColor: "#000",
-    shadowOffset: { width: 0, height: 2 },
+    shadowOffset: { width: 1, height: 2 },
     shadowOpacity: 0.1,
-    shadowRadius: 4,
+    shadowRadius: 0,
     elevation: 5,
     paddingHorizontal: 20,
   },

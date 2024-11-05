@@ -358,13 +358,6 @@ export const useConvertSpeechToText = () => {
 export const useValidateUserMail = () => {
   const validateUserMail = useCallback(
     async (UUID: string, access_token: string) => {
-      console.log(
-        UUID,
-        access_token,
-        "DSfshfbjshdgfsjdhf",
-        process.env.BASE_URL,
-        process.env.VALIDATE_USER
-      );
       const bodyParams = {
         identifier: UUID,
       };
@@ -381,7 +374,7 @@ export const useValidateUserMail = () => {
         );
         return response;
       } catch (error: unknown) {
-        return error;
+        return "An error occured";
       }
     },
     []

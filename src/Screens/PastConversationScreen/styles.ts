@@ -16,7 +16,10 @@ export const styles = StyleSheet.create({
     paddingHorizontal: 0,
     shadowColor: "#fff",
     backgroundColor: "transparent",
-    
+  },
+  uuidText: {
+    fontSize: 10,
+    textAlign: "right",
   },
   searchContainer: {
     flexDirection: "row",
@@ -60,9 +63,9 @@ export const styles = StyleSheet.create({
     color: "#aaa",
     paddingVertical: 5,
   },
-  noHistoryText:{
-    margin:24,
-    fontSize:16,
-    fontWeight:'600'
-  }
+  noHistoryText: {
+    margin: 24,
+    fontSize: 16,
+    fontWeight: "600",
+  },
 });

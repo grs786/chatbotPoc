@@ -10,6 +10,7 @@ const CustomHeader = ({
   navigateToHome,
   isChatIconDisable,
   iconName,
+  rightIcon,
 }: {
   title: string;
   navigation: any;
@@ -18,6 +19,7 @@ const CustomHeader = ({
   navigateToHome?: () => void;
   isChatIconDisable?: boolean;
   iconName?: string;
+  rightIcon?: string;
 }) => {
   return (
     <View style={[styles.container, containerStyle]}>
@@ -33,7 +35,7 @@ const CustomHeader = ({
         </TouchableOpacity>
         <TouchableOpacity onPress={beginNewChat} disabled={isChatIconDisable}>
           <Image
-            source={require("../../Assets/images/editIcon.png")}
+            source={rightIcon ?? require("../../Assets/images/editIcon.png")}
             style={{
               width: 25,
               height: 25,
