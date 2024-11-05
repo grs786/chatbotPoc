@@ -354,3 +354,39 @@ export const useConvertSpeechToText = () => {
     convertSpeechToText,
   };
 };
+
+export const useValidateUserMail = () => {
+  const validateUserMail = useCallback(
+    async (UUID: string, access_token: string) => {
+      console.log(
+        UUID,
+        access_token,
+        "DSfshfbjshdgfsjdhf",
+        process.env.BASE_URL,
+        process.env.VALIDATE_USER
+      );
+      const bodyParams = {
+        identifier: UUID,
+      };
+      try {
+        const response = await post(
+          `${process.env.VALIDATE_USER}`,
+          {
+            ...bodyParams,
+          },
+          {
+            Authorization: `Bearer ${access_token}`,
+          },
+          `${process.env.BASE_URL}`
+        );
+        return response;
+      } catch (error: unknown) {
+        return error;
+      }
+    },
+    []
+  );
+  return {
+    validateUserMail,
+  };
+};

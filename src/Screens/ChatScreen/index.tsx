@@ -35,6 +35,7 @@ import { useAudioRecorder } from "src/Hooks/useAudioRecorder";
 import CustomHeader from "src/components/CustomHeader";
 import { get_url_extension, updateArray } from "src/Utilities/utils";
 import FeedbackModal from "./components/FeedbackModal";
+import GetUserEmail from "./components/GetUserEmail";
 
 const ChatScreen: React.FC = () => {
   const [messages, setMessages] = useState<IMessage[]>([]);
@@ -55,6 +56,8 @@ const ChatScreen: React.FC = () => {
     Record<string, string>
   >({});
   const [modalVisible, setModalVisible] = useState<boolean>(true);
+  const [enableUserInputDialog, setEnableUserInputDialog] =
+    useState<boolean>(false);
   const [displayVehicleInfo, setDisplayVehicleInfo] = useState<boolean>(false);
   const [isChatIconDisable, setIsChatIconDisable] = useState<boolean>(true);
   const [accessToken, setAccessToken] = useState<string>("");
@@ -87,6 +90,7 @@ const ChatScreen: React.FC = () => {
     data?.access_token &&
       (await setItem(process.env.ACCESS_TOKEN ?? "", data?.access_token));
     setAccessToken(data?.access_token);
+    setEnableUserInputDialog(true);
   };
 
   useEffect(() => {
@@ -370,6 +374,7 @@ const ChatScreen: React.FC = () => {
               stopRecording={async () => {
                 const recordingURI = await stopRecording();
                 if (recordingURI) {
+                  console.log(recordingURI, "recordingURI");
                   const formData = new FormData();
                   const audioType = get_url_extension(recordingURI);
                   const audioObject = {
@@ -396,9 +401,6 @@ const ChatScreen: React.FC = () => {
           </KeyboardAvoidingView>
         </>
       )}
-      {modalVisible && (
-        <VehicleInfoModal visible={modalVisible} onClose={handleVinClose} />
-      )}
       {feedbackModal && (
         <FeedbackModal
           visible={feedbackModal}
@@ -414,6 +416,15 @@ const ChatScreen: React.FC = () => {
         <View style={styles.loaderView}>
           <Loader />
         </View>
+      )}
+      {/* {enableUserInputDialog && (
+        <GetUserEmail
+          updateSubmit={() => setEnableUserInputDialog(false)}
+          accessToken={accessToken}
+        />
+      )} */}
+      {modalVisible && (
+        <VehicleInfoModal visible={modalVisible} onClose={handleVinClose} />
       )}
     </SafeAreaView>
   );

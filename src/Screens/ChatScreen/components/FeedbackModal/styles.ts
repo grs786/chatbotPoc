@@ -58,8 +58,8 @@ const styles = StyleSheet.create({
         },
         buttonText: {
           color: "white",
-          fontSize:14
-        //   fontWeight: "bold",
+          fontSize:14,
+          fontWeight: "600",
         },
       });
   

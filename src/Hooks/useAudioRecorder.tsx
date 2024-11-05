@@ -9,8 +9,8 @@ export const useAudioRecorder = () => {
       extension: ".m4a",
       outputFormat: 2,
       audioEncoder: 3,
-      sampleRate: 44100,
-      numberOfChannels: 2,
+      sampleRate: 8000,
+      numberOfChannels: 1,
       bitRate: 128000,
     },
     ios: {
