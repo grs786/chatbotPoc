@@ -87,15 +87,29 @@ export const styles = StyleSheet.create({
     color: "#555",
   },
   viewDataButton: {
-    backgroundColor: Colors.DISABLED_BUTTON,
+    backgroundColor: Colors.NAVYBLUE,
     padding: 10,
-    borderRadius: 5,
+    borderRadius: 8,
     alignItems: "center",
+    flexDirection:'row',
+    justifyContent:"center"
+  },
+  finishedDataButton: {
+    backgroundColor: Colors.SKY_BLUE_SHADE1,
+    padding: 10,
+    borderRadius: 8,
+    alignItems: "center",
+    flexDirection:'row',
+    justifyContent:"center",
   },
   viewDataText: {
     fontSize: 14,
     padding: 5,
-    color: Colors.DISABLED_TEXT,
+    color: Colors.WHITE,
+  },
+  circleCheck:{
+    width:28,
+    height:28
   },
   vehicleIcon: {
     width: 24,

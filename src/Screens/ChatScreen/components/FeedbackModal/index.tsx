@@ -7,7 +7,7 @@ import { IFeedbackArray } from "../../types";
 
 interface FeedbackModalProps {
   visible: boolean;
-  localFeedbackArr: IFeedbackArray;
+  localFeedbackArr: IFeedbackArray[];
   onClose: () => void;
   onSubmit: (feedback: string) => void;
   feedbackQuestionID: string;
@@ -24,7 +24,6 @@ const FeedbackModal: React.FC<FeedbackModalProps> = ({
   localFeedbackArr.forEach((item: { forId: string; comment: string }) => {
     item.forId === feedbackQuestionID ? (feedbackValue = item.comment) : "";
   });
-  console.log(feedbackValue, "feedbackValuefeedbackValue");
   const [feedback, setFeedback] = useState(feedbackValue || "");
   const [selectedCheckbox, setSelectedCheckbox] = useState<number>(); // state to keep track of selected checkbox
 
@@ -94,9 +93,9 @@ const FeedbackModal: React.FC<FeedbackModalProps> = ({
           ))}
 
           <View style={styles.buttonContainer}>
-            {/* <TouchableOpacity style={styles.button} onPress={onClose}>
+            <TouchableOpacity style={styles.button} onPress={onClose}>
               <Text style={styles.buttonText}>Cancel</Text>
-            </TouchableOpacity> */}
+            </TouchableOpacity>
             <TouchableOpacity style={styles.button} onPress={handleSubmit}>
               <Text style={styles.buttonText}>Submit feedback</Text>
             </TouchableOpacity>

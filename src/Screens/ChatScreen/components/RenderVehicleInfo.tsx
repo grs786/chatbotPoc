@@ -1,5 +1,12 @@
-import React from "react";
-import { Image, ScrollView, Text, TouchableOpacity, View } from "react-native";
+import React, { useEffect, useState } from "react";
+import {
+  ActivityIndicator,
+  Image,
+  ScrollView,
+  Text,
+  TouchableOpacity,
+  View,
+} from "react-native";
 import { styles } from "../styles";
 import { Colors } from "src/Assets/colors";
 import { IVehicle } from "../types";
@@ -9,6 +16,18 @@ const RenderVehicleInfo: React.FC<IVehicle> = ({
   onPress,
   onVehicleTabPress,
 }: IVehicle) => {
+  const [loadingState, setIsLoadingState] = useState("initial");
+  const [vehicleDataState, setVehicleDataState] = useState(
+    "Retrieve Vehicle Data"
+  );
+
+  const changeState = () => {
+    setIsLoadingState("loading");
+    setTimeout(() => {
+      setIsLoadingState("finished");
+    }, 3000);
+  };
+
   return (
     <ScrollView
       contentContainerStyle={styles.content}
@@ -47,8 +66,34 @@ const RenderVehicleInfo: React.FC<IVehicle> = ({
         </Text>
         <Text style={styles.vinNumber}>{vehicleInfo?.vin}</Text>
       </TouchableOpacity>
-      <TouchableOpacity style={styles.viewDataButton}>
-        <Text style={styles.viewDataText}>View Vehicle Data</Text>
+      <TouchableOpacity
+        style={
+          loadingState === "finished"
+            ? styles.finishedDataButton
+            : styles.viewDataButton
+        }
+        onPress={changeState}
+      >
+        {loadingState === "loading" && (
+          <ActivityIndicator color={Colors.WHITE} size={"small"} />
+        )}
+        {loadingState === "finished" && (
+          <Image
+            style={styles.circleCheck}
+            source={require("../../../Assets/images/circleCheck.png")}
+          />
+        )}
+        <Text
+          style={[
+            styles.viewDataText,
+            {
+              color:
+                loadingState === "finished" ? Colors.BLUE_SHADE1 : Colors.WHITE,
+            },
+          ]}
+        >
+          {vehicleDataState}
+        </Text>
       </TouchableOpacity>
       <Text style={styles.orText}>OR</Text>
 

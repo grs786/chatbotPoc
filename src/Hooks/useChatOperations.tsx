@@ -131,7 +131,7 @@ export const usePostChatData = () => {
       question_id: "",
       user_id: data.userId,
       search_parameters: {
-        retrieval_cap: 30,
+        retrieval_cap: 20,
         retrieval_depth: 10,
         score_threshold: 0.5,
       },

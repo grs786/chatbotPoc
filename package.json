@@ -6,12 +6,12 @@
     "android": "expo start --android",
     "ios": "expo start --ios",
     "web": "expo start --web",
-    "eas-dev-build-local:android": "eas build --platform android --profile development --local",
+    "eas-dev-build-local:android": "eas build --platform android --profile preview --local",
     "eas-dev-build-assemble:android": "eas build --platform android --profile preview2 --local",
     "eas-dev-build-local:ios": "eas build -p ios --profile previewios --clear-cache",
     "eas-dev-build-dev:ios": "eas build --platform ios --profile previewios --local",
     "build-android": "eas build -p android --profile preview",
-    "build-android-production": "eas build -p android --profile production"
+    "build-android-production": "eas build -p android --profile preview2"
   },
   "dependencies": {
     "@expo/vector-icons": "^14.0.2",
