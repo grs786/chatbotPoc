@@ -295,6 +295,14 @@ const ChatScreen: React.FC = () => {
     }
   };
 
+  const fetchcurrentUserdata = async (userUUID: string) => {
+    const userData = await fetchUserData(userUUID, accessToken);
+    await setItem(process.env.USER_ID ?? "", userData?.id);
+    setUserID(userData?.id);
+    setUserIdentifier(userData?.identifier);
+    setEnableUserInputDialog(false);
+  };
+
   const initiateNewChat = () => {
     setIsChatIconDisable(false);
     modalVisible === false && setDisplayVehicleInfo(true);
@@ -428,7 +436,7 @@ const ChatScreen: React.FC = () => {
       )}
       {enableUserInputDialog && (
         <GetUserEmail
-          updateSubmit={() => setEnableUserInputDialog(false)}
+          updateSubmit={(userUUID: string) => fetchcurrentUserdata(userUUID)}
           accessToken={accessToken}
         />
       )}

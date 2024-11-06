@@ -16,7 +16,7 @@ import { validateEmail } from "src/Utilities/utils";
 import { Colors } from "src/Assets/colors";
 
 interface IGetUserEmail {
-  updateSubmit: () => void;
+  updateSubmit: (inputValue: string) => void;
   accessToken: string;
 }
 
@@ -31,7 +31,7 @@ const GetUserEmail = ({ updateSubmit, accessToken }: IGetUserEmail) => {
     // setModalVisible(false);
     const userData = await validateUserMail(inputValue, accessToken);
     await setItem(process.env.USER_IDENTIFIER ?? "", inputValue);
-    updateSubmit();
+    updateSubmit(inputValue);
   };
 
   return (
@@ -44,14 +44,14 @@ const GetUserEmail = ({ updateSubmit, accessToken }: IGetUserEmail) => {
       >
         <View style={styles.modalOverlay}>
           <View style={styles.modalContainer}>
-            <Text style={styles.modalTitle}>Enter your email</Text>
+            <Text style={styles.modalTitle}>Enter your ford email</Text>
             <TextInput
               style={styles.input}
               placeholder="Email..."
               value={inputValue}
               onChangeText={(text) => {
                 const isValid = validateEmail(text);
-                isValid && setEmailValidated(true);
+                isValid ? setEmailValidated(true) : setEmailValidated(false);
                 setInputValue(text);
               }}
             />
