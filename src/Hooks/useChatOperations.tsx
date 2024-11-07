@@ -6,12 +6,12 @@ export const useUserSession = () => {
   const createUserSession = useCallback(async () => {
     try {
       const response = await post(
-        `${process.env.AUTH_SESSION}`,
+        `${ApiPaths.AUTH_SESSION}`,
         { ...ApiPaths.USERSESSION_BODY },
         {
           "Content-Type": "application/x-www-form-urlencoded",
         },
-        `${process.env.SESSION_BASE_URL}`
+        `${ApiPaths.SESSION_BASE_URL}`
       );
       return response;
     } catch (error: unknown) {
@@ -31,12 +31,12 @@ export const useRetreiveVehicleData = () => {
       };
       try {
         const response = await post(
-          `${process.env.RETRIVE_VEHICLE_INFO}`,
+          `${ApiPaths.RETRIVE_VEHICLE_INFO}`,
           { ...bodyparam },
           {
             Authorization: `Bearer ${data?.accessToken}`,
           },
-          `${process.env.BASE_URL}`
+          `${ApiPaths.BASE_URL}`
         );
         return response;
       } catch (error: unknown) {
@@ -55,12 +55,12 @@ export const useFetchUserData = () => {
     async (UUID: string, access_token: string) => {
       try {
         const response = await get(
-          `${process.env.USER_SESSION}${UUID}`,
+          `${ApiPaths.USER_SESSION}${UUID}`,
           {},
           {
             Authorization: `Bearer ${access_token}`,
           },
-          `${process.env.BASE_URL}`
+          `${ApiPaths.BASE_URL}`
         );
         return response;
       } catch (error: unknown) {
@@ -95,12 +95,12 @@ export const useUpdateThreadData = () => {
 
     try {
       const response = await post(
-        `${process.env.UPDATE_THREAD}`,
+        `${ApiPaths.UPDATE_THREAD}`,
         { ...bodyParams },
         {
           Authorization: `Bearer ${data?.accessToken}`,
         },
-        `${process.env.BASE_URL}`
+        `${ApiPaths.BASE_URL}`
       );
 
       return response;
@@ -140,12 +140,12 @@ export const usePostChatData = () => {
     };
     try {
       const response = await post(
-        `${process.env.CHAT_API}`,
+        `${ApiPaths.CHAT_API}`,
         { ...bodyParams },
         {
           Authorization: `Bearer ${data?.accessToken}`,
         },
-        `${process.env.BASE_URL}`
+        `${ApiPaths.BASE_URL}`
       );
 
       return response;
@@ -167,12 +167,12 @@ export const useFetchAllThreadData = () => {
 
       try {
         const response = await post(
-          `${process.env.THREAD_LIST}`,
+          `${ApiPaths.THREAD_LIST}`,
           { ...bodyParams },
           {
             Authorization: `Bearer ${accessToken}`,
           },
-          `${process.env.BASE_URL}`
+          `${ApiPaths.BASE_URL}`
         );
 
         return response;
@@ -213,12 +213,12 @@ export const useCreateUserStep = () => {
 
     try {
       const response = await post(
-        `${process.env.CREATE_USERSTEP}`,
+        `${ApiPaths.CREATE_USERSTEP}`,
         { ...bodyParams },
         {
           Authorization: `Bearer ${data?.accessToken}`,
         },
-        `${process.env.BASE_URL}`
+        `${ApiPaths.BASE_URL}`
       );
 
       return response;
@@ -278,12 +278,12 @@ export const useFetchThreadHistory = () => {
       const bodyParams = historyData;
       try {
         const response = await post(
-          `${process.env.THREAD_HISTORY}`,
+          `${ApiPaths.THREAD_HISTORY}`,
           { ...bodyParams },
           {
             Authorization: `Bearer ${accessToken}`,
           },
-          `${process.env.BASE_URL}`
+          `${ApiPaths.BASE_URL}`
         );
 
         return response;
@@ -311,12 +311,12 @@ export const useUpsertUserFeedback = () => {
       const bodyParams = feedback;
       try {
         const response = await post(
-          `${process.env.USER_FEEBDACK}`,
+          `${ApiPaths.USER_FEEBDACK}`,
           { ...bodyParams },
           {
             Authorization: `Bearer ${accessToken}`,
           },
-          `${process.env.BASE_URL}`
+          `${ApiPaths.BASE_URL}`
         );
         return response;
       } catch (error: unknown) {
@@ -337,10 +337,10 @@ export const useConvertSpeechToText = () => {
     async (attachment: IconvertSpeechToText) => {
       try {
         const response = await post(
-          `${process.env.TRANSCRIBE_ENDPOINT}`,
+          `${ApiPaths.TRANSCRIBE_ENDPOINT}`,
           attachment,
           { "Content-Type": "multipart/form-data" },
-          `${process.env.TRANSCRIBE_API_BASE_URL}`
+          `${ApiPaths.TRANSCRIBE_API_BASE_URL}`
         );
 
         return response;
@@ -363,14 +363,14 @@ export const useValidateUserMail = () => {
       };
       try {
         const response = await post(
-          `${process.env.VALIDATE_USER}`,
+          `${ApiPaths.VALIDATE_USER}`,
           {
             ...bodyParams,
           },
           {
             Authorization: `Bearer ${access_token}`,
           },
-          `${process.env.BASE_URL}`
+          `${ApiPaths.BASE_URL}`
         );
         return response;
       } catch (error: unknown) {

@@ -13,6 +13,7 @@ import { styles } from "./styles";
 import { styles as styles2 } from "../styles";
 import Loader from "src/components/Loader";
 import { Colors } from "src/Assets/colors";
+import ApiPaths from "../../../../environment";
 import ScannerModal from "./ScannerModal";
 import VehicleListModal from "./VehicleListModal";
 export interface IVehicleDetail {
@@ -30,8 +31,8 @@ const VehicleInfoModal: React.FC<VehicleInfo> = ({ onClose, visible }) => {
   const [vin, setVin] = useState<string>("");
   const [loading, setLoading] = useState<boolean>(false);
   const [connectedViaButton, setConnectedViaButton] = useState<boolean>(true);
-  const [scannerVisible,setScannerVisible]=useState<boolean>(false)
-  const[vehicleListModal,setVehicleListModal]=useState<boolean>(false)
+  const [scannerVisible, setScannerVisible] = useState<boolean>(false);
+  const [vehicleListModal, setVehicleListModal] = useState<boolean>(false);
   const [vehicleDetails, setVehicleDetails] = useState<{
     model: string;
     vinNumber: string;
@@ -49,12 +50,12 @@ const VehicleInfoModal: React.FC<VehicleInfo> = ({ onClose, visible }) => {
       }, 1000);
     }
   };
-  const handleScanner=()=>{
-    setScannerVisible(true)
-  }
-  const handleVehicleListModal=()=>{
-    setVehicleListModal(true)
-  }
+  const handleScanner = () => {
+    setScannerVisible(true);
+  };
+  const handleVehicleListModal = () => {
+    setVehicleListModal(true);
+  };
 
   const handleVehicleDataFetch = () => {
     setLoading(true);
@@ -63,12 +64,12 @@ const VehicleInfoModal: React.FC<VehicleInfo> = ({ onClose, visible }) => {
       setLoading(false);
       setVehicleDetails({
         model: "2021 F-150",
-        vinNumber: vin ?? process.env.SAMPLE_VIN,
+        vinNumber: vin ?? ApiPaths.SAMPLE_VIN,
         connected: connectedViaButton,
       });
       onClose({
         model: "2021 F-150",
-        vinNumber: vin ?? process.env.SAMPLE_VIN,
+        vinNumber: vin ?? ApiPaths.SAMPLE_VIN,
         connected: connectedViaButton,
       });
     }, 2000);
@@ -142,10 +143,10 @@ const VehicleInfoModal: React.FC<VehicleInfo> = ({ onClose, visible }) => {
                       }
                     />
                     <Pressable onPress={handleScanner}>
-                    <Image
-                      source={require("../../../Assets/images/Scanner.png")}
-                      style={styles.scannerImg}
-                    />
+                      <Image
+                        source={require("../../../Assets/images/Scanner.png")}
+                        style={styles.scannerImg}
+                      />
                     </Pressable>
                   </View>
                   <Text style={styles.vinDetails}>
@@ -181,8 +182,14 @@ const VehicleInfoModal: React.FC<VehicleInfo> = ({ onClose, visible }) => {
               <Loader title="Connecting with vehicle..." />
             )}
           </View>
-          <ScannerModal visible={scannerVisible} onClose={()=>setScannerVisible(false)}/>
-            <VehicleListModal visible={vehicleListModal} onClose={()=>setVehicleListModal(false)}/>
+          <ScannerModal
+            visible={scannerVisible}
+            onClose={() => setScannerVisible(false)}
+          />
+          <VehicleListModal
+            visible={vehicleListModal}
+            onClose={() => setVehicleListModal(false)}
+          />
         </ScrollView>
       </View>
     </View>

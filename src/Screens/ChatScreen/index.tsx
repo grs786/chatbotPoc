@@ -4,6 +4,7 @@ import {
   KeyboardAvoidingView,
   View,
   Platform,
+  Alert,
 } from "react-native";
 import MessageList, { IMessage } from "./components/MessageList";
 import MessageInput from "./components/MessageInput";
@@ -36,6 +37,7 @@ import CustomHeader from "src/components/CustomHeader";
 import { get_url_extension, updateArray } from "src/Utilities/utils";
 import FeedbackModal from "./components/FeedbackModal";
 import GetUserEmail from "./components/GetUserEmail";
+import ApiPaths from "../../../environment";
 
 const ChatScreen: React.FC = () => {
   const [messages, setMessages] = useState<IMessage[]>([]);
@@ -91,9 +93,9 @@ const ChatScreen: React.FC = () => {
   const initialSession = async () => {
     const data = await createUserSession();
     data?.access_token &&
-      (await setItem(process.env.ACCESS_TOKEN ?? "", data?.access_token));
+      (await setItem(ApiPaths.ACCESS_TOKEN ?? "", data?.access_token));
     setAccessToken(data?.access_token);
-    const getUserData = await getItem(process.env.USER_IDENTIFIER ?? "");
+    const getUserData = await getItem(ApiPaths.USER_IDENTIFIER ?? "");
     if (!getUserData) {
       setEnableUserInputDialog(true);
     }
@@ -124,10 +126,6 @@ const ChatScreen: React.FC = () => {
       setIsChatIconDisable(false);
       retreiveHistoryData(route?.params?.itemData);
     }
-    if (route?.params?.toggleEmailDialog) {
-      setEnableUserInputDialog(true);
-      initiateNewChat();
-    }
   }, [route]);
 
   const handleSend = async () => {
@@ -154,7 +152,7 @@ const ChatScreen: React.FC = () => {
       // Call the API to get the response
       const chatParam = {
         accessToken,
-        vinNumber: process.env.SAMPLE_VIN ?? "", // Adjust the vinNumber as needed
+        vinNumber: ApiPaths.SAMPLE_VIN ?? "", // Adjust the vinNumber as needed
         question: inputText, // Send the user's question
         sessionId: sessionId,
         userId: userId,
@@ -273,7 +271,7 @@ const ChatScreen: React.FC = () => {
       vinNumber:
         vehicleData?.vinNumber.length > 0
           ? vehicleData?.vinNumber
-          : process.env.SAMPLE_VIN ?? "",
+          : ApiPaths.SAMPLE_VIN ?? "",
     };
     const respData = await retreiveVehicleData(reqParam);
 
@@ -282,11 +280,11 @@ const ChatScreen: React.FC = () => {
       setDisplayVehicleInfo(true);
       setVehicleInfo({ ...respData?.vehicle?.vehicle_info, connected: true });
       setSessionID(respData?.session_id);
-      await setItem(process.env.SESSION_ID ?? "", respData?.session_id);
+      await setItem(ApiPaths.SESSION_ID ?? "", respData?.session_id);
 
-      const userUUID = await getItem(process.env.USER_IDENTIFIER ?? "");
+      const userUUID = await getItem(ApiPaths.USER_IDENTIFIER ?? "");
       const userData = await fetchUserData(userUUID, accessToken);
-      await setItem(process.env.USER_ID ?? "", userData?.id);
+      await setItem(ApiPaths.USER_ID ?? "", userData?.id);
       setUserID(userData?.id);
       setUserIdentifier(userData?.identifier);
     } else {
@@ -297,7 +295,7 @@ const ChatScreen: React.FC = () => {
 
   const fetchcurrentUserdata = async (userUUID: string) => {
     const userData = await fetchUserData(userUUID, accessToken);
-    await setItem(process.env.USER_ID ?? "", userData?.id);
+    await setItem(ApiPaths.USER_ID ?? "", userData?.id);
     setUserID(userData?.id);
     setUserIdentifier(userData?.identifier);
     setEnableUserInputDialog(false);
@@ -310,12 +308,13 @@ const ChatScreen: React.FC = () => {
     setMessages([]);
     setUpdateThreadCounter(0);
     handleVinClose({
-      model: "2021 F-150",
-      vinNumber: process.env.SAMPLE_VIN || "",
+      model: vehicleInfo?.model
+        ? `${vehicleInfo?.modelyear} ${vehicleInfo?.model}`
+        : "2021 F-150",
+      vinNumber: vehicleInfo?.vin ?? ApiPaths.SAMPLE_VIN,
       connected: true,
     });
   };
-
   return (
     <SafeAreaView style={styles.mainContainer}>
       <CustomHeader
@@ -329,8 +328,10 @@ const ChatScreen: React.FC = () => {
           setMessages([]);
           setUpdateThreadCounter(0);
           handleVinClose({
-            model: "2021 F-150",
-            vinNumber: process.env.SAMPLE_VIN || "",
+            model: vehicleInfo?.model
+              ? `${vehicleInfo?.modelyear} ${vehicleInfo?.model}`
+              : "2021 F-150",
+            vinNumber: vehicleInfo?.vin ?? ApiPaths.SAMPLE_VIN,
             connected: true,
           });
         }}

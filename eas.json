@@ -6,7 +6,9 @@
     },
     "preview": {
       "android": {
-        "buildType": "apk"
+        "buildType": "apk",
+        "developmentClient": false,
+        "withoutCredentials": false
       }
     },
     "preview2": {
@@ -24,6 +26,13 @@
     "previewios": {
       "distribution": "internal",
       "credentialsSource": "local"
+    },
+    "production": {
+      "android": {
+        "buildType": "apk",
+        "developmentClient": false,
+        "withoutCredentials": false
+      }
     }
   }
 }

@@ -129,3 +129,4 @@ yarn-error.*
 *.tsbuildinfo
 
 # @end expo-cli
+environment.js

@@ -5,7 +5,7 @@ export const styles = StyleSheet.create({
   mainContainer: {
     flex: 1,
     backgroundColor: "white",
-    paddingTop:Platform.OS==="android"?24:0
+    paddingTop: Platform.OS === "android" ? 24 : 0,
   },
   vehicleDetailsContainer: {
     padding: 20,
@@ -16,18 +16,18 @@ export const styles = StyleSheet.create({
     shadowOpacity: 0.1,
     shadowRadius: 5,
     // elevation: 3,
-    paddingTop:80,
-    height:"100%",
-    zIndex:2
+    paddingTop: 80,
+    height: "100%",
+    zIndex: 2,
   },
-  content:{justifyContent:'center',paddingHorizontal:20,},
-  keyboard: { paddingHorizontal: 10,},
-  loaderView:{
-    position:"absolute",
-    width:'100%',
-    height:'120%',
-    justifyContent:'center',
-    alignItems:'center'
+  content: { justifyContent: "center", paddingHorizontal: 20 },
+  keyboard: { paddingHorizontal: 10 },
+  loaderView: {
+    position: "absolute",
+    width: "100%",
+    height: "120%",
+    justifyContent: "center",
+    alignItems: "center",
   },
   connectedHeader: {
     flexDirection: "row",
@@ -37,8 +37,8 @@ export const styles = StyleSheet.create({
   },
   logoContainer: {
     alignItems: "center",
-    
-    marginBottom:"20%"
+
+    marginBottom: "20%",
   },
   logo: {
     width: 50,
@@ -91,25 +91,25 @@ export const styles = StyleSheet.create({
     padding: 10,
     borderRadius: 8,
     alignItems: "center",
-    flexDirection:'row',
-    justifyContent:"center"
+    flexDirection: "row",
+    justifyContent: "center",
   },
   finishedDataButton: {
     backgroundColor: Colors.SKY_BLUE_SHADE1,
     padding: 10,
     borderRadius: 8,
     alignItems: "center",
-    flexDirection:'row',
-    justifyContent:"center",
+    flexDirection: "row",
+    justifyContent: "center",
   },
   viewDataText: {
     fontSize: 14,
     padding: 5,
     color: Colors.WHITE,
   },
-  circleCheck:{
-    width:28,
-    height:28
+  circleCheck: {
+    width: 28,
+    height: 28,
   },
   vehicleIcon: {
     width: 24,
@@ -157,6 +157,12 @@ export const styles = StyleSheet.create({
     paddingVertical: 4,
     fontWeight: "400",
     color: "white",
+  },
+  dtcAddDecelaration: {
+    fontSize: 10,
+    paddingVertical: 4,
+    fontWeight: "400",
+    color: Colors.METALIC_GREY,
   },
   buttonContainer: {
     alignItems: "center",

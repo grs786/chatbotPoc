@@ -22,6 +22,8 @@ import { ApplicationStackParamList } from "src/types/navigation";
 import uuid from "uuid-random";
 import { SCREENS } from "src/Common/screens";
 import { useDrawerStatus } from "@react-navigation/drawer";
+import ApiPaths from "../../../environment";
+
 export interface IChatHistory {
   id: string;
   createdAt: string;
@@ -48,8 +50,8 @@ const PastConversationsScreen = (
   const { fetchAllThreadData } = useFetchAllThreadData();
 
   const initialSession = async () => {
-    const accessTokenId = await getItem(process.env.ACCESS_TOKEN ?? "");
-    const user_Id = await getItem(process.env.USER_ID ?? "");
+    const accessTokenId = await getItem(ApiPaths.ACCESS_TOKEN ?? "");
+    const user_Id = await getItem(ApiPaths.USER_ID ?? "");
 
     if (user_Id && accessTokenId) {
       setIsLoading(true);
@@ -60,7 +62,7 @@ const PastConversationsScreen = (
       setChatHistory(historyData?.history);
       setIsLoading(false);
     }
-    const userUUID = (await getItem(process.env.USER_IDENTIFIER ?? "")) ?? "";
+    const userUUID = (await getItem(ApiPaths.USER_IDENTIFIER ?? "")) ?? "";
     setUserUUID(userUUID);
   };
 
@@ -128,12 +130,6 @@ const PastConversationsScreen = (
         title=""
         {...props}
         iconName={require("../../Assets/images/menuOpen.png")}
-        beginNewChat={() =>
-          navigation.navigate(`${SCREENS.ChatScreen}`, {
-            toggleEmailDialog: true,
-          })
-        }
-        rightIcon={require("../../Assets/images/editIc.png")}
       />
       {/* <Text style={styles.uuidText}>{userUUID}</Text> */}
       <Text style={styles.heading}>Past Chats</Text>
