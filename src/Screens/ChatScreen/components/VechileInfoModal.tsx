@@ -7,13 +7,15 @@ import {
   Keyboard,
   TouchableOpacity,
   ScrollView,
+  Pressable,
 } from "react-native";
 import { styles } from "./styles";
 import { styles as styles2 } from "../styles";
 import Loader from "src/components/Loader";
 import { Colors } from "src/Assets/colors";
 import ApiPaths from "../../../../environment";
-
+import ScannerModal from "./ScannerModal";
+import VehicleListModal from "./VehicleListModal";
 export interface IVehicleDetail {
   model: string;
   vinNumber: string;
@@ -29,6 +31,8 @@ const VehicleInfoModal: React.FC<VehicleInfo> = ({ onClose, visible }) => {
   const [vin, setVin] = useState<string>("");
   const [loading, setLoading] = useState<boolean>(false);
   const [connectedViaButton, setConnectedViaButton] = useState<boolean>(true);
+  const [scannerVisible, setScannerVisible] = useState<boolean>(false);
+  const [vehicleListModal, setVehicleListModal] = useState<boolean>(false);
   const [vehicleDetails, setVehicleDetails] = useState<{
     model: string;
     vinNumber: string;
@@ -45,6 +49,12 @@ const VehicleInfoModal: React.FC<VehicleInfo> = ({ onClose, visible }) => {
         Keyboard.dismiss();
       }, 1000);
     }
+  };
+  const handleScanner = () => {
+    setScannerVisible(true);
+  };
+  const handleVehicleListModal = () => {
+    setVehicleListModal(true);
   };
 
   const handleVehicleDataFetch = () => {
@@ -101,7 +111,7 @@ const VehicleInfoModal: React.FC<VehicleInfo> = ({ onClose, visible }) => {
               <>
                 <TouchableOpacity
                   style={[styles2.bluebutton]}
-                  onPress={handleConnectVehicle}
+                  onPress={handleVehicleListModal}
                   disabled={loading}
                 >
                   <Text style={styles2.submittext}>Connect to vehicle</Text>
@@ -132,10 +142,12 @@ const VehicleInfoModal: React.FC<VehicleInfo> = ({ onClose, visible }) => {
                         scrollRef.current?.scrollTo({ y: 0, animated: true })
                       }
                     />
-                    <Image
-                      source={require("../../../Assets/images/Scanner.png")}
-                      style={styles.scannerImg}
-                    />
+                    <Pressable onPress={handleScanner}>
+                      <Image
+                        source={require("../../../Assets/images/Scanner.png")}
+                        style={styles.scannerImg}
+                      />
+                    </Pressable>
                   </View>
                   <Text style={styles.vinDetails}>
                     Has to be a 17 character alphanumeric
@@ -170,6 +182,14 @@ const VehicleInfoModal: React.FC<VehicleInfo> = ({ onClose, visible }) => {
               <Loader title="Connecting with vehicle..." />
             )}
           </View>
+          <ScannerModal
+            visible={scannerVisible}
+            onClose={() => setScannerVisible(false)}
+          />
+          <VehicleListModal
+            visible={vehicleListModal}
+            onClose={() => setVehicleListModal(false)}
+          />
         </ScrollView>
       </View>
     </View>

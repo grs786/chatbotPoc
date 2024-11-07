@@ -14,4 +14,5 @@ export const Colors = {
   BLACK_SHADE1: "#1E293B",
   BLUE_SHADE1: "#2563EB",
   METALIC_GREY: "#64748B",
+  GREY: "#ddd",
 };
