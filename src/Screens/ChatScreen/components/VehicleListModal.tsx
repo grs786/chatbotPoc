@@ -15,14 +15,15 @@ interface VehicleModalProps {
 }
 
 const availableVehicles = [
-  "Vehicle Name 1",
-  "Vehicle Name 2",
-  "Vehicle Name 3",
-  "Vehicle Name 4",
-  "Vehicle Name 5",
-  "Vehicle Name 6",
-  "Vehicle Name 7",
-  "Vehicle Name 8",
+    { name: 'Vehicle Name 1', Vnumber: 'ABC-1234' },
+    { name: 'Vehicle Name 2', Vnumber: 'XYZ-5678' },
+    { name: 'Vehicle Name 3', Vnumber: 'XYZ-5678' },
+    { name: 'Vehicle Name 4', Vnumber: 'XYZ-5678' },
+    { name: 'Vehicle Name 5', Vnumber: 'XYZ-5678' },
+    { name: 'Vehicle Name 6', Vnumber: 'XYZ-5678' },
+    { name: 'Vehicle Name 7', Vnumber: 'XYZ-5678' },
+    { name: 'Vehicle Name 8', Vnumber: 'XYZ-5678' },
+    { name: 'Vehicle Name 9', Vnumber: 'XYZ-5678' },
 ];
 
 const VehicleListModal: React.FC<VehicleModalProps> = ({
@@ -40,7 +41,7 @@ const VehicleListModal: React.FC<VehicleModalProps> = ({
             <Text style={styles.sectionHeader}>Available vehicles</Text>
             {availableVehicles.map((vehicle, index) => (
               <Text key={`available-${index}`} style={styles.vehicleName}>
-                {vehicle}
+                {vehicle.name}
               </Text>
             ))}
           </ScrollView>
