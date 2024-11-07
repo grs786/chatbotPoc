@@ -13,4 +13,5 @@ export const Colors = {
   INDIGO_BLUE:"#EEF2FF",
   BLACK_SHADE1:"#1E293B",
   BLUE_SHADE1:"#2563EB",
+  GREY:'#ddd',
 };
