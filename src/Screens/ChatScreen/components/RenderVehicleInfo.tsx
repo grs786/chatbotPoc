@@ -108,6 +108,9 @@ const RenderVehicleInfo: React.FC<IVehicle> = ({
           <Text style={styles.submittext}>Change VIN</Text>
         </TouchableOpacity>
       </View>
+      {/* <Text style={styles.dtcAddDecelaration}>
+        Vehicle data is automatically added to your chats
+      </Text> */}
     </ScrollView>
   );
 };

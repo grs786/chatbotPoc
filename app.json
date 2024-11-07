@@ -23,10 +23,12 @@
     },
     "android": {
       "package": "com.ford.diagnowbot",
+      "usesCleartextTraffic": true,
       "permissions": [
-        "android.permission.RECORD_AUDIO",
-        "android.permissions.READ_EXTERNAL_STORAGE",
-        "android.permissions.WRITE_EXTERNAL_STROAGE"
+        "RECORD_AUDIO",
+        "READ_EXTERNAL_STORAGE",
+        "WRITE_EXTERNAL_STORAGE",
+        "INTERNET"
       ],
       "jsEngine": "hermes",
       "adaptiveIcon": {

@@ -69,7 +69,11 @@ const FeedbackModal: React.FC<FeedbackModalProps> = ({
 
   return (
     <Modal visible={visible} transparent={true} animationType="slide">
-      <View style={styles.modalOverlay}>
+      <TouchableOpacity
+        style={styles.modalOverlay}
+        activeOpacity={1}
+        onPress={() => onClose()}
+      >
         <View style={styles.modalContainer}>
           <Text style={styles.title}>Provide feedback</Text>
           <TextInput
@@ -80,7 +84,7 @@ const FeedbackModal: React.FC<FeedbackModalProps> = ({
             placeholderTextColor={Colors.DISABLED_TEXT}
             onChangeText={setFeedback}
           />
-          {checkboxes.map((checkbox) => (
+          {/* {checkboxes.map((checkbox) => (
             <View style={styles.checkboxContainer}>
               <CustomCheckbox
                 value={selectedCheckbox === checkbox.id}
@@ -90,18 +94,18 @@ const FeedbackModal: React.FC<FeedbackModalProps> = ({
               />
               <Text style={styles.label}>{checkbox.label}</Text>
             </View>
-          ))}
+          ))} */}
 
           <View style={styles.buttonContainer}>
-            <TouchableOpacity style={styles.button} onPress={onClose}>
+            {/* <TouchableOpacity style={styles.button} onPress={onClose}>
               <Text style={styles.buttonText}>Cancel</Text>
-            </TouchableOpacity>
+            </TouchableOpacity> */}
             <TouchableOpacity style={styles.button} onPress={handleSubmit}>
               <Text style={styles.buttonText}>Submit feedback</Text>
             </TouchableOpacity>
           </View>
         </View>
-      </View>
+      </TouchableOpacity>
     </Modal>
   );
 };

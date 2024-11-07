@@ -14,6 +14,7 @@ import { useValidateUserMail } from "src/Hooks/useChatOperations";
 import { setItem } from "src/Utilities/StorageClasses";
 import { validateEmail } from "src/Utilities/utils";
 import { Colors } from "src/Assets/colors";
+import ApiPaths from "../../../../../environment";
 
 interface IGetUserEmail {
   updateSubmit: (inputValue: string) => void;
@@ -30,7 +31,7 @@ const GetUserEmail = ({ updateSubmit, accessToken }: IGetUserEmail) => {
     // Handle the submit action here, e.g., log the input or pass it to a function
     // setModalVisible(false);
     const userData = await validateUserMail(inputValue, accessToken);
-    await setItem(process.env.USER_IDENTIFIER ?? "", inputValue);
+    await setItem(ApiPaths.USER_IDENTIFIER ?? "", inputValue);
     updateSubmit(inputValue);
   };
 

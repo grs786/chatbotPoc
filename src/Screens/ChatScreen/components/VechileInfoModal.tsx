@@ -12,6 +12,8 @@ import { styles } from "./styles";
 import { styles as styles2 } from "../styles";
 import Loader from "src/components/Loader";
 import { Colors } from "src/Assets/colors";
+import ApiPaths from "../../../../environment";
+
 export interface IVehicleDetail {
   model: string;
   vinNumber: string;
@@ -52,12 +54,12 @@ const VehicleInfoModal: React.FC<VehicleInfo> = ({ onClose, visible }) => {
       setLoading(false);
       setVehicleDetails({
         model: "2021 F-150",
-        vinNumber: vin ?? process.env.SAMPLE_VIN,
+        vinNumber: vin ?? ApiPaths.SAMPLE_VIN,
         connected: connectedViaButton,
       });
       onClose({
         model: "2021 F-150",
-        vinNumber: vin ?? process.env.SAMPLE_VIN,
+        vinNumber: vin ?? ApiPaths.SAMPLE_VIN,
         connected: connectedViaButton,
       });
     }, 2000);
