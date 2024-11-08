@@ -34,9 +34,9 @@ const ScannerModal: React.FC<ScannerModalProps> = ({ visible, onClose }) => {
         </View>
 
         <View style={styles.centreView}>
-          <Text numberOfLines={2} style={styles.dummyText}>
+          {/* <Text numberOfLines={2} style={styles.dummyText}>
             This is a dummy screen
-          </Text>
+          </Text> */}
 
           <View style={styles.scannerFrame}>
             <Text style={styles.centerText}>Center Barcode or Text</Text>
@@ -44,13 +44,13 @@ const ScannerModal: React.FC<ScannerModalProps> = ({ visible, onClose }) => {
               <Image
                 source={require("../../../Assets/images/scannerImage.png")}
                 style={styles.barcodeImage}
-                resizeMode="contain"
+                resizeMode="stretch"
               />
             </View>
             <Text style={styles.warningText}>Avoid glares and shadows</Text>
           </View>
 
-          <Text style={styles.dummyText}>This is a dummy screen</Text>
+          {/* <Text style={styles.dummyText}>This is a dummy screen</Text> */}
         </View>
       </View>
     </Modal>
@@ -62,8 +62,8 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: Colors.BLACK,
     paddingHorizontal: 10,
-    marginVertical: 80,
-    marginHorizontal: 20,
+    marginTop: 120,
+    // marginHorizontal: 20,
   },
   headerView: {
     flexDirection: "row",
@@ -90,14 +90,12 @@ const styles = StyleSheet.create({
   scannerFrame: {
     width: "90%",
     alignItems: "center",
-    borderColor: "white",
-    padding: 16,
-    marginVertical: 20,
+    marginTop: -100,
   },
   centreView: {
     justifyContent: "center",
     alignItems: "center",
-    marginVertical: 80,
+    flex: 1,
   },
   centerText: {
     color: "grey",
@@ -105,15 +103,14 @@ const styles = StyleSheet.create({
     marginBottom: 10,
   },
   barcodeContainer: {
-    width: "160%",
+    width: "100%",
     height: 100,
     alignItems: "center",
     justifyContent: "center",
-    borderColor: "white",
-    position: "relative",
+    backgroundColor: "red",
   },
   barcodeImage: {
-    width: "80%",
+    width: "100%",
     height: "100%",
   },
 

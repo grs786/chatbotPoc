@@ -16,6 +16,7 @@ import { Colors } from "src/Assets/colors";
 import ApiPaths from "../../../../environment";
 import ScannerModal from "./ScannerModal";
 import VehicleListModal from "./VehicleListModal";
+import { IVehicleData } from "src/types/ScrappedVehicleInfo";
 export interface IVehicleDetail {
   model: string;
   vinNumber: string;
@@ -24,20 +25,17 @@ export interface IVehicleDetail {
 
 export interface VehicleInfo {
   visible: any;
-  onClose: (vehicleDetail: IVehicleDetail) => void;
+  onClose: (vehicleDetail?: IVehicleData) => void;
 }
 
 const VehicleInfoModal: React.FC<VehicleInfo> = ({ onClose, visible }) => {
   const [vin, setVin] = useState<string>("");
+  const [placeholderValue, setPlaceholderValue] = useState<string>("VIN");
   const [loading, setLoading] = useState<boolean>(false);
   const [connectedViaButton, setConnectedViaButton] = useState<boolean>(true);
   const [scannerVisible, setScannerVisible] = useState<boolean>(false);
   const [vehicleListModal, setVehicleListModal] = useState<boolean>(false);
-  const [vehicleDetails, setVehicleDetails] = useState<{
-    model: string;
-    vinNumber: string;
-    connected: boolean;
-  } | null>(null);
+
   const scrollRef = useRef<ScrollView | null>(null);
 
   const handleVinChange = (value: string) => {
@@ -57,33 +55,26 @@ const VehicleInfoModal: React.FC<VehicleInfo> = ({ onClose, visible }) => {
     setVehicleListModal(true);
   };
 
-  const handleVehicleDataFetch = () => {
+  const handleVehicleDataFetch = (vehicleData: IVehicleData) => {
     setLoading(true);
 
     setTimeout(() => {
       setLoading(false);
-      setVehicleDetails({
-        model: "2021 F-150",
-        vinNumber: vin ?? ApiPaths.SAMPLE_VIN,
-        connected: connectedViaButton,
-      });
-      onClose({
-        model: "2021 F-150",
-        vinNumber: vin ?? ApiPaths.SAMPLE_VIN,
-        connected: connectedViaButton,
-      });
+      if (vehicleData) {
+        onClose({ ...vehicleData, connected: true });
+      } else {
+        onClose({
+          model: "2021 F-150",
+          vinNumber: vin ?? ApiPaths.SAMPLE_VIN,
+          connected: false,
+        });
+      }
     }, 2000);
-  };
-
-  const handleConnectVehicle = () => {
-    setConnectedViaButton(true);
-
-    handleVehicleDataFetch();
   };
 
   const handleVinSubmit = () => {
     if (vin.length > 10) {
-      setConnectedViaButton(false);
+      // setConnectedViaButton(false);
       handleVehicleDataFetch();
     }
   };
@@ -128,19 +119,21 @@ const VehicleInfoModal: React.FC<VehicleInfo> = ({ onClose, visible }) => {
                   <View style={styles.textInputContainer}>
                     <TextInput
                       style={styles2.input}
-                      placeholder="VIN"
+                      placeholder={placeholderValue}
                       placeholderTextColor={Colors.NAVYBLUE_SHADE1}
                       value={vin}
                       onChangeText={handleVinChange}
                       maxLength={17}
                       returnKeyType="done"
                       onSubmitEditing={handleVinSubmit}
-                      onFocus={() =>
-                        scrollRef.current?.scrollTo({ y: 300, animated: true })
-                      }
-                      onBlur={() =>
-                        scrollRef.current?.scrollTo({ y: 0, animated: true })
-                      }
+                      onFocus={() => {
+                        setPlaceholderValue("");
+                        scrollRef.current?.scrollTo({ y: 300, animated: true });
+                      }}
+                      onBlur={() => {
+                        scrollRef.current?.scrollTo({ y: 0, animated: true });
+                        setPlaceholderValue("VIN");
+                      }}
                     />
                     <Pressable onPress={handleScanner}>
                       <Image
@@ -188,7 +181,14 @@ const VehicleInfoModal: React.FC<VehicleInfo> = ({ onClose, visible }) => {
           />
           <VehicleListModal
             visible={vehicleListModal}
-            onClose={() => setVehicleListModal(false)}
+            onClose={() => {
+              setVehicleListModal(false);
+            }}
+            onRowClick={(vehicleData) => {
+              handleVehicleDataFetch(vehicleData);
+              // selectedData ?? setSelectedVehicleData(selectedData);
+              setVehicleListModal(false);
+            }}
           />
         </ScrollView>
       </View>

@@ -1,3 +1,5 @@
+import { IDTC_CODES } from "src/types/ScrappedVehicleInfo";
+
 export function get_url_extension(url: string) {
   return url?.split(".").pop().split(/\#|\?/)[0];
 }
@@ -21,4 +23,16 @@ export const updateArray = (array: any[], newObject: { forId: string }) => {
 export function validateEmail(email: string) {
   const emailRegex = /^[a-zA-Z0-9._%+-]+@ford\.com$/;
   return emailRegex.test(email);
+}
+
+export function formatDtcCodes(dtcCodes: IDTC_CODES[]) {
+  return dtcCodes
+    .map(
+      (item: IDTC_CODES) =>
+        (item.Module !== "" ||
+          item.DTC_Code !== "" ||
+          item.Failure_Type !== "") &&
+        `${item.Module} | ${item.DTC_Code} : ${item.Failure_Type}`
+    )
+    .join(", ");
 }

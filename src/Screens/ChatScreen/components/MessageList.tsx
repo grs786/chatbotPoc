@@ -63,7 +63,7 @@ const MessageList: React.FC<IMessageListProps> = ({
     const layoutHeight = event.nativeEvent.layoutMeasurement.height;
 
     // Show "Scroll to Bottom" button if user is not near the bottom
-    if (contentHeight - offsetY > layoutHeight + 50) {
+    if (contentHeight - offsetY > layoutHeight + 250) {
       setScrollToBottomVisible(true);
     } else {
       setScrollToBottomVisible(false);

@@ -10,7 +10,7 @@
     "eas-dev-build-assemble:android": "eas build --platform android --profile preview2 --local",
     "eas-dev-build-local:ios": "eas build -p ios --profile previewios --clear-cache",
     "eas-dev-build-dev:ios": "eas build --platform ios --profile previewios --local",
-    "build-android": "eas build -p android --profile preview",
+    "build-android": "eas build -p android --profile preview --local",
     "build-android-production": "eas build -p android --profile preview2"
   },
   "dependencies": {

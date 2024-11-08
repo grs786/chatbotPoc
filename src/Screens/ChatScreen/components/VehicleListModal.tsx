@@ -6,46 +6,42 @@ import {
   StyleSheet,
   ScrollView,
   Pressable,
+  TouchableOpacity,
 } from "react-native";
 import { Colors } from "src/Assets/colors";
-
+import { IVehicleData, VehicleData } from "src/types/ScrappedVehicleInfo";
 interface VehicleModalProps {
   visible: boolean;
   onClose: () => void;
+  onRowClick: (vehicle?: IVehicleData) => void;
 }
-
-const availableVehicles = [
-  "Vehicle Name 1",
-  "Vehicle Name 2",
-  "Vehicle Name 3",
-  "Vehicle Name 4",
-  "Vehicle Name 5",
-  "Vehicle Name 6",
-  "Vehicle Name 7",
-  "Vehicle Name 8",
-];
 
 const VehicleListModal: React.FC<VehicleModalProps> = ({
   visible,
   onClose,
+  onRowClick,
 }) => {
   return (
     <Modal visible={visible} animationType="slide" transparent>
-      <Pressable style={styles.overlay} onPress={onClose}>
+      <TouchableOpacity style={styles.overlay} onPress={() => onClose()}>
         <View style={styles.modalContainer}>
           <Text style={styles.title}>Connect to vehicle</Text>
           <View style={styles.divider} />
 
           <ScrollView style={styles.vehicleListContainer}>
             <Text style={styles.sectionHeader}>Available vehicles</Text>
-            {availableVehicles.map((vehicle, index) => (
-              <Text key={`available-${index}`} style={styles.vehicleName}>
-                {vehicle}
+            {VehicleData.map((vehicle, index) => (
+              <Text
+                onPress={() => onRowClick(vehicle)}
+                key={`available-${index}`}
+                style={styles.vehicleName}
+              >
+                {vehicle.Selected_VIN}
               </Text>
             ))}
           </ScrollView>
         </View>
-      </Pressable>
+      </TouchableOpacity>
     </Modal>
   );
 };
@@ -61,33 +57,37 @@ const styles = StyleSheet.create({
     width: "85%",
     backgroundColor: "white",
     borderRadius: 10,
-    padding: 20,
+    maxHeight: "50%",
+    minHeight: "45%",
   },
   title: {
-    fontSize: 23,
+    fontSize: 18,
     fontWeight: "500",
     color: Colors.NAVYBLUE,
-    marginBottom: 10,
     textAlign: "left",
+    paddingHorizontal: 16,
+    paddingVertical: 12,
   },
   vehicleListContainer: {
     width: "100%",
     height: "42%",
+    paddingHorizontal: 16,
+    paddingVertical: 12,
   },
   sectionHeader: {
-    fontSize: 17,
-    fontWeight: "bold",
+    fontSize: 14,
+    fontWeight: "600",
     marginBottom: 10,
   },
   vehicleName: {
-    fontSize: 16,
+    fontSize: 14,
     color: Colors.NAVYBLUE,
-    marginVertical: 8,
+    lineHeight: 40,
+    fontWeight: "400",
   },
   divider: {
     height: 2,
     backgroundColor: Colors.GREY,
-    marginVertical: 10,
   },
 });
 

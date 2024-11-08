@@ -17,7 +17,7 @@ export interface HistoryData {
 }
 
 export interface Reactions {
-  [key: string]: string[]; 
+  [key: string]: string[];
 }
 export interface IVehicle {
   vehicleInfo: IVehicleInfo;
@@ -34,10 +34,9 @@ export interface IVehicleInfo {
   connected?: boolean;
 }
 
-
-export interface IFeedbackArray{
-  id: string, // create from mobile_end uuid
-  forId: string, //QuestionID
-  value: string,
-  comment: string ,
+export interface IFeedbackArray {
+  id: string; // create from mobile_end uuid
+  forId: string; //QuestionID
+  value: string;
+  comment: string;
 }

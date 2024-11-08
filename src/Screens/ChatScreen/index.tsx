@@ -34,10 +34,15 @@ import StepHistory from "./components/HistoryMessageList";
 import { useImagePicker } from "src/Hooks/useImagePicker";
 import { useAudioRecorder } from "src/Hooks/useAudioRecorder";
 import CustomHeader from "src/components/CustomHeader";
-import { get_url_extension, updateArray } from "src/Utilities/utils";
+import {
+  formatDtcCodes,
+  get_url_extension,
+  updateArray,
+} from "src/Utilities/utils";
 import FeedbackModal from "./components/FeedbackModal";
 import GetUserEmail from "./components/GetUserEmail";
 import ApiPaths from "../../../environment";
+import { IVehicleData } from "src/types/ScrappedVehicleInfo";
 
 const ChatScreen: React.FC = () => {
   const [messages, setMessages] = useState<IMessage[]>([]);
@@ -57,6 +62,10 @@ const ChatScreen: React.FC = () => {
   const [messageReactions, setMessageReactions] = useState<
     Record<string, string>
   >({});
+  const [userReaction, setUserReaction] = useState({
+    msgId: 0,
+    userInput: "",
+  });
   const [modalVisible, setModalVisible] = useState<boolean>(true);
   const [enableUserInputDialog, setEnableUserInputDialog] =
     useState<boolean>(false);
@@ -66,6 +75,8 @@ const ChatScreen: React.FC = () => {
   const [parentID, setParentID] = useState<string>("");
   const [vehicleInfo, setVehicleInfo] = useState<IVehicleInfo | null>(null); // Store vehicle information
   const [updateThreadCounter, setUpdateThreadCounter] = useState<number>(0);
+  const [selectedVehicleData, setSelectedVehicleData] =
+    useState<IVehicleData | null>(null); // Store vehicle information
 
   const [stepHistoryData, setStepHistoryData] = useState<
     IStepHistoryData | undefined
@@ -129,6 +140,16 @@ const ChatScreen: React.FC = () => {
   }, [route]);
 
   const handleSend = async () => {
+    const scrappedData = selectedVehicleData?.DTC_Codes
+      ? formatDtcCodes(selectedVehicleData?.DTC_Codes)
+      : [];
+
+    let formattedMsg = inputText;
+
+    if (updateThreadCounter === 0) {
+      formattedMsg = `${scrappedData}, Do you see any critical concerns or issues?, ${inputText}`;
+    }
+
     setIsLoading(true);
     setDisplayVehicleInfo(false);
     setInputText("");
@@ -227,15 +248,16 @@ const ChatScreen: React.FC = () => {
     reaction: string,
     value: number | undefined
   ) => {
-    setMessageReactions((prevReactions) => ({
-      ...prevReactions,
-      [messageId]: reaction,
-    }));
     setSelectedMessageId(messageId);
     setFeedbackQuestionID(`${questionId}`);
     if (value === 1) {
+      setMessageReactions((prevReactions) => ({
+        ...prevReactions,
+        [messageId]: reaction,
+      }));
       handleReactionFeedback(value || 0, `${questionId}`);
     } else {
+      setUserReaction({ msgId: messageId, userInput: reaction });
       setFeedbackModal(true);
     }
   };
@@ -245,6 +267,12 @@ const ChatScreen: React.FC = () => {
     questionId: string,
     useComment?: string
   ) => {
+    if (value === 0) {
+      setMessageReactions((prevReactions) => ({
+        ...prevReactions,
+        [userReaction.msgId]: userReaction.userInput,
+      }));
+    }
     setIsLoading(true);
 
     const paramsBody = {
@@ -256,22 +284,23 @@ const ChatScreen: React.FC = () => {
 
     const newData = updateArray(feedbackLocalArr, paramsBody);
     setFeedbackLocalArr(newData);
-    const userFeedback = await upsertUserFeedback(paramsBody, accessToken);
+    await upsertUserFeedback(paramsBody, accessToken);
+    setUserReaction({ msgId: 0, userInput: "" });
     setIsLoading(false);
     return;
   };
 
-  const handleVinClose = async (vehicleData: IVehicleDetail) => {
+  const handleVinClose = async (vehicleData: IVehicleData) => {
+    if (vehicleData?.DTC_Codes) {
+      setSelectedVehicleData(vehicleData);
+    }
     setIsChatIconDisable(false);
     setStepHistoryData(undefined);
     setIsLoading(true);
     setModalVisible(false); // Close the modal
     const reqParam = {
       accessToken: accessToken,
-      vinNumber:
-        vehicleData?.vinNumber.length > 0
-          ? vehicleData?.vinNumber
-          : ApiPaths.SAMPLE_VIN ?? "",
+      vinNumber: vehicleData?.Selected_VIN ?? vehicleData?.vinNumber,
     };
     const respData = await retreiveVehicleData(reqParam);
 
@@ -279,6 +308,7 @@ const ChatScreen: React.FC = () => {
     if (respData?.session_id) {
       setDisplayVehicleInfo(true);
       setVehicleInfo({ ...respData?.vehicle?.vehicle_info, connected: true });
+
       setSessionID(respData?.session_id);
       await setItem(ApiPaths.SESSION_ID ?? "", respData?.session_id);
 
@@ -308,10 +338,8 @@ const ChatScreen: React.FC = () => {
     setMessages([]);
     setUpdateThreadCounter(0);
     handleVinClose({
-      model: vehicleInfo?.model
-        ? `${vehicleInfo?.modelyear} ${vehicleInfo?.model}`
-        : "2021 F-150",
-      vinNumber: vehicleInfo?.vin ?? ApiPaths.SAMPLE_VIN,
+      model: `${vehicleInfo?.modelyear} ${vehicleInfo?.model}`,
+      vinNumber: vehicleInfo?.vin,
       connected: true,
     });
   };
@@ -328,10 +356,8 @@ const ChatScreen: React.FC = () => {
           setMessages([]);
           setUpdateThreadCounter(0);
           handleVinClose({
-            model: vehicleInfo?.model
-              ? `${vehicleInfo?.modelyear} ${vehicleInfo?.model}`
-              : "2021 F-150",
-            vinNumber: vehicleInfo?.vin ?? ApiPaths.SAMPLE_VIN,
+            model: `${vehicleInfo?.modelyear} ${vehicleInfo?.model}`,
+            vinNumber: vehicleInfo?.vin,
             connected: true,
           });
         }}

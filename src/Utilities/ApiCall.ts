@@ -96,33 +96,18 @@ const handleError = (error: unknown) => {
       if (error?.request?.responseURL.includes("userdb/create_user")) {
         throw new Error(error.response.data.message);
       } else {
+        let errorMessgage =
+          error.response.data?.message ?? error.response.data?.detail?.[0].msg;
+        if (error?.response?.status === 404) {
+          errorMessgage = "404 Page not found";
+        }
         Toast.show({
           type: "error",
           position: "bottom",
-          text1: `${error.response.data?.detail}`,
+          text1: `${errorMessgage}`,
         });
-        throw new Error(error.response.data.message || "An error occurred121");
+        throw new Error(error.response.data.message || "Server Error");
       }
-    } else if (error.request) {
-      // Request was made but no response received
-
-      Toast.show({
-        type: "error",
-        position: "bottom",
-        text1: `No response received from the server`,
-      });
-      throw new Error("No response received from the server");
-    } else {
-      // Something happened in setting up the request
-      throw new Error(error.message);
     }
-  } else {
-    // If it's not an Axios error
-    Toast.show({
-      type: "error",
-      position: "bottom",
-      text1: `An unknown error occurred`,
-    });
-    throw new Error("An unknown error occurred");
   }
 };

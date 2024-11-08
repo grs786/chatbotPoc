@@ -163,6 +163,7 @@ export const styles = StyleSheet.create({
     paddingVertical: 4,
     fontWeight: "400",
     color: Colors.METALIC_GREY,
+    textAlign: "center",
   },
   buttonContainer: {
     alignItems: "center",
