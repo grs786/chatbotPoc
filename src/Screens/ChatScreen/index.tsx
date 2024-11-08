@@ -41,7 +41,8 @@ import {
 } from "src/Utilities/utils";
 import FeedbackModal from "./components/FeedbackModal";
 import GetUserEmail from "./components/GetUserEmail";
-import ApiPaths from "../../../environment";
+import ApiPaths from "../../../endpoints";
+
 import { IVehicleData } from "src/types/ScrappedVehicleInfo";
 
 const ChatScreen: React.FC = () => {

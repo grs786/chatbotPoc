@@ -14,7 +14,7 @@ import { useValidateUserMail } from "src/Hooks/useChatOperations";
 import { setItem } from "src/Utilities/StorageClasses";
 import { validateEmail } from "src/Utilities/utils";
 import { Colors } from "src/Assets/colors";
-import ApiPaths from "../../../../../environment";
+import ApiPaths from "../../../../../endpoints";
 
 interface IGetUserEmail {
   updateSubmit: (inputValue: string) => void;

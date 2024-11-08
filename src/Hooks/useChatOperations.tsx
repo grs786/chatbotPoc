@@ -1,6 +1,6 @@
 import { useCallback } from "react";
-import ApiPaths from "../../environment";
 import { post, get } from "../Utilities/ApiCall"; // Adjust the path as necessary
+import ApiPaths from "../../endpoints";
 
 export const useUserSession = () => {
   const createUserSession = useCallback(async () => {

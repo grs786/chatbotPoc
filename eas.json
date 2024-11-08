@@ -6,7 +6,10 @@
     },
     "preview": {
       "android": {
-        "buildType": "apk"
+        "buildType": "apk",
+        "env": {
+          "EXPO_BUILD_ANDROID_GRADLE_MEMORY": "4096"
+        }
       }
     },
     "preview2": {

@@ -22,7 +22,7 @@ import { ApplicationStackParamList } from "src/types/navigation";
 import uuid from "uuid-random";
 import { SCREENS } from "src/Common/screens";
 import { useDrawerStatus } from "@react-navigation/drawer";
-import ApiPaths from "../../../environment";
+import ApiPaths from "../../../endpoints";
 
 export interface IChatHistory {
   id: string;
