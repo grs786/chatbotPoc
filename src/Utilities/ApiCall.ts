@@ -97,7 +97,11 @@ const handleError = (error: unknown) => {
         throw new Error(error.response.data.message);
       } else {
         let errorMessgage =
-          error.response.data?.message ?? error.response.data?.detail?.[0].msg;
+          error.response.data?.message ??
+          error.response.data?.detail?.[0].msg ??
+          error.response.data?.detail ??
+          error.response.data?.Error;
+
         if (error?.response?.status === 404) {
           errorMessgage = "404 Page not found";
         }

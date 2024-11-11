@@ -12,7 +12,7 @@ export const DrawerNavigator = () => {
     <Drawer.Navigator
       screenOptions={{
         drawerStyle: {
-          width: Dimensions.get("window").width / 1.25,
+          width: Dimensions.get("window").width / 1.2,
         },
         headerShown: false,
       }}

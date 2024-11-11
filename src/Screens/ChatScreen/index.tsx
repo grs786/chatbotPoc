@@ -184,7 +184,7 @@ const ChatScreen: React.FC = () => {
         const updateThreadBody = {
           uuid: sessionId,
           createdAt: new Date(),
-          name: inputText,
+          name: `${inputText} : ${vehicleInfo?.vin}`,
           userId: userId,
           userEmail: userIdentifier,
           accessToken: accessToken,

@@ -6,23 +6,19 @@ import {
   TouchableOpacity,
   ScrollView,
   RefreshControl,
+  Image,
 } from "react-native";
 import { MaterialIcons } from "@expo/vector-icons";
 import { styles } from "./styles";
 import { useFetchAllThreadData } from "src/Hooks/useChatOperations";
-import {
-  NavigationProp,
-  useIsFocused,
-  useNavigation,
-} from "@react-navigation/native";
+import { NavigationProp, useNavigation } from "@react-navigation/native";
 import CustomHeader from "src/components/CustomHeader";
 import { getItem } from "src/Utilities/StorageClasses";
-import Loader from "src/components/Loader";
 import { ApplicationStackParamList } from "src/types/navigation";
-import uuid from "uuid-random";
 import { SCREENS } from "src/Common/screens";
 import { useDrawerStatus } from "@react-navigation/drawer";
 import ApiPaths from "../../../endpoints";
+import RenderHistoryRow from "./RenderHistoryRow";
 
 export interface IChatHistory {
   id: string;
@@ -30,6 +26,19 @@ export interface IChatHistory {
   name: string;
   userId: string;
   userIdentifier: string;
+  vin?: string;
+}
+
+interface IHistoryEntry {
+  id: string;
+  createdAt: string;
+  name: string;
+  userId: string;
+  userIdentifier: string;
+}
+
+interface IHistoryComponentProps {
+  groupedHistory: IHistoryEntry[];
 }
 
 const PastConversationsScreen = (
@@ -41,11 +50,13 @@ const PastConversationsScreen = (
 ) => {
   const [searchText, setSearchText] = useState("");
   const [userUUID, setUserUUID] = useState<string>("");
-  const [chatHistory, setChatHistory] = useState<IChatHistory[]>();
+  const [chatHistory, setChatHistory] = useState<IChatHistory[]>([]);
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const navigation = useNavigation<NavigationProp<ApplicationStackParamList>>();
-  const isFocused = useIsFocused();
   const isDrawerOpen = useDrawerStatus() === "open";
+  const [expandedVin, setExpandedVin] = useState<{ [vin: string]: boolean }>(
+    {}
+  );
 
   const { fetchAllThreadData } = useFetchAllThreadData();
 
@@ -70,80 +81,113 @@ const PastConversationsScreen = (
     initialSession();
   }, [isDrawerOpen]);
 
-  const filteredChats = chatHistory?.filter((chat) =>
-    chat?.name?.toLowerCase().includes(searchText.toLowerCase())
-  );
-
-  const isToday = (dateString: string) => {
-    const chatDate = new Date(dateString);
-    const today = new Date();
-    return (
-      chatDate.getDate() === today.getDate() &&
-      chatDate.getMonth() === today.getMonth() &&
-      chatDate.getFullYear() === today.getFullYear()
-    );
-  };
-
   // if the chat is from the previous two days
   const isPreviousTwoDays = (dateString: string) => {
     const chatDate = new Date(dateString);
     const today = new Date();
     const diffInTime = today.getTime() - chatDate.getTime();
     const diffInDays = diffInTime / (1000 * 3600 * 24);
-    return diffInDays <= 2 && diffInDays > 1;
+    return diffInDays <= 2;
   };
 
-  // Filter today's chats
-  const todayChats = filteredChats?.filter((chat) => isToday(chat.createdAt));
-
-  // Filter chats from the previous two days
-  const previousChats = filteredChats?.filter((chat) =>
+  // // Filter 2 days chats
+  const filteredChats = chatHistory?.filter((chat) =>
     isPreviousTwoDays(chat.createdAt)
   );
 
-  const renderChatItem = (item: IChatHistory) => {
-    return (
-      <View key={uuid()} style={styles.chatItemContainer}>
-        <TouchableOpacity
-          style={styles.chatItem}
-          onPress={() => {
-            navigation.navigate(`${SCREENS.ChatScreen}`, { itemData: item });
-          }}
-        >
-          <MaterialIcons name="chat" size={22} color="gray" />
-          <Text numberOfLines={1} style={styles.chatTitle}>
-            {item?.name}
-          </Text>
-        </TouchableOpacity>
-        {/* Commented as of now because its not in scope in this sprint */}
-        {/* <TouchableOpacity>
-          <MaterialIcons name="delete" size={20} color="gray" />
-        </TouchableOpacity> */}
-      </View>
-    );
+  // Step 1: Process data to group entries by VIN number
+  const groupedByVin = filteredChats.reduce(
+    (
+      acc: {
+        withVin: { [vin: string]: IChatHistory[] };
+        others: IChatHistory[];
+      },
+      entry
+    ) => {
+      if (entry && entry.name) {
+        const parts = entry.name.split(" : ");
+        if (parts.length > 1) {
+          const [name, vinNumber] = parts;
+          const entryData: IChatHistory = {
+            name,
+            createdAt: entry.createdAt,
+            id: entry.id,
+            userId: entry.userId,
+            userIdentifier: entry.userIdentifier,
+          };
+          acc.withVin[vinNumber] = acc.withVin[vinNumber] || [];
+          acc.withVin[vinNumber].push(entryData);
+        } else {
+          acc.others.push({
+            name: entry.name,
+            createdAt: entry.createdAt,
+            id: entry.id,
+            userId: entry.userId,
+            userIdentifier: entry.userIdentifier,
+          });
+        }
+      }
+      return acc;
+    },
+    { withVin: {}, others: [] }
+  );
+
+  const vinGroups = Object.keys(groupedByVin.withVin).map((vin) => ({
+    vin,
+    entries: groupedByVin.withVin[vin],
+  }));
+
+  const toggleExpand = (vin: string) => {
+    setExpandedVin((prev) => ({ [vin]: !prev[vin] }));
+  };
+
+  const handleRowClick = (entry: IChatHistory) => {
+    navigation.navigate(`${SCREENS.ChatScreen}`, { itemData: entry });
   };
 
   return (
     <View style={styles.container}>
-      <CustomHeader
-        containerStyle={styles.headerstyle}
-        title=""
-        {...props}
-        iconName={require("../../Assets/images/menuOpen.png")}
-      />
       {/* <Text style={styles.uuidText}>{userUUID}</Text> */}
-      <Text style={styles.heading}>Past Chats</Text>
+      {/* <Text style={styles.heading}>Past Chats</Text> */}
+
       {/* Search Bar */}
-      <View style={styles.searchContainer}>
-        <MaterialIcons name="search" size={20} color="gray" />
-        <TextInput
-          style={styles.searchInput}
-          placeholder="Search"
-          value={searchText}
-          onChangeText={setSearchText}
-        />
+      <View style={styles.searchMainContainer}>
+        <View style={styles.searchContainer}>
+          <MaterialIcons name="search" size={20} color="gray" />
+          <TextInput
+            style={styles.searchInput}
+            placeholder="Search"
+            value={searchText}
+            onChangeText={setSearchText}
+          />
+        </View>
+
+        <TouchableOpacity
+          onPress={() => {
+            console.log(
+              JSON.stringify(navigation, null, 2),
+              "navigationnavigation"
+            );
+            navigation.navigate(`${SCREENS.ChatScreen}`);
+            // navigation?.toggleDrawer()
+          }}
+        >
+          <Image
+            source={require("../../Assets/images/menuOpen.png")}
+            style={{ width: 25, height: 25 }}
+          />
+        </TouchableOpacity>
       </View>
+      <TouchableOpacity style={styles.newConversationView}>
+        <Image
+          style={styles.arrowBtnView}
+          source={require("../../Assets/images/plusBtn.png")}
+        />
+        <Text style={styles.newConversation}>New Conversation</Text>
+      </TouchableOpacity>
+      <View style={styles.seperator} />
       <ScrollView
+        style={styles.scrollContainer}
         refreshControl={
           <RefreshControl
             refreshing={false}
@@ -152,27 +196,73 @@ const PastConversationsScreen = (
             }}
           />
         }
-        showsVerticalScrollIndicator={false}
       >
-        {/* Today's Chats Section */}
-        {todayChats && todayChats?.length > 0 && (
-          <View>
-            <Text style={styles.heading}>Today</Text>
-            {todayChats?.map((item) => renderChatItem(item))}
-          </View>
-        )}
-
-        {/* Previous Two Days Chats Section */}
-        {previousChats && previousChats?.length > 0 && (
-          <View>
-            <Text style={styles.heading}>Last 2 Days</Text>
-            {previousChats?.map((item) => renderChatItem(item))}
-          </View>
-        )}
-        {todayChats?.length === 0 && previousChats?.length === 0 && (
+        {vinGroups.length === 0 && groupedByVin.others.length === 0 ? (
           <Text style={styles.noHistoryText}>No history available</Text>
+        ) : (
+          <>
+            {vinGroups.map((group) => (
+              <View key={group.vin} style={styles.vinGroup}>
+                <TouchableOpacity
+                  style={styles.vinHeader}
+                  onPress={() => toggleExpand(group.vin)}
+                >
+                  <Text style={styles.vinTitle}>VIN - {group.vin}</Text>
+                  <Image
+                    style={[
+                      styles.arrowBtnView,
+                      {
+                        transform: [
+                          {
+                            rotateX: expandedVin[group.vin] ? "180deg" : "0deg",
+                          },
+                        ],
+                      },
+                    ]}
+                    source={require("../../Assets/images/arrowBtn.png")}
+                  />
+                </TouchableOpacity>
+                {expandedVin[group.vin] &&
+                  group.entries.map((entry, idx) => (
+                    <RenderHistoryRow
+                      entry={entry}
+                      handleRowClick={(entry) => handleRowClick(entry)}
+                    />
+                  ))}
+              </View>
+            ))}
+            {groupedByVin.others.length > 0 && (
+              <View style={styles.vinGroup}>
+                <TouchableOpacity
+                  style={styles.vinHeader}
+                  onPress={() => toggleExpand("Others")}
+                >
+                  <Text style={styles.vinTitle}>Others</Text>
+                  <Image
+                    style={[
+                      styles.arrowBtnView,
+                      {
+                        transform: [
+                          {
+                            rotateX: expandedVin["Others"] ? "180deg" : "0deg",
+                          },
+                        ],
+                      },
+                    ]}
+                    source={require("../../Assets/images/arrowBtn.png")}
+                  />
+                </TouchableOpacity>
+                {expandedVin["Others"] &&
+                  groupedByVin.others.map((entry) => (
+                    <RenderHistoryRow
+                      entry={entry}
+                      handleRowClick={(entry) => handleRowClick(entry)}
+                    />
+                  ))}
+              </View>
+            )}
+          </>
         )}
-        {isLoading && <Loader />}
       </ScrollView>
     </View>
   );
