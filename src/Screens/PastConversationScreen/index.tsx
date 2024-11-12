@@ -12,34 +12,13 @@ import { MaterialIcons } from "@expo/vector-icons";
 import { styles } from "./styles";
 import { useFetchAllThreadData } from "src/Hooks/useChatOperations";
 import { NavigationProp, useNavigation } from "@react-navigation/native";
-import CustomHeader from "src/components/CustomHeader";
 import { getItem } from "src/Utilities/StorageClasses";
 import { ApplicationStackParamList } from "src/types/navigation";
 import { SCREENS } from "src/Common/screens";
 import { useDrawerStatus } from "@react-navigation/drawer";
 import ApiPaths from "../../../endpoints";
 import RenderHistoryRow from "./RenderHistoryRow";
-
-export interface IChatHistory {
-  id: string;
-  createdAt: string;
-  name: string;
-  userId: string;
-  userIdentifier: string;
-  vin?: string;
-}
-
-interface IHistoryEntry {
-  id: string;
-  createdAt: string;
-  name: string;
-  userId: string;
-  userIdentifier: string;
-}
-
-interface IHistoryComponentProps {
-  groupedHistory: IHistoryEntry[];
-}
+import { IChatHistory } from "./types";
 
 const PastConversationsScreen = (
   props: React.JSX.IntrinsicAttributes & {
@@ -57,11 +36,12 @@ const PastConversationsScreen = (
   const [expandedVin, setExpandedVin] = useState<{ [vin: string]: boolean }>(
     {}
   );
+  const [filteredHistory, setFilteredHistory] = useState<IChatHistory[]>();
 
   const { fetchAllThreadData } = useFetchAllThreadData();
 
   const initialSession = async () => {
-    const accessTokenId = await getItem(ApiPaths.ACCESS_TOKEN ?? "");
+    const accessTokenId = await getItem(ApiPaths?.ACCESS_TOKEN ?? "");
     const user_Id = await getItem(ApiPaths.USER_ID ?? "");
 
     if (user_Id && accessTokenId) {
@@ -70,7 +50,12 @@ const PastConversationsScreen = (
         `${user_Id}`,
         `${accessTokenId}`
       );
-      setChatHistory(historyData?.history);
+      // // Filter 2 days chats
+      const filteredChats = historyData?.history?.filter(
+        (chat: { createdAt: string }) => isPreviousTwoDays(chat?.createdAt)
+      );
+      setChatHistory(filteredChats);
+      setFilteredHistory(filteredChats);
       setIsLoading(false);
     }
     const userUUID = (await getItem(ApiPaths.USER_IDENTIFIER ?? "")) ?? "";
@@ -78,7 +63,12 @@ const PastConversationsScreen = (
   };
 
   useEffect(() => {
-    initialSession();
+    if (isDrawerOpen) {
+      initialSession();
+    } else {
+      setExpandedVin((prev) => ({ vin: !prev[""] }));
+      setSearchText("");
+    }
   }, [isDrawerOpen]);
 
   // if the chat is from the previous two days
@@ -90,13 +80,17 @@ const PastConversationsScreen = (
     return diffInDays <= 2;
   };
 
-  // // Filter 2 days chats
-  const filteredChats = chatHistory?.filter((chat) =>
-    isPreviousTwoDays(chat.createdAt)
-  );
+  useEffect(() => {
+    // Filter groupedHistory based on search query
+    const lowercasedQuery = searchText.toLowerCase();
+    const newFilteredHistory = chatHistory.filter((entry) =>
+      entry.name.toLowerCase().includes(lowercasedQuery)
+    );
+    setFilteredHistory(newFilteredHistory);
+  }, [searchText]);
 
   // Step 1: Process data to group entries by VIN number
-  const groupedByVin = filteredChats.reduce(
+  const groupedByVin = filteredHistory?.reduce(
     (
       acc: {
         withVin: { [vin: string]: IChatHistory[] };
@@ -104,18 +98,18 @@ const PastConversationsScreen = (
       },
       entry
     ) => {
-      if (entry && entry.name) {
-        const parts = entry.name.split(" : ");
+      if (entry && entry?.name) {
+        const parts = entry?.name.split(" : ");
         if (parts.length > 1) {
           const [name, vinNumber] = parts;
           const entryData: IChatHistory = {
             name,
-            createdAt: entry.createdAt,
-            id: entry.id,
-            userId: entry.userId,
-            userIdentifier: entry.userIdentifier,
+            createdAt: entry?.createdAt,
+            id: entry?.id,
+            userId: entry?.userId,
+            userIdentifier: entry?.userIdentifier,
           };
-          acc.withVin[vinNumber] = acc.withVin[vinNumber] || [];
+          acc.withVin[vinNumber] = acc?.withVin[vinNumber] || [];
           acc.withVin[vinNumber].push(entryData);
         } else {
           acc.others.push({
@@ -132,10 +126,12 @@ const PastConversationsScreen = (
     { withVin: {}, others: [] }
   );
 
-  const vinGroups = Object.keys(groupedByVin.withVin).map((vin) => ({
-    vin,
-    entries: groupedByVin.withVin[vin],
-  }));
+  const vinGroups =
+    groupedByVin &&
+    Object.keys(groupedByVin?.withVin).map((vin) => ({
+      vin,
+      entries: groupedByVin?.withVin[vin],
+    }));
 
   const toggleExpand = (vin: string) => {
     setExpandedVin((prev) => ({ [vin]: !prev[vin] }));
@@ -164,12 +160,7 @@ const PastConversationsScreen = (
 
         <TouchableOpacity
           onPress={() => {
-            console.log(
-              JSON.stringify(navigation, null, 2),
-              "navigationnavigation"
-            );
             navigation.navigate(`${SCREENS.ChatScreen}`);
-            // navigation?.toggleDrawer()
           }}
         >
           <Image
@@ -197,11 +188,11 @@ const PastConversationsScreen = (
           />
         }
       >
-        {vinGroups.length === 0 && groupedByVin.others.length === 0 ? (
+        {vinGroups?.length === 0 && groupedByVin?.others.length === 0 ? (
           <Text style={styles.noHistoryText}>No history available</Text>
         ) : (
           <>
-            {vinGroups.map((group) => (
+            {vinGroups?.map((group) => (
               <View key={group.vin} style={styles.vinGroup}>
                 <TouchableOpacity
                   style={styles.vinHeader}
@@ -223,7 +214,7 @@ const PastConversationsScreen = (
                   />
                 </TouchableOpacity>
                 {expandedVin[group.vin] &&
-                  group.entries.map((entry, idx) => (
+                  group?.entries?.map((entry, idx) => (
                     <RenderHistoryRow
                       entry={entry}
                       handleRowClick={(entry) => handleRowClick(entry)}
@@ -231,7 +222,7 @@ const PastConversationsScreen = (
                   ))}
               </View>
             ))}
-            {groupedByVin.others.length > 0 && (
+            {groupedByVin?.others && groupedByVin?.others.length > 0 && (
               <View style={styles.vinGroup}>
                 <TouchableOpacity
                   style={styles.vinHeader}
@@ -253,7 +244,7 @@ const PastConversationsScreen = (
                   />
                 </TouchableOpacity>
                 {expandedVin["Others"] &&
-                  groupedByVin.others.map((entry) => (
+                  groupedByVin?.others.map((entry) => (
                     <RenderHistoryRow
                       entry={entry}
                       handleRowClick={(entry) => handleRowClick(entry)}

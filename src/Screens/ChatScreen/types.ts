@@ -40,3 +40,8 @@ export interface IFeedbackArray {
   value: string;
   comment: string;
 }
+
+export interface DecodedToken {
+  exp: number; // Expiration time in seconds since Unix epoch
+  [key: string]: any; // Other fields in the token
+}

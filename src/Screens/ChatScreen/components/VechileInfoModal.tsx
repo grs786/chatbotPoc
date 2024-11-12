@@ -65,7 +65,7 @@ const VehicleInfoModal: React.FC<VehicleInfo> = ({ onClose, visible }) => {
       } else {
         onClose({
           model: "2021 F-150",
-          vinNumber: vin ?? ApiPaths.SAMPLE_VIN,
+          vinNumber: vin,
           connected: false,
         });
       }

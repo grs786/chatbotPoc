@@ -37,11 +37,13 @@ import CustomHeader from "src/components/CustomHeader";
 import {
   formatDtcCodes,
   get_url_extension,
+  manageToken,
   updateArray,
 } from "src/Utilities/utils";
 import FeedbackModal from "./components/FeedbackModal";
 import GetUserEmail from "./components/GetUserEmail";
 import ApiPaths from "../../../endpoints";
+import jwtDecode from "jwt-decode";
 
 import { IVehicleData } from "src/types/ScrappedVehicleInfo";
 
@@ -107,10 +109,19 @@ const ChatScreen: React.FC = () => {
     data?.access_token &&
       (await setItem(ApiPaths.ACCESS_TOKEN ?? "", data?.access_token));
     setAccessToken(data?.access_token);
+    manageToken(data?.access_token, refreshToken);
     const getUserData = await getItem(ApiPaths.USER_IDENTIFIER ?? "");
     if (!getUserData) {
       setEnableUserInputDialog(true);
     }
+  };
+
+  const refreshToken = async () => {
+    try {
+      const data = await createUserSession();
+      data?.access_token &&
+        (await setItem(ApiPaths.ACCESS_TOKEN ?? "", data?.access_token));
+    } catch (error) {}
   };
 
   useEffect(() => {
@@ -174,7 +185,7 @@ const ChatScreen: React.FC = () => {
       // Call the API to get the response
       const chatParam = {
         accessToken,
-        vinNumber: ApiPaths.SAMPLE_VIN ?? "", // Adjust the vinNumber as needed
+        vinNumber: vehicleInfo?.vin ?? "", // Adjust the vinNumber as needed
         question: inputText, // Send the user's question
         sessionId: sessionId,
         userId: userId,
@@ -333,16 +344,17 @@ const ChatScreen: React.FC = () => {
   };
 
   const initiateNewChat = () => {
+    vehicleInfo?.vin ? setDisplayVehicleInfo(true) : setModalVisible(true);
     setIsChatIconDisable(false);
-    modalVisible === false && setDisplayVehicleInfo(true);
     setStepHistoryData(undefined);
     setMessages([]);
     setUpdateThreadCounter(0);
-    handleVinClose({
-      model: `${vehicleInfo?.modelyear} ${vehicleInfo?.model}`,
-      vinNumber: vehicleInfo?.vin,
-      connected: true,
-    });
+    vehicleInfo?.vin &&
+      handleVinClose({
+        model: `${vehicleInfo?.modelyear} ${vehicleInfo?.model}`,
+        vinNumber: vehicleInfo?.vin,
+        connected: true,
+      });
   };
   return (
     <SafeAreaView style={styles.mainContainer}>
@@ -356,11 +368,12 @@ const ChatScreen: React.FC = () => {
           setStepHistoryData(undefined);
           setMessages([]);
           setUpdateThreadCounter(0);
-          handleVinClose({
-            model: `${vehicleInfo?.modelyear} ${vehicleInfo?.model}`,
-            vinNumber: vehicleInfo?.vin,
-            connected: true,
-          });
+          vehicleInfo?.vin &&
+            handleVinClose({
+              model: `${vehicleInfo?.modelyear} ${vehicleInfo?.model}`,
+              vinNumber: vehicleInfo?.vin,
+              connected: true,
+            });
         }}
         beginNewChat={initiateNewChat}
         isChatIconDisable={isChatIconDisable}

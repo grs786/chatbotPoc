@@ -1,3 +1,6 @@
+import { jwtDecode } from "jwt-decode";
+import { useUserSession } from "src/Hooks/useChatOperations";
+import { DecodedToken } from "src/Screens/ChatScreen/types";
 import { IDTC_CODES } from "src/types/ScrappedVehicleInfo";
 
 export function get_url_extension(url: string) {
@@ -36,3 +39,27 @@ export function formatDtcCodes(dtcCodes: IDTC_CODES[]) {
     )
     .join(", ");
 }
+
+export const manageToken = (token: string, refreshToken: () => void) => {
+  if (!token) {
+    console.error("No access token provided");
+    return;
+  }
+
+  // Decode the token to get expiration time
+  const decoded: DecodedToken = jwtDecode(token);
+  const currentTime = Math.floor(Date.now() / 1000); // Current time in seconds
+
+  // Calculate remaining time before expiration in milliseconds
+  const timeToExpire = (decoded.exp - currentTime) * 1000;
+  // Set up a timeout to refresh the token shortly before it expires
+  if (timeToExpire > 0) {
+    setTimeout(async () => {
+      // Call the refresh token function
+      refreshToken();
+      // Optionally, you could manage the new token here (e.g., save it, re-apply manageToken with new token)
+    }, timeToExpire - 60000); // Refresh 1 minute before expiration
+  } else {
+    refreshToken();
+  }
+};
