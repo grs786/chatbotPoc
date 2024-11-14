@@ -22,7 +22,6 @@ import { useDrawerStatus } from "@react-navigation/drawer";
 import ApiPaths from "../../../endpoints";
 import RenderHistoryRow from "./RenderHistoryRow";
 import { IChatHistory } from "./types";
-import { validateToken } from "src/Utilities/utils";
 
 const PastConversationsScreen = (
   props: React.JSX.IntrinsicAttributes & {
@@ -46,7 +45,6 @@ const PastConversationsScreen = (
   const { createUserSession } = useUserSession();
 
   const initialSession = async () => {
-    await refreshToken();
     const accessTokenId = await getItem(ApiPaths?.ACCESS_TOKEN ?? "");
     const user_Id = await getItem(ApiPaths.USER_ID ?? "");
 
@@ -80,16 +78,6 @@ const PastConversationsScreen = (
     const data = await createUserSession();
     data?.access_token &&
       (await setItem(ApiPaths.ACCESS_TOKEN ?? "", data?.access_token));
-  };
-
-  const refreshToken = async () => {
-    const accessTokenId = await getItem(ApiPaths?.ACCESS_TOKEN ?? "");
-    console.log(accessTokenId, "accessTokenIdaccessTokenId");
-    const isTokenValid = validateToken(accessTokenId);
-    console.log(isTokenValid, "pas conversation token validate");
-    if (!isTokenValid) {
-      await fetchTokenSession();
-    }
   };
 
   useEffect(() => {

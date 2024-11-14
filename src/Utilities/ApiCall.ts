@@ -1,4 +1,5 @@
 import axios from "axios";
+import { Alert } from "react-native";
 import Toast from "react-native-toast-message";
 
 // Create an instance of Axios with default settings
@@ -104,6 +105,9 @@ const handleError = (error: unknown) => {
 
         if (error?.response?.status === 404) {
           errorMessgage = "404 Page not found";
+        }
+        if (error?.response?.status === 401) {
+          Alert.alert("Session Timeout", "Please restart the application.");
         }
 
         Toast.show({

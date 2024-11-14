@@ -38,7 +38,6 @@ import {
   formatDtcCodes,
   get_url_extension,
   updateArray,
-  validateToken,
 } from "src/Utilities/utils";
 import FeedbackModal from "./components/FeedbackModal";
 import GetUserEmail from "./components/GetUserEmail";
@@ -135,7 +134,6 @@ const ChatScreen: React.FC = () => {
         },
       ],
     };
-    await refreshToken();
     const historyRespVal = await fetchThreadHistory(historyData, accessToken);
     setStepHistoryData(historyRespVal);
     setIsLoading(false);
@@ -153,7 +151,6 @@ const ChatScreen: React.FC = () => {
   }, [route]);
 
   const handleSend = async () => {
-    await refreshToken();
     const scrappedData = selectedVehicleData?.DTC_Codes
       ? formatDtcCodes(selectedVehicleData?.DTC_Codes)
       : [];
@@ -298,18 +295,10 @@ const ChatScreen: React.FC = () => {
 
     const newData = updateArray(feedbackLocalArr, paramsBody);
     setFeedbackLocalArr(newData);
-    await refreshToken();
     await upsertUserFeedback(paramsBody, accessToken);
     setUserReaction({ msgId: 0, userInput: "" });
     setIsLoading(false);
     return;
-  };
-
-  const refreshToken = async () => {
-    const isTokenValid = validateToken(accessToken);
-    if (!isTokenValid) {
-      await initialSession();
-    }
   };
 
   const handleVinClose = async (vehicleData: IVehicleData) => {
@@ -324,7 +313,6 @@ const ChatScreen: React.FC = () => {
       accessToken: accessToken,
       vinNumber: vehicleData?.Selected_VIN ?? vehicleData?.vinNumber,
     };
-    await refreshToken();
     const respData = await retreiveVehicleData(reqParam);
 
     setIsLoading(false);
@@ -336,7 +324,6 @@ const ChatScreen: React.FC = () => {
       await setItem(ApiPaths.SESSION_ID ?? "", respData?.session_id);
 
       const userUUID = await getItem(ApiPaths.USER_IDENTIFIER ?? "");
-      await refreshToken();
       const userData = await fetchUserData(userUUID, accessToken);
       await setItem(ApiPaths.USER_ID ?? "", userData?.id);
       setUserID(userData?.id);
@@ -348,7 +335,6 @@ const ChatScreen: React.FC = () => {
   };
 
   const fetchcurrentUserdata = async (userUUID: string) => {
-    await refreshToken();
     const userDataVal = await validateUserMail(userUUID, accessToken);
     await setItem(ApiPaths.USER_IDENTIFIER ?? "", userUUID);
     if (userDataVal?.id) {
@@ -505,9 +491,7 @@ const ChatScreen: React.FC = () => {
       )}
       {enableUserInputDialog && (
         <GetUserEmail
-          updateSubmit={(userUUID: string) => {
-            fetchcurrentUserdata(userUUID);
-          }}
+          updateSubmit={(userUUID: string) => fetchcurrentUserdata(userUUID)}
           accessToken={accessToken}
         />
       )}
