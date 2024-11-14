@@ -1,4 +1,4 @@
-import React, { useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import {
   View,
   Text,
@@ -26,16 +26,20 @@ export interface IVehicleDetail {
 export interface VehicleInfo {
   visible: any;
   onClose: (vehicleDetail?: IVehicleData) => void;
+  clearInput: boolean;
 }
 
-const VehicleInfoModal: React.FC<VehicleInfo> = ({ onClose, visible }) => {
+const VehicleInfoModal: React.FC<VehicleInfo> = ({
+  onClose,
+  visible,
+  clearInput,
+}) => {
   const [vin, setVin] = useState<string>("");
   const [placeholderValue, setPlaceholderValue] = useState<string>("VIN");
   const [loading, setLoading] = useState<boolean>(false);
   const [connectedViaButton, setConnectedViaButton] = useState<boolean>(true);
   const [scannerVisible, setScannerVisible] = useState<boolean>(false);
   const [vehicleListModal, setVehicleListModal] = useState<boolean>(false);
-
   const scrollRef = useRef<ScrollView | null>(null);
 
   const handleVinChange = (value: string) => {
@@ -48,6 +52,12 @@ const VehicleInfoModal: React.FC<VehicleInfo> = ({ onClose, visible }) => {
       }, 1000);
     }
   };
+  useEffect(() => {
+    if (clearInput) {
+      setVin("");
+      Keyboard.dismiss();
+    }
+  }, [clearInput]);
   const handleScanner = () => {
     setScannerVisible(true);
   };
@@ -55,7 +65,7 @@ const VehicleInfoModal: React.FC<VehicleInfo> = ({ onClose, visible }) => {
     setVehicleListModal(true);
   };
 
-  const handleVehicleDataFetch = (vehicleData: IVehicleData) => {
+  const handleVehicleDataFetch = (vehicleData?: IVehicleData) => {
     setLoading(true);
 
     setTimeout(() => {
@@ -177,7 +187,10 @@ const VehicleInfoModal: React.FC<VehicleInfo> = ({ onClose, visible }) => {
           </View>
           <ScannerModal
             visible={scannerVisible}
-            onClose={() => setScannerVisible(false)}
+            onClose={() => {
+              setScannerVisible(false);
+              setVin("1FTVW1ELXPWG02702");
+            }}
           />
           <VehicleListModal
             visible={vehicleListModal}

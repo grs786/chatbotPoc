@@ -6,6 +6,7 @@ import {
   StyleSheet,
   TouchableOpacity,
   Image,
+  Platform,
 } from "react-native";
 import { Colors } from "src/Assets/colors";
 
@@ -19,7 +20,7 @@ const ScannerModal: React.FC<ScannerModalProps> = ({ visible, onClose }) => {
     <Modal visible={visible} animationType="slide" transparent>
       <View style={styles.overlay}>
         <View style={styles.headerView}>
-          <TouchableOpacity style={styles.brightbox} onPress={onClose}>
+          <TouchableOpacity activeOpacity={1} style={styles.brightbox}>
             <Image
               source={require("../../../Assets/images/brightness.png")}
               style={{ width: 20, height: 20 }}
@@ -62,8 +63,7 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: Colors.BLACK,
     paddingHorizontal: 10,
-    marginTop: 120,
-    // marginHorizontal: 20,
+    marginTop: Platform.OS === "ios" ? 110 : 50,
   },
   headerView: {
     flexDirection: "row",

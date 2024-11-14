@@ -123,7 +123,7 @@ export const styles = StyleSheet.create({
     fontSize: 14,
     marginBottom: 3,
     fontWeight: "500",
-    color: Colors.BLACK_SHADE1,
+    color: Colors.NAVYBLUE,
     marginLeft: 10,
   },
   seperator: {

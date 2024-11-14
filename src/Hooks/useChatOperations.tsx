@@ -147,7 +147,6 @@ export const usePostChatData = () => {
         },
         `${ApiPaths.BASE_URL}`
       );
-
       return response;
     } catch (error: unknown) {
       return error;

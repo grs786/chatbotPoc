@@ -10,15 +10,19 @@ import {
 } from "react-native";
 import { MaterialIcons } from "@expo/vector-icons";
 import { styles } from "./styles";
-import { useFetchAllThreadData } from "src/Hooks/useChatOperations";
+import {
+  useFetchAllThreadData,
+  useUserSession,
+} from "src/Hooks/useChatOperations";
 import { NavigationProp, useNavigation } from "@react-navigation/native";
-import { getItem } from "src/Utilities/StorageClasses";
+import { getItem, setItem } from "src/Utilities/StorageClasses";
 import { ApplicationStackParamList } from "src/types/navigation";
 import { SCREENS } from "src/Common/screens";
 import { useDrawerStatus } from "@react-navigation/drawer";
 import ApiPaths from "../../../endpoints";
 import RenderHistoryRow from "./RenderHistoryRow";
 import { IChatHistory } from "./types";
+import { validateToken } from "src/Utilities/utils";
 
 const PastConversationsScreen = (
   props: React.JSX.IntrinsicAttributes & {
@@ -39,10 +43,14 @@ const PastConversationsScreen = (
   const [filteredHistory, setFilteredHistory] = useState<IChatHistory[]>();
 
   const { fetchAllThreadData } = useFetchAllThreadData();
+  const { createUserSession } = useUserSession();
 
   const initialSession = async () => {
+    await refreshToken();
     const accessTokenId = await getItem(ApiPaths?.ACCESS_TOKEN ?? "");
     const user_Id = await getItem(ApiPaths.USER_ID ?? "");
+
+    console.log(user_Id, "user_Iduser_Iduser_Iduser_Id", accessTokenId);
 
     if (user_Id && accessTokenId) {
       setIsLoading(true);
@@ -50,6 +58,12 @@ const PastConversationsScreen = (
         `${user_Id}`,
         `${accessTokenId}`
       );
+
+      console.log(
+        JSON.stringify(historyData, null, 2),
+        "historyData_historyData"
+      );
+
       // // Filter 2 days chats
       const filteredChats = historyData?.history?.filter(
         (chat: { createdAt: string }) => isPreviousTwoDays(chat?.createdAt)
@@ -60,6 +74,22 @@ const PastConversationsScreen = (
     }
     const userUUID = (await getItem(ApiPaths.USER_IDENTIFIER ?? "")) ?? "";
     setUserUUID(userUUID);
+  };
+
+  const fetchTokenSession = async () => {
+    const data = await createUserSession();
+    data?.access_token &&
+      (await setItem(ApiPaths.ACCESS_TOKEN ?? "", data?.access_token));
+  };
+
+  const refreshToken = async () => {
+    const accessTokenId = await getItem(ApiPaths?.ACCESS_TOKEN ?? "");
+    console.log(accessTokenId, "accessTokenIdaccessTokenId");
+    const isTokenValid = validateToken(accessTokenId);
+    console.log(isTokenValid, "pas conversation token validate");
+    if (!isTokenValid) {
+      await fetchTokenSession();
+    }
   };
 
   useEffect(() => {
@@ -82,9 +112,9 @@ const PastConversationsScreen = (
 
   useEffect(() => {
     // Filter groupedHistory based on search query
-    const lowercasedQuery = searchText.toLowerCase();
-    const newFilteredHistory = chatHistory.filter((entry) =>
-      entry.name.toLowerCase().includes(lowercasedQuery)
+    const lowercasedQuery = searchText?.toLowerCase();
+    const newFilteredHistory = chatHistory?.filter((entry) =>
+      entry?.name?.toLowerCase()?.includes(lowercasedQuery)
     );
     setFilteredHistory(newFilteredHistory);
   }, [searchText]);
@@ -169,7 +199,14 @@ const PastConversationsScreen = (
           />
         </TouchableOpacity>
       </View>
-      <TouchableOpacity style={styles.newConversationView}>
+      <TouchableOpacity
+        onPress={() =>
+          navigation.navigate(`${SCREENS.ChatScreen}`, {
+            initiateNewChat: true,
+          })
+        }
+        style={styles.newConversationView}
+      >
         <Image
           style={styles.arrowBtnView}
           source={require("../../Assets/images/plusBtn.png")}

@@ -26,6 +26,7 @@ const RenderVehicleInfo: React.FC<IVehicle> = ({
     setIsLoadingState("loading");
     setTimeout(() => {
       setIsLoadingState("finished");
+      setVehicleDataState("Vehicle Data Retrieved!");
       setShowAppendDataValue(true);
     }, 3000);
   };

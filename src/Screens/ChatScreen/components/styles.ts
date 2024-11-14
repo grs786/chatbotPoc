@@ -1,4 +1,4 @@
-import { StyleSheet } from "react-native";
+import { Platform, StyleSheet } from "react-native";
 import { Colors } from "src/Assets/colors";
 
 export const styles = StyleSheet.create({
@@ -37,7 +37,7 @@ export const styles = StyleSheet.create({
   },
   rmessageContainer: {
     borderRadius: 4,
-    marginBottom:16
+    marginBottom: 16,
   },
   iconContainer: {
     marginRight: 10,
@@ -53,9 +53,9 @@ export const styles = StyleSheet.create({
     shadowOffset: { width: 1, height: 2 }, // iOS shadow
     shadowOpacity: 0.4, // iOS shadow
     shadowRadius: 2, // iOS shadow
-    alignSelf:'flex-start'
+    alignSelf: "flex-start",
   },
-  htmlRenderContainer:{
+  htmlRenderContainer: {
     width: "90%",
     // marginTop: -16,
   },
@@ -75,17 +75,17 @@ export const styles = StyleSheet.create({
   messageBubble: {
     borderRadius: 10,
     flexDirection: "row",
-    paddingVertical:16,
-    paddingHorizontal:10,
-    alignItems:'center',
+    paddingVertical: 16,
+    paddingHorizontal: 10,
+    alignItems: "center",
     width: "90%",
   },
   rmessageBubble: {
     borderRadius: 10,
     flexDirection: "row",
-    paddingVertical:16,
-    paddingHorizontal:10, 
-    width:'90%'
+    paddingVertical: 16,
+    paddingHorizontal: 10,
+    width: "90%",
   },
   textInputContainer: {
     flexDirection: "row", // To align TextInput and button horizontally
@@ -130,7 +130,6 @@ export const styles = StyleSheet.create({
     paddingVertical: 15,
     borderRadius: 20,
     marginHorizontal: 10,
-    fontWeight: "600",
   },
   reactionText: {
     width: 17,
@@ -186,15 +185,14 @@ export const styles = StyleSheet.create({
     zIndex: 4,
   },
   vechilemodalContainer: {
-    backgroundColor: "white",
-    height: "85%",
+    backgroundColor: Colors.WHITE,
+    height: Platform.OS === "ios" ? "85%" : "84%",
     width: "100%",
-    
   },
   logoContainer: {
     alignItems: "center",
     marginTop: "10%",
-    marginBottom:"30%"
+    marginBottom: "30%",
   },
   logo: {
     width: 50,
@@ -211,17 +209,17 @@ export const styles = StyleSheet.create({
     padding: 8,
     backgroundColor: Colors.NAVYBLUE,
     borderRadius: 8,
-    marginTop:10,
-    width:"60%",
-    alignSelf:"center"
+    marginTop: 10,
+    width: "60%",
+    alignSelf: "center",
   },
   disbaledsubmitButton: {
     padding: 8,
     backgroundColor: Colors.DISABLED_BUTTON,
-    borderRadius:8,
-    marginTop:10,
-    width:"60%",
-    alignSelf:"center"
+    borderRadius: 8,
+    marginTop: 10,
+    width: "60%",
+    alignSelf: "center",
   },
   dropdown: {
     borderColor: "#ccc",
@@ -248,10 +246,10 @@ export const styles = StyleSheet.create({
     paddingLeft: 6,
     marginTop: 1,
   },
-  scannerImg:{
-    width:24,
-    height:24,
-    marginRight:16
+  scannerImg: {
+    width: 24,
+    height: 24,
+    marginRight: 16,
   },
   noResultFound: {
     fontSize: 20,
@@ -265,7 +263,7 @@ export const styles = StyleSheet.create({
     alignItems: "center",
     paddingLeft: "20%",
   },
-  plusIcon: { width: 30, height: 30,},
+  plusIcon: { width: 30, height: 30 },
 
   modalContainer: {
     flex: 1,

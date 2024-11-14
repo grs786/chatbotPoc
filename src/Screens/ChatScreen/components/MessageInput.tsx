@@ -7,6 +7,7 @@ import {
   KeyboardAvoidingView,
   Platform,
   Image,
+  Keyboard,
 } from "react-native";
 import { MaterialIcons } from "@expo/vector-icons";
 import { Audio } from "expo-av";
@@ -36,6 +37,7 @@ const MessageInput = ({
   disableInput,
 }: IMessageInputProps) => {
   const [isRecording, setIsRecording] = useState(false);
+  const [msgPlaceholder, SetMsgPlaceholder] = useState("Message WSM Assistant");
 
   const slideAnim = useRef(new Animated.Value(0)).current;
 
@@ -109,12 +111,27 @@ const MessageInput = ({
               ? [styles.textInput, { backgroundColor: Colors.DISABLED_GREY }]
               : styles.textInput
           }
-          placeholder="Message WSM Assistant"
+          placeholder={msgPlaceholder}
           value={inputText}
           onChangeText={(text) => setInputText(text)}
+          onFocus={() => SetMsgPlaceholder("")}
+          onBlur={() => {
+            SetMsgPlaceholder("Message WSM Assistant");
+            Keyboard.dismiss();
+          }}
+          onSubmitEditing={() => Keyboard.dismiss()}
+          placeholderTextColor={
+            disableInput ? Colors.DISABLED_GREY_SHADE1 : Colors.BLACK
+          }
         />
         {inputText.trim() ? (
-          <TouchableOpacity style={{ marginTop: 6 }} onPress={handleSend}>
+          <TouchableOpacity
+            style={{ marginTop: 6 }}
+            onPress={() => {
+              handleSend();
+              Keyboard.dismiss();
+            }}
+          >
             <Image
               source={require("../../../Assets/images/sendIcon.png")}
               style={styles.send}

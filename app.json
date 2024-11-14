@@ -2,7 +2,7 @@
   "expo": {
     "name": "ChatApp",
     "slug": "ChatApp",
-    "version": "1.0.0",
+    "version": "1.0.1",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
     "userInterfaceStyle": "light",
@@ -12,6 +12,7 @@
       "backgroundColor": "#ffffff"
     },
     "ios": {
+      "userInterfaceStyle": "light",
       "supportsTablet": false,
       "bundleIdentifier": "com.ford.diagnowbot",
       "infoPlist": {
@@ -19,9 +20,10 @@
         "NSPhotoLibraryUsageDescription": "This app want to use the photo library permission for app attachment purpose.",
         "NSPhotoLibraryAddUsageDescription": "This app want to use the photo library permission for app attachment purpose."
       },
-      "buildNumber": "2"
+      "buildNumber": "7"
     },
     "android": {
+      "userInterfaceStyle": "light",
       "package": "com.ford.diagnowbot",
       "usesCleartextTraffic": true,
       "permissions": [
@@ -35,7 +37,7 @@
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#ffffff"
       },
-      "versionCode": "2"
+      "versionCode": "7"
     },
     "web": {
       "favicon": "./assets/favicon.png"

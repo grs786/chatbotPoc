@@ -7,6 +7,7 @@ import {
   StyleSheet,
   Text,
   TouchableOpacity,
+  Keyboard,
 } from "react-native";
 import styles from "./styles";
 import styles2 from "../FeedbackModal/styles";
@@ -29,9 +30,8 @@ const GetUserEmail = ({ updateSubmit, accessToken }: IGetUserEmail) => {
 
   const handleSubmit = async () => {
     // Handle the submit action here, e.g., log the input or pass it to a function
-    // setModalVisible(false);
-    const userData = await validateUserMail(inputValue, accessToken);
-    await setItem(ApiPaths.USER_IDENTIFIER ?? "", inputValue);
+
+    Keyboard.dismiss();
     updateSubmit(inputValue);
   };
 
@@ -55,6 +55,7 @@ const GetUserEmail = ({ updateSubmit, accessToken }: IGetUserEmail) => {
                 isValid ? setEmailValidated(true) : setEmailValidated(false);
                 setInputValue(text);
               }}
+              onSubmitEditing={() => Keyboard.dismiss()}
             />
             {/* <Button title="Submit" onPress={handleSubmit} /> */}
             <TouchableOpacity

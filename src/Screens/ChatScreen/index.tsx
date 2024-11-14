@@ -5,13 +5,12 @@ import {
   View,
   Platform,
   Alert,
+  Keyboard,
 } from "react-native";
 import MessageList, { IMessage } from "./components/MessageList";
 import MessageInput from "./components/MessageInput";
 import { styles } from "./styles";
-import VehicleInfoModal, {
-  IVehicleDetail,
-} from "./components/VechileInfoModal";
+import VehicleInfoModal from "./components/VechileInfoModal";
 import { RouteProp, useNavigation, useRoute } from "@react-navigation/native";
 import {
   useUserSession,
@@ -24,6 +23,7 @@ import {
   useUpsertUserFeedback,
   IStepHistoryData,
   useConvertSpeechToText,
+  useValidateUserMail,
 } from "src/Hooks/useChatOperations";
 import { IFeedbackArray, IVehicleInfo } from "./types";
 import RenderVehicleInfo from "./components/RenderVehicleInfo";
@@ -37,14 +37,12 @@ import CustomHeader from "src/components/CustomHeader";
 import {
   formatDtcCodes,
   get_url_extension,
-  manageToken,
   updateArray,
+  validateToken,
 } from "src/Utilities/utils";
 import FeedbackModal from "./components/FeedbackModal";
 import GetUserEmail from "./components/GetUserEmail";
 import ApiPaths from "../../../endpoints";
-import jwtDecode from "jwt-decode";
-
 import { IVehicleData } from "src/types/ScrappedVehicleInfo";
 
 const ChatScreen: React.FC = () => {
@@ -60,6 +58,7 @@ const ChatScreen: React.FC = () => {
   const [feedbackQuestionID, setFeedbackQuestionID] = useState<string>("");
 
   const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [clearVinInput, setClearVinInput] = useState<boolean>(false);
   const [feedbackModal, setFeedbackModal] = useState<boolean>(false);
   const [selectedMessageId, setSelectedMessageId] = useState<string | number>();
   const [messageReactions, setMessageReactions] = useState<
@@ -75,7 +74,6 @@ const ChatScreen: React.FC = () => {
   const [displayVehicleInfo, setDisplayVehicleInfo] = useState<boolean>(false);
   const [isChatIconDisable, setIsChatIconDisable] = useState<boolean>(true);
   const [accessToken, setAccessToken] = useState<string>("");
-  const [parentID, setParentID] = useState<string>("");
   const [vehicleInfo, setVehicleInfo] = useState<IVehicleInfo | null>(null); // Store vehicle information
   const [updateThreadCounter, setUpdateThreadCounter] = useState<number>(0);
   const [selectedVehicleData, setSelectedVehicleData] =
@@ -86,7 +84,12 @@ const ChatScreen: React.FC = () => {
   >(); // Store vehicle information
   const route = useRoute<
     RouteProp<{
-      params: { id?: string; itemData?: object; toggleEmailDialog?: boolean };
+      params: {
+        id?: string;
+        itemData?: object;
+        toggleEmailDialog?: boolean;
+        initiateNewChat?: object;
+      };
     }>
   >();
 
@@ -102,26 +105,20 @@ const ChatScreen: React.FC = () => {
   const { fetchThreadHistory } = useFetchThreadHistory();
   const { upsertUserFeedback } = useUpsertUserFeedback();
   const { convertSpeechToText } = useConvertSpeechToText();
+  const { validateUserMail } = useValidateUserMail();
+
   const { pickImage } = useImagePicker();
 
   const initialSession = async () => {
+    await setItem(ApiPaths.ACCESS_TOKEN, "");
     const data = await createUserSession();
     data?.access_token &&
       (await setItem(ApiPaths.ACCESS_TOKEN ?? "", data?.access_token));
     setAccessToken(data?.access_token);
-    manageToken(data?.access_token, refreshToken);
     const getUserData = await getItem(ApiPaths.USER_IDENTIFIER ?? "");
-    if (!getUserData) {
-      setEnableUserInputDialog(true);
-    }
-  };
-
-  const refreshToken = async () => {
-    try {
-      const data = await createUserSession();
-      data?.access_token &&
-        (await setItem(ApiPaths.ACCESS_TOKEN ?? "", data?.access_token));
-    } catch (error) {}
+    // if (!getUserData || getUserData === undefined) {
+    setEnableUserInputDialog(true);
+    // }
   };
 
   useEffect(() => {
@@ -138,6 +135,7 @@ const ChatScreen: React.FC = () => {
         },
       ],
     };
+    await refreshToken();
     const historyRespVal = await fetchThreadHistory(historyData, accessToken);
     setStepHistoryData(historyRespVal);
     setIsLoading(false);
@@ -149,9 +147,13 @@ const ChatScreen: React.FC = () => {
       setIsChatIconDisable(false);
       retreiveHistoryData(route?.params?.itemData);
     }
+    if (route?.params?.initiateNewChat) {
+      initiateNewChat();
+    }
   }, [route]);
 
   const handleSend = async () => {
+    await refreshToken();
     const scrappedData = selectedVehicleData?.DTC_Codes
       ? formatDtcCodes(selectedVehicleData?.DTC_Codes)
       : [];
@@ -296,10 +298,18 @@ const ChatScreen: React.FC = () => {
 
     const newData = updateArray(feedbackLocalArr, paramsBody);
     setFeedbackLocalArr(newData);
+    await refreshToken();
     await upsertUserFeedback(paramsBody, accessToken);
     setUserReaction({ msgId: 0, userInput: "" });
     setIsLoading(false);
     return;
+  };
+
+  const refreshToken = async () => {
+    const isTokenValid = validateToken(accessToken);
+    if (!isTokenValid) {
+      await initialSession();
+    }
   };
 
   const handleVinClose = async (vehicleData: IVehicleData) => {
@@ -314,6 +324,7 @@ const ChatScreen: React.FC = () => {
       accessToken: accessToken,
       vinNumber: vehicleData?.Selected_VIN ?? vehicleData?.vinNumber,
     };
+    await refreshToken();
     const respData = await retreiveVehicleData(reqParam);
 
     setIsLoading(false);
@@ -325,6 +336,7 @@ const ChatScreen: React.FC = () => {
       await setItem(ApiPaths.SESSION_ID ?? "", respData?.session_id);
 
       const userUUID = await getItem(ApiPaths.USER_IDENTIFIER ?? "");
+      await refreshToken();
       const userData = await fetchUserData(userUUID, accessToken);
       await setItem(ApiPaths.USER_ID ?? "", userData?.id);
       setUserID(userData?.id);
@@ -336,14 +348,25 @@ const ChatScreen: React.FC = () => {
   };
 
   const fetchcurrentUserdata = async (userUUID: string) => {
-    const userData = await fetchUserData(userUUID, accessToken);
-    await setItem(ApiPaths.USER_ID ?? "", userData?.id);
-    setUserID(userData?.id);
-    setUserIdentifier(userData?.identifier);
-    setEnableUserInputDialog(false);
+    await refreshToken();
+    const userDataVal = await validateUserMail(userUUID, accessToken);
+    await setItem(ApiPaths.USER_IDENTIFIER ?? "", userUUID);
+    if (userDataVal?.id) {
+      setEnableUserInputDialog(false);
+      await setItem(ApiPaths.USER_ID ?? "", userDataVal?.id);
+      setUserID(userDataVal?.id);
+      setUserIdentifier(userDataVal?.identifier);
+    } else {
+      const userData = await fetchUserData(userUUID, accessToken);
+      setEnableUserInputDialog(false);
+      await setItem(ApiPaths.USER_ID ?? "", userData?.id);
+      setUserID(userData?.id);
+      setUserIdentifier(userData?.identifier);
+    }
   };
 
   const initiateNewChat = () => {
+    Keyboard.dismiss();
     vehicleInfo?.vin ? setDisplayVehicleInfo(true) : setModalVisible(true);
     setIsChatIconDisable(false);
     setStepHistoryData(undefined);
@@ -362,6 +385,11 @@ const ChatScreen: React.FC = () => {
         title="WSM Assistant"
         navigation={navigation}
         navigateToHome={() => {
+          Keyboard.dismiss();
+          setClearVinInput(true);
+          setTimeout(() => {
+            setClearVinInput(false);
+          }, 100);
           vehicleInfo?.vin
             ? setDisplayVehicleInfo(true)
             : setModalVisible(true);
@@ -477,12 +505,18 @@ const ChatScreen: React.FC = () => {
       )}
       {enableUserInputDialog && (
         <GetUserEmail
-          updateSubmit={(userUUID: string) => fetchcurrentUserdata(userUUID)}
+          updateSubmit={(userUUID: string) => {
+            fetchcurrentUserdata(userUUID);
+          }}
           accessToken={accessToken}
         />
       )}
       {modalVisible && (
-        <VehicleInfoModal visible={modalVisible} onClose={handleVinClose} />
+        <VehicleInfoModal
+          clearInput={clearVinInput}
+          visible={modalVisible}
+          onClose={handleVinClose}
+        />
       )}
     </SafeAreaView>
   );
