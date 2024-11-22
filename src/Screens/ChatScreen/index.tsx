@@ -59,6 +59,7 @@ const ChatScreen: React.FC = () => {
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [clearVinInput, setClearVinInput] = useState<boolean>(false);
   const [feedbackModal, setFeedbackModal] = useState<boolean>(false);
+  const [shouldInjectDTC, setShouldInjectDTC] = useState<boolean>(false);
   const [selectedMessageId, setSelectedMessageId] = useState<string | number>();
   const [messageReactions, setMessageReactions] = useState<
     Record<string, string>
@@ -157,10 +158,9 @@ const ChatScreen: React.FC = () => {
 
     let formattedMsg = inputText;
 
-    if (updateThreadCounter === 0) {
-      formattedMsg = `${scrappedData}, Do you see any critical concerns or issues?, ${inputText}`;
+    if (updateThreadCounter === 0 && shouldInjectDTC) {
+      formattedMsg = `${inputText}, ${scrappedData},Please use both customer and dtc information to answer the most plausible diagnostic procedure.`;
     }
-
     setIsLoading(true);
     setDisplayVehicleInfo(false);
     setInputText("");
@@ -185,7 +185,7 @@ const ChatScreen: React.FC = () => {
       const chatParam = {
         accessToken,
         vinNumber: vehicleInfo?.vin ?? "", // Adjust the vinNumber as needed
-        question: inputText, // Send the user's question
+        question: formattedMsg, // Send the user's question
         sessionId: sessionId,
         userId: userId,
       };
@@ -358,6 +358,7 @@ const ChatScreen: React.FC = () => {
     setStepHistoryData(undefined);
     setMessages([]);
     setUpdateThreadCounter(0);
+    setInputText("");
     vehicleInfo?.vin &&
       handleVinClose({
         model: `${vehicleInfo?.modelyear} ${vehicleInfo?.model}`,
@@ -382,6 +383,7 @@ const ChatScreen: React.FC = () => {
           setStepHistoryData(undefined);
           setMessages([]);
           setUpdateThreadCounter(0);
+          setInputText("");
           vehicleInfo?.vin &&
             handleVinClose({
               model: `${vehicleInfo?.modelyear} ${vehicleInfo?.model}`,
@@ -398,12 +400,16 @@ const ChatScreen: React.FC = () => {
           onPress={() => {
             setDisplayVehicleInfo(false);
             setModalVisible(true);
+            setShouldInjectDTC(false);
+            setInputText("");
           }}
+          shouldInjectDTC={shouldInjectDTC}
           onVehicleTabPress={() => {
             if (messages.length > 0) {
               setDisplayVehicleInfo(false);
             }
           }}
+          allowDTCInject={() => setShouldInjectDTC(true)}
         />
       )}
 
@@ -414,7 +420,9 @@ const ChatScreen: React.FC = () => {
       ) : (
         <>
           <MessageList
-            hideArrow={modalVisible && vehicleInfo ? true : false}
+            hideArrow={
+              (displayVehicleInfo && vehicleInfo) || isLoading ? true : false
+            }
             messages={messages}
             handleReaction={handleReaction}
             messageReactions={messageReactions}

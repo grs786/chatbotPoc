@@ -21,8 +21,10 @@ export interface Reactions {
 }
 export interface IVehicle {
   vehicleInfo: IVehicleInfo;
+  shouldInjectDTC: boolean;
   onPress: () => void;
   onVehicleTabPress: () => void;
+  allowDTCInject: () => void;
 }
 
 export interface IVehicleInfo {

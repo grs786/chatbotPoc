@@ -14,7 +14,7 @@ export const updateArray = (array: any[], newObject: { forId: string }) => {
   if (index !== -1) {
     // If the object exists, replace it
     const updatedArray = array.map((item: any, idx: any) =>
-      idx === index ? newObject : item
+      idx === index ? { ...newObject, id: item?.id } : item
     );
     return updatedArray;
   } else {

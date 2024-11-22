@@ -1,6 +1,13 @@
 // src/components/RecordingModal.tsx
 import React from "react";
-import { View, Modal, TouchableOpacity, Image, Text, StyleSheet } from "react-native";
+import {
+  View,
+  Modal,
+  TouchableOpacity,
+  Image,
+  Text,
+  StyleSheet,
+} from "react-native";
 import { styles } from "./styles";
 
 interface RecordingModalProps {
@@ -8,13 +15,16 @@ interface RecordingModalProps {
   onStopRecording: () => void;
 }
 
-const RecordingModal: React.FC<RecordingModalProps> = ({ visible, onStopRecording }) => {
+const RecordingModal: React.FC<RecordingModalProps> = ({
+  visible,
+  onStopRecording,
+}) => {
   return (
     <Modal visible={visible} animationType="slide" transparent={true}>
       <View style={styles.modalContainer}>
         <View style={styles.recordingBar}>
           <Image
-            source={require("../../../Assets/images/recordingBar.png")}
+            source={require("../../../Assets/images/recordingBar.gif")}
             style={{ width: "95%", height: 30 }}
           />
           <TouchableOpacity onPress={onStopRecording} style={styles.stopButton}>
@@ -29,7 +39,5 @@ const RecordingModal: React.FC<RecordingModalProps> = ({ visible, onStopRecordin
     </Modal>
   );
 };
-
-
 
 export default RecordingModal;

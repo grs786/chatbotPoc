@@ -15,9 +15,15 @@ const RenderVehicleInfo: React.FC<IVehicle> = ({
   vehicleInfo,
   onPress,
   onVehicleTabPress,
+  shouldInjectDTC,
+  allowDTCInject,
 }: IVehicle) => {
-  const [loadingState, setIsLoadingState] = useState("initial");
-  const [showAppendDataValue, setShowAppendDataValue] = useState(false);
+  const [loadingState, setIsLoadingState] = useState(
+    !shouldInjectDTC ? "initial" : "finished"
+  );
+  const [showAppendDataValue, setShowAppendDataValue] = useState(
+    shouldInjectDTC ? true : false
+  );
   const [vehicleDataState, setVehicleDataState] = useState(
     "Retrieve Vehicle Data"
   );
@@ -28,6 +34,7 @@ const RenderVehicleInfo: React.FC<IVehicle> = ({
       setIsLoadingState("finished");
       setVehicleDataState("Vehicle Data Retrieved!");
       setShowAppendDataValue(true);
+      allowDTCInject();
     }, 3000);
   };
 
