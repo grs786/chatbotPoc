@@ -1,8 +1,16 @@
 import React, { useEffect, useState } from "react";
-import { Modal, View, Text, TextInput, TouchableOpacity } from "react-native";
+import {
+  Modal,
+  View,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  Keyboard,
+} from "react-native";
 import styles from "./styles";
 import { Colors } from "src/Assets/colors";
 import { IFeedbackArray } from "../../types";
+import { TouchableWithoutFeedback } from "react-native-gesture-handler";
 
 interface FeedbackModalProps {
   visible: boolean;
@@ -36,7 +44,7 @@ const FeedbackModal: React.FC<FeedbackModalProps> = ({
       <TouchableOpacity
         style={styles.modalOverlay}
         activeOpacity={1}
-        onPress={() => onClose()}
+        onPress={() => Keyboard.dismiss()}
       >
         <View style={styles.modalContainer}>
           <Text style={styles.title}>Provide feedback</Text>
@@ -47,11 +55,15 @@ const FeedbackModal: React.FC<FeedbackModalProps> = ({
             value={feedback}
             placeholderTextColor={Colors.DISABLED_TEXT}
             onChangeText={setFeedback}
+            onSubmitEditing={() => Keyboard.dismiss()}
           />
 
           <View style={styles.buttonContainer}>
             <TouchableOpacity style={styles.button} onPress={handleSubmit}>
               <Text style={styles.buttonText}>Submit feedback</Text>
+            </TouchableOpacity>
+            <TouchableOpacity style={styles.button} onPress={onClose}>
+              <Text style={styles.buttonText}>Cancel</Text>
             </TouchableOpacity>
           </View>
         </View>
