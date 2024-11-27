@@ -4,7 +4,6 @@ import {
   KeyboardAvoidingView,
   View,
   Platform,
-  Alert,
   Keyboard,
 } from "react-native";
 import MessageList, { IMessage } from "./components/MessageList";
@@ -41,8 +40,8 @@ import {
 } from "src/Utilities/utils";
 import FeedbackModal from "./components/FeedbackModal";
 import GetUserEmail from "./components/GetUserEmail";
-import ApiPaths from "../../../endpoints";
 import { IVehicleData } from "src/types/ScrappedVehicleInfo";
+import ApiPaths from "src/Common/endpoints";
 
 const ChatScreen: React.FC = () => {
   const [messages, setMessages] = useState<IMessage[]>([]);
@@ -82,6 +81,9 @@ const ChatScreen: React.FC = () => {
   const [stepHistoryData, setStepHistoryData] = useState<
     IStepHistoryData | undefined
   >(); // Store vehicle information
+
+  // Navigation and Route Hooks
+  const navigation = useNavigation();
   const route = useRoute<
     RouteProp<{
       params: {
@@ -93,9 +95,7 @@ const ChatScreen: React.FC = () => {
     }>
   >();
 
-  const navigation = useNavigation();
-  const { recording, startRecording, stopRecording } = useAudioRecorder();
-
+   // Custom Hooks
   const { createUserSession } = useUserSession();
   const { retreiveVehicleData } = useRetreiveVehicleData();
   const { fetchUserData } = useFetchUserData();
@@ -108,7 +108,9 @@ const ChatScreen: React.FC = () => {
   const { validateUserMail } = useValidateUserMail();
 
   const { pickImage } = useImagePicker();
+  const { recording, startRecording, stopRecording } = useAudioRecorder();
 
+// Initialize User Session
   const initialSession = async () => {
     await setItem(ApiPaths.ACCESS_TOKEN, "");
     const data = await createUserSession();
@@ -121,10 +123,8 @@ const ChatScreen: React.FC = () => {
     // }
   };
 
-  useEffect(() => {
-    initialSession();
-  }, []);
 
+   // Fetch Thread History
   const retreiveHistoryData = async (itemData: object) => {
     setDisplayVehicleInfo(false);
     setIsLoading(true);
@@ -140,6 +140,11 @@ const ChatScreen: React.FC = () => {
     setIsLoading(false);
   };
 
+  // Effects
+  useEffect(() => {
+    initialSession();
+  }, []);
+
   useEffect(() => {
     if (route?.params?.itemData) {
       setModalVisible(false);
@@ -151,6 +156,8 @@ const ChatScreen: React.FC = () => {
     }
   }, [route]);
 
+
+ // Handle Send Message
   const handleSend = async () => {
     const scrappedData = selectedVehicleData?.DTC_Codes
       ? formatDtcCodes(selectedVehicleData?.DTC_Codes)
@@ -166,6 +173,7 @@ const ChatScreen: React.FC = () => {
     setInputText("");
 
     if (inputText.trim()) {
+      // Add User's Message to Chat
       const newMessage: IMessage = {
         _id: Math.random().toString(),
         text: inputText,
@@ -181,7 +189,7 @@ const ChatScreen: React.FC = () => {
       // Update state with the new user message
       setMessages((prevMessages) => [...prevMessages, newMessage]);
 
-      // Call the API to get the response
+       // Send Message to API
       const chatParam = {
         accessToken,
         vinNumber: vehicleInfo?.vin ?? "", // Adjust the vinNumber as needed
@@ -209,6 +217,8 @@ const ChatScreen: React.FC = () => {
         if (!chatRespData.question_id) return;
         // Parse the API response
         const parsedResponse = chatRespData;
+
+        // Add Bot's Response to Chat
         const botMessage: IMessage = {
           _id: Math.random().toString(),
           text: parsedResponse.answer + parsedResponse?.sources, // Use the answer from the API response
@@ -301,6 +311,7 @@ const ChatScreen: React.FC = () => {
     return;
   };
 
+  // Handle Vehicle Modal Close
   const handleVinClose = async (vehicleData: IVehicleData) => {
     if (vehicleData?.DTC_Codes) {
       setSelectedVehicleData(vehicleData);
@@ -334,7 +345,7 @@ const ChatScreen: React.FC = () => {
       setIsChatIconDisable(true);
     }
   };
-
+ //fetch current user data
   const fetchcurrentUserdata = async (userUUID: string) => {
     const userDataVal = await validateUserMail(userUUID, accessToken);
     await setItem(ApiPaths.USER_IDENTIFIER ?? "", userUUID);

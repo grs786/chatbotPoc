@@ -13,10 +13,10 @@ import { styles } from "./styles";
 import { styles as styles2 } from "../styles";
 import Loader from "src/components/Loader";
 import { Colors } from "src/Assets/colors";
-import ApiPaths from "../../../../endpoints";
 import ScannerModal from "./ScannerModal";
 import VehicleListModal from "./VehicleListModal";
 import { IVehicleData } from "src/types/ScrappedVehicleInfo";
+
 export interface IVehicleDetail {
   model: string;
   vinNumber: string;
@@ -31,7 +31,6 @@ export interface VehicleInfo {
 
 const VehicleInfoModal: React.FC<VehicleInfo> = ({
   onClose,
-  visible,
   clearInput,
 }) => {
   const [vin, setVin] = useState<string>("");

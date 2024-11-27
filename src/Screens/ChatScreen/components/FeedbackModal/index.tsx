@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import {
   Modal,
   View,
@@ -10,7 +10,6 @@ import {
 import styles from "./styles";
 import { Colors } from "src/Assets/colors";
 import { IFeedbackArray } from "../../types";
-import { TouchableWithoutFeedback } from "react-native-gesture-handler";
 
 interface FeedbackModalProps {
   visible: boolean;

@@ -38,7 +38,6 @@ interface IMessageBubble {
   isThumbsDown: boolean;
 }
 
-const contentWidth = Dimensions.get("window").width * 0.5;
 const ASSISTANT_NAME = "WSM BOT";
 const USER_NAME = "Tech";
 
@@ -134,59 +133,6 @@ const StepHistory = memo(
         item.type === "user_message" || item.type === "assistant_message"
     );
 
-    // const renderMessage: FlatListProps<IStepHistory>["renderItem"] = ({
-    //   item,
-    // }) => {
-    //   const isUser = item.type === "user_message";
-    //   const isThumbsUp = getThumbsUpStatus(item?.id);
-    //   const isThumbsDown = getThumbsDownStatus(item?.id);
-
-    //   if (isUser) {
-    //     if (item.input === null) {
-    //       // Treat as user message with null input
-    //       return (
-    //         <MessageBubble
-    //           name={USER_NAME}
-    //           content={item.output}
-    //           isUser={true}
-    //           isThumbsUp={false}
-    //           isThumbsDown={false}
-    //         />
-    //       );
-    //     } else {
-    //       // Split user input and bot output
-    //       return (
-    //         <>
-    //           <MessageBubble
-    //             name={USER_NAME}
-    //             content={item.input}
-    //             isUser={true}
-    //             isThumbsUp={false}
-    //             isThumbsDown={false}
-    //           />
-    //           <MessageBubble
-    //             name={ASSISTANT_NAME}
-    //             content={item.output}
-    //             isUser={false}
-    //             isThumbsUp={isThumbsUp}
-    //             isThumbsDown={isThumbsDown}
-    //           />
-    //         </>
-    //       );
-    //     }
-    //   } else {
-    //     // Assistant message
-    //     return (
-    //       <MessageBubble
-    //         name={ASSISTANT_NAME}
-    //         content={item.output}
-    //         isUser={false}
-    //         isThumbsUp={isThumbsUp}
-    //         isThumbsDown={isThumbsDown}
-    //       />
-    //     );
-    //   }
-    // };
 
     const renderMessage: FlatListProps<IStepHistory>["renderItem"] = ({
       item,

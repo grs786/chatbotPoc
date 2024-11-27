@@ -3,30 +3,24 @@ import {
   Modal,
   View,
   TextInput,
-  Button,
-  StyleSheet,
   Text,
   TouchableOpacity,
   Keyboard,
 } from "react-native";
 import styles from "./styles";
 import styles2 from "../FeedbackModal/styles";
-import { useValidateUserMail } from "src/Hooks/useChatOperations";
-import { setItem } from "src/Utilities/StorageClasses";
 import { validateEmail } from "src/Utilities/utils";
 import { Colors } from "src/Assets/colors";
-import ApiPaths from "../../../../../endpoints";
 
 interface IGetUserEmail {
   updateSubmit: (inputValue: string) => void;
   accessToken: string;
 }
 
-const GetUserEmail = ({ updateSubmit, accessToken }: IGetUserEmail) => {
+const GetUserEmail = ({ updateSubmit }: IGetUserEmail) => {
   const [modalVisible, setModalVisible] = useState(true);
   const [EmailValidated, setEmailValidated] = useState(false);
   const [inputValue, setInputValue] = useState("");
-  const { validateUserMail } = useValidateUserMail();
 
   const handleSubmit = async () => {
     // Handle the submit action here, e.g., log the input or pass it to a function
@@ -57,7 +51,6 @@ const GetUserEmail = ({ updateSubmit, accessToken }: IGetUserEmail) => {
               }}
               onSubmitEditing={() => Keyboard.dismiss()}
             />
-            {/* <Button title="Submit" onPress={handleSubmit} /> */}
             <TouchableOpacity
               disabled={!EmailValidated}
               style={[
