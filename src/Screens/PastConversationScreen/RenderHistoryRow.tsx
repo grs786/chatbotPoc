@@ -1,19 +1,14 @@
 import React from "react";
 import {
-  Modal,
   View,
   Text,
-  StyleSheet,
-  ScrollView,
-  Pressable,
   TouchableOpacity,
   Image,
 } from "react-native";
-import { Colors } from "src/Assets/colors";
-import { IVehicleData, VehicleData } from "src/types/ScrappedVehicleInfo";
 import { styles } from "./styles";
-import { IChatHistory } from ".";
 import moment from "moment";
+import { IChatHistory } from "./types";
+
 interface IChatHistoryProps {
   entry: IChatHistory;
   handleRowClick: (entry: IChatHistory) => void;

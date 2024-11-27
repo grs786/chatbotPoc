@@ -31,7 +31,6 @@ const MessageInput = ({
   setInputText,
   handleSend,
   pickImage,
-  recording,
   startRecording,
   stopRecording,
   disableInput,

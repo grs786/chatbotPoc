@@ -5,7 +5,6 @@ import {
   Text,
   StyleSheet,
   ScrollView,
-  Pressable,
   TouchableOpacity,
 } from "react-native";
 import { Colors } from "src/Assets/colors";

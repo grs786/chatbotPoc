@@ -19,9 +19,9 @@ import { getItem, setItem } from "src/Utilities/StorageClasses";
 import { ApplicationStackParamList } from "src/types/navigation";
 import { SCREENS } from "src/Common/screens";
 import { useDrawerStatus } from "@react-navigation/drawer";
-import ApiPaths from "../../../endpoints";
 import RenderHistoryRow from "./RenderHistoryRow";
 import { IChatHistory } from "./types";
+import ApiPaths from "src/Common/endpoints";
 
 const PastConversationsScreen = (
   props: React.JSX.IntrinsicAttributes & {
