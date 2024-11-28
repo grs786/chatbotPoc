@@ -42,6 +42,9 @@ import FeedbackModal from "./components/FeedbackModal";
 import GetUserEmail from "./components/GetUserEmail";
 import { IVehicleData } from "src/types/ScrappedVehicleInfo";
 import ApiPaths from "src/Common/endpoints";
+import { useDispatch } from "react-redux";
+import { useAppSelector } from "src/Hooks/useRedux";
+import { userRequest } from "src/store/Slices/userSlice/userSlice";
 
 const ChatScreen: React.FC = () => {
   const [messages, setMessages] = useState<IMessage[]>([]);
@@ -109,6 +112,20 @@ const ChatScreen: React.FC = () => {
 
   const { pickImage } = useImagePicker();
   const { recording, startRecording, stopRecording } = useAudioRecorder();
+
+  const dispatch = useDispatch();
+  const { posts } = useAppSelector((state) => state.userReducer.userReducer);
+
+  useEffect(() => {
+    dispatch(
+      userRequest(
+        () => {},
+        () => {}
+      )
+    );
+  }, []);
+
+  console.log("post>>>", posts);
 
 // Initialize User Session
   const initialSession = async () => {
