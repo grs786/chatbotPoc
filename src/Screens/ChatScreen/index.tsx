@@ -353,7 +353,8 @@ const ChatScreen: React.FC = () => {
 
       const userUUID = await getItem(ApiPaths.USER_IDENTIFIER ?? "");
       const userData = await fetchUserData(userUUID, accessToken);
-      await setItem(ApiPaths.USER_ID ?? "", userData?.id);
+
+      userData?.id ?? (await setItem(ApiPaths.USER_ID ?? "", userData?.id));
       setUserID(userData?.id);
       setUserIdentifier(userData?.identifier);
     } else {
@@ -367,13 +368,14 @@ const ChatScreen: React.FC = () => {
     await setItem(ApiPaths.USER_IDENTIFIER ?? "", userUUID);
     if (userDataVal?.id) {
       setEnableUserInputDialog(false);
-      await setItem(ApiPaths.USER_ID ?? "", userDataVal?.id);
+      userDataVal?.id ??
+        (await setItem(ApiPaths.USER_ID ?? "", userDataVal?.id));
       setUserID(userDataVal?.id);
       setUserIdentifier(userDataVal?.identifier);
     } else {
       const userData = await fetchUserData(userUUID, accessToken);
       setEnableUserInputDialog(false);
-      await setItem(ApiPaths.USER_ID ?? "", userData?.id);
+      userData?.id ?? (await setItem(ApiPaths.USER_ID ?? "", userData?.id));
       setUserID(userData?.id);
       setUserIdentifier(userData?.identifier);
     }
