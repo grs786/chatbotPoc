@@ -45,16 +45,12 @@ import ApiPaths from "src/Common/endpoints";
 
 const ChatScreen: React.FC = () => {
   const [messages, setMessages] = useState<IMessage[]>([]);
-  const [feedbackLocalArr, setFeedbackLocalArr] = useState<IFeedbackArray[]>(
-    []
-  );
-
+  const [feedbackLocalArr, setFeedbackLocalArr] = useState<IFeedbackArray[]>([]);
   const [inputText, setInputText] = useState("");
   const [sessionId, setSessionID] = useState<string>("");
   const [userId, setUserID] = useState<string>("");
   const [userIdentifier, setUserIdentifier] = useState<string>("");
   const [feedbackQuestionID, setFeedbackQuestionID] = useState<string>("");
-
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [clearVinInput, setClearVinInput] = useState<boolean>(false);
   const [feedbackModal, setFeedbackModal] = useState<boolean>(false);
@@ -68,16 +64,13 @@ const ChatScreen: React.FC = () => {
     userInput: "",
   });
   const [modalVisible, setModalVisible] = useState<boolean>(true);
-  const [enableUserInputDialog, setEnableUserInputDialog] =
-    useState<boolean>(false);
+  const [enableUserInputDialog, setEnableUserInputDialog] = useState<boolean>(false);
   const [displayVehicleInfo, setDisplayVehicleInfo] = useState<boolean>(false);
   const [isChatIconDisable, setIsChatIconDisable] = useState<boolean>(true);
   const [accessToken, setAccessToken] = useState<string>("");
   const [vehicleInfo, setVehicleInfo] = useState<IVehicleInfo | null>(null); // Store vehicle information
   const [updateThreadCounter, setUpdateThreadCounter] = useState<number>(0);
-  const [selectedVehicleData, setSelectedVehicleData] =
-    useState<IVehicleData | null>(null); // Store vehicle information
-
+  const [selectedVehicleData, setSelectedVehicleData] = useState<IVehicleData | null>(null); // Store vehicle information
   const [stepHistoryData, setStepHistoryData] = useState<
     IStepHistoryData | undefined
   >(); // Store vehicle information
@@ -95,7 +88,8 @@ const ChatScreen: React.FC = () => {
     }>
   >();
 
-   // Custom Hooks
+
+  // Custom Hooks
   const { createUserSession } = useUserSession();
   const { retreiveVehicleData } = useRetreiveVehicleData();
   const { fetchUserData } = useFetchUserData();
@@ -106,11 +100,10 @@ const ChatScreen: React.FC = () => {
   const { upsertUserFeedback } = useUpsertUserFeedback();
   const { convertSpeechToText } = useConvertSpeechToText();
   const { validateUserMail } = useValidateUserMail();
-
   const { pickImage } = useImagePicker();
   const { recording, startRecording, stopRecording } = useAudioRecorder();
 
-// Initialize User Session
+  // Initialize User Session
   const initialSession = async () => {
     await setItem(ApiPaths.ACCESS_TOKEN, "");
     const data = await createUserSession();
@@ -123,8 +116,7 @@ const ChatScreen: React.FC = () => {
     // }
   };
 
-
-   // Fetch Thread History
+  // Fetch Thread History
   const retreiveHistoryData = async (itemData: object) => {
     setDisplayVehicleInfo(false);
     setIsLoading(true);
@@ -156,8 +148,7 @@ const ChatScreen: React.FC = () => {
     }
   }, [route]);
 
-
- // Handle Send Message
+  // Handle Send Message
   const handleSend = async () => {
     const scrappedData = selectedVehicleData?.DTC_Codes
       ? formatDtcCodes(selectedVehicleData?.DTC_Codes)
@@ -189,7 +180,7 @@ const ChatScreen: React.FC = () => {
       // Update state with the new user message
       setMessages((prevMessages) => [...prevMessages, newMessage]);
 
-       // Send Message to API
+      // Send Message to API
       const chatParam = {
         accessToken,
         vinNumber: vehicleInfo?.vin ?? "", // Adjust the vinNumber as needed
@@ -345,7 +336,7 @@ const ChatScreen: React.FC = () => {
       setIsChatIconDisable(true);
     }
   };
- //fetch current user data
+  //fetch current user data
   const fetchcurrentUserdata = async (userUUID: string) => {
     const userDataVal = await validateUserMail(userUUID, accessToken);
     await setItem(ApiPaths.USER_IDENTIFIER ?? "", userUUID);
@@ -364,7 +355,7 @@ const ChatScreen: React.FC = () => {
     }
   };
 
-//intialize new chat
+  //intialize new chat
   const initiateNewChat = () => {
     Keyboard.dismiss();
     vehicleInfo?.vin ? setDisplayVehicleInfo(true) : setModalVisible(true);
@@ -381,31 +372,99 @@ const ChatScreen: React.FC = () => {
       });
   };
 
+  //navigation for homescreen
+  const navigateToHome = () => {
+    Keyboard.dismiss();
+    setClearVinInput(true);
+    setTimeout(() => {
+      setClearVinInput(false);
+    }, 100);
+    vehicleInfo?.vin ? setDisplayVehicleInfo(true) : setModalVisible(true);
+    setStepHistoryData(undefined);
+    setMessages([]);
+    setUpdateThreadCounter(0);
+    setInputText("");
+    vehicleInfo?.vin &&
+      handleVinClose({
+        model: `${vehicleInfo?.modelyear} ${vehicleInfo?.model}`,
+        vinNumber: vehicleInfo?.vin,
+        connected: true,
+      });
+  };
+
+  const renderVehicleInfo = () => {
+    setDisplayVehicleInfo(false);
+    setModalVisible(true);
+    setShouldInjectDTC(false);
+    setInputText("");
+  };
+
+  const VehicleTabPress = () => {
+    if (messages.length > 0) {
+      setDisplayVehicleInfo(false);
+    }
+  };
+
+  const handlePickImage = async () => {
+    try {
+      const uri = await pickImage();
+      if (uri) {
+        const imageMessage: IMessage = {
+          _id: Math.random().toString(),
+          image: uri,
+          createdAt: new Date(),
+          user: {
+            _id: 1,
+            name: "User",
+            fullname: "",
+          },
+          question_id: "",
+        };
+        setMessages((prev) => [...prev, imageMessage]);
+      }
+    } catch (error) {
+      console.error("Error picking image:", error);
+    }
+  };
+
+  const handleStopRecording = async () => {
+    try {
+      const recordingURI = await stopRecording();
+      if (recordingURI) {
+        const audioType = get_url_extension(recordingURI);
+        const audioObject = {
+          uri:
+            Platform.OS === "ios"
+              ? recordingURI.replace("file://", "")
+              : recordingURI,
+          name: `recording.${audioType}`,
+          type: `audio/${audioType}`,
+        };
+
+        const formData = new FormData();
+        formData.append("file", audioObject);
+
+        setIsLoading(true);
+
+        const respData = await convertSpeechToText(formData);
+        setIsLoading(false);
+
+        if (respData?.channel_transcript?.transcript) {
+          setInputText((prev) => prev + respData.channel_transcript.transcript);
+        }
+      }
+    } catch (error) {
+      setIsLoading(false);
+      console.error("Error processing recording:", error);
+    }
+  };
+
   return (
     <SafeAreaView style={styles.mainContainer}>
       <CustomHeader
         title="WSM Assistant"
         navigation={navigation}
-        navigateToHome={() => {
-          Keyboard.dismiss();
-          setClearVinInput(true);
-          setTimeout(() => {
-            setClearVinInput(false);
-          }, 100);
-          vehicleInfo?.vin
-            ? setDisplayVehicleInfo(true)
-            : setModalVisible(true);
-          setStepHistoryData(undefined);
-          setMessages([]);
-          setUpdateThreadCounter(0);
-          setInputText("");
-          vehicleInfo?.vin &&
-            handleVinClose({
-              model: `${vehicleInfo?.modelyear} ${vehicleInfo?.model}`,
-              vinNumber: vehicleInfo?.vin,
-              connected: true,
-            });
-        }}
+        navigateToHome={navigateToHome}
         beginNewChat={initiateNewChat}
         isChatIconDisable={isChatIconDisable}
       />
@@ -413,18 +472,9 @@ const ChatScreen: React.FC = () => {
       {!isLoading && displayVehicleInfo && (
         <RenderVehicleInfo
           vehicleInfo={vehicleInfo ?? {}}
-          onPress={() => {
-            setDisplayVehicleInfo(false);
-            setModalVisible(true);
-            setShouldInjectDTC(false);
-            setInputText("");
-          }}
+          onPress={renderVehicleInfo}
           shouldInjectDTC={shouldInjectDTC}
-          onVehicleTabPress={() => {
-            if (messages.length > 0) {
-              setDisplayVehicleInfo(false);
-            }
-          }}
+          onVehicleTabPress={VehicleTabPress}
           allowDTCInject={() => setShouldInjectDTC(true)}
         />
       )}
@@ -449,50 +499,10 @@ const ChatScreen: React.FC = () => {
               inputText={inputText}
               setInputText={setInputText}
               handleSend={handleSend}
-              pickImage={async () => {
-                const uri = await pickImage();
-                if (uri) {
-                  const imageMessage: IMessage = {
-                    _id: Math.random().toString(),
-                    image: uri,
-                    createdAt: new Date(),
-                    user: {
-                      _id: 1,
-                      name: "User",
-                      fullname: "",
-                    },
-                    question_id: "",
-                  };
-                  setMessages((prev) => [...prev, imageMessage]);
-                }
-              }}
+              pickImage={handlePickImage}
               recording={recording}
               startRecording={startRecording}
-              stopRecording={async () => {
-                const recordingURI = await stopRecording();
-                if (recordingURI) {
-                  const formData = new FormData();
-                  const audioType = get_url_extension(recordingURI);
-                  const audioObject = {
-                    uri:
-                      Platform.OS === "ios"
-                        ? recordingURI.replace("file://", "")
-                        : recordingURI,
-                    name: `recording.${audioType}`,
-                    type: `audio/${audioType}`,
-                  };
-
-                  formData.append("file", audioObject);
-                  setIsLoading(true);
-                  const respData = await convertSpeechToText(formData);
-                  setIsLoading(false);
-                  if (respData?.channel_transcript?.transcript) {
-                    setInputText(
-                      (prev) => prev + respData?.channel_transcript?.transcript
-                    );
-                  }
-                }
-              }}
+              stopRecording={handleStopRecording}
             />
           </KeyboardAvoidingView>
         </>
@@ -504,7 +514,7 @@ const ChatScreen: React.FC = () => {
           onClose={() => setFeedbackModal(false)}
           feedbackQuestionID={feedbackQuestionID}
           onSubmit={(feedbackValue) => {
-            handleReactionFeedback(0, feedbackQuestionID, feedbackValue);
+          handleReactionFeedback(0, feedbackQuestionID, feedbackValue);
           }}
         />
       )}

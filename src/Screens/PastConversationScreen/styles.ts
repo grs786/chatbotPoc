@@ -140,4 +140,5 @@ export const styles = StyleSheet.create({
     fontWeight: "500",
     color: Colors.BLACK_SHADE1,
   },
+  menu:{ width: 25, height: 25 },
 });

@@ -182,7 +182,7 @@ const PastConversationsScreen = (
         >
           <Image
             source={require("../../Assets/images/menuOpen.png")}
-            style={{ width: 25, height: 25 }}
+            style={styles.menu}
           />
         </TouchableOpacity>
       </View>
