@@ -9,6 +9,7 @@ import {
 } from "react-native";
 import { Colors } from "src/Assets/colors";
 import { IVehicleData, VehicleData } from "src/types/ScrappedVehicleInfo";
+
 interface VehicleModalProps {
   visible: boolean;
   onClose: () => void;

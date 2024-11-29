@@ -75,7 +75,7 @@ export const AudioMessage: React.FC<AudioMessageProps> = ({
       setDuration(status.durationMillis || 0); // Set duration from the playback status
     }
   };
-
+  //audioslider modal from bottom
   const renderSlider = () => {
     if (playbackStatus && duration) {
       return (

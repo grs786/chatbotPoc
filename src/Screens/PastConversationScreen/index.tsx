@@ -40,7 +40,6 @@ const PastConversationsScreen = (
     {}
   );
   const [filteredHistory, setFilteredHistory] = useState<IChatHistory[]>();
-
   const { fetchAllThreadData } = useFetchAllThreadData();
   const { createUserSession } = useUserSession();
 

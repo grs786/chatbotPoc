@@ -42,9 +42,6 @@ import FeedbackModal from "./components/FeedbackModal";
 import GetUserEmail from "./components/GetUserEmail";
 import { IVehicleData } from "src/types/ScrappedVehicleInfo";
 import ApiPaths from "src/Common/endpoints";
-import { useDispatch } from "react-redux";
-import { useAppSelector } from "src/Hooks/useRedux";
-import { userRequest } from "src/store/Slices/userSlice/userSlice";
 
 const ChatScreen: React.FC = () => {
   const [messages, setMessages] = useState<IMessage[]>([]);
@@ -112,20 +109,6 @@ const ChatScreen: React.FC = () => {
 
   const { pickImage } = useImagePicker();
   const { recording, startRecording, stopRecording } = useAudioRecorder();
-
-  const dispatch = useDispatch();
-  const { posts } = useAppSelector((state) => state.userReducer.userReducer);
-
-  useEffect(() => {
-    dispatch(
-      userRequest(
-        () => {},
-        () => {}
-      )
-    );
-  }, []);
-
-  console.log("post>>>", posts);
 
 // Initialize User Session
   const initialSession = async () => {
@@ -381,6 +364,7 @@ const ChatScreen: React.FC = () => {
     }
   };
 
+//intialize new chat
   const initiateNewChat = () => {
     Keyboard.dismiss();
     vehicleInfo?.vin ? setDisplayVehicleInfo(true) : setModalVisible(true);
@@ -396,6 +380,7 @@ const ChatScreen: React.FC = () => {
         connected: true,
       });
   };
+
   return (
     <SafeAreaView style={styles.mainContainer}>
       <CustomHeader
@@ -424,6 +409,7 @@ const ChatScreen: React.FC = () => {
         beginNewChat={initiateNewChat}
         isChatIconDisable={isChatIconDisable}
       />
+
       {!isLoading && displayVehicleInfo && (
         <RenderVehicleInfo
           vehicleInfo={vehicleInfo ?? {}}
