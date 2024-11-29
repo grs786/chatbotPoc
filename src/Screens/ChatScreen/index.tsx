@@ -45,7 +45,9 @@ import ApiPaths from "src/Common/endpoints";
 
 const ChatScreen: React.FC = () => {
   const [messages, setMessages] = useState<IMessage[]>([]);
-  const [feedbackLocalArr, setFeedbackLocalArr] = useState<IFeedbackArray[]>([]);
+  const [feedbackLocalArr, setFeedbackLocalArr] = useState<IFeedbackArray[]>(
+    []
+  );
   const [inputText, setInputText] = useState("");
   const [sessionId, setSessionID] = useState<string>("");
   const [userId, setUserID] = useState<string>("");
@@ -64,13 +66,15 @@ const ChatScreen: React.FC = () => {
     userInput: "",
   });
   const [modalVisible, setModalVisible] = useState<boolean>(true);
-  const [enableUserInputDialog, setEnableUserInputDialog] = useState<boolean>(false);
+  const [enableUserInputDialog, setEnableUserInputDialog] =
+    useState<boolean>(false);
   const [displayVehicleInfo, setDisplayVehicleInfo] = useState<boolean>(false);
   const [isChatIconDisable, setIsChatIconDisable] = useState<boolean>(true);
   const [accessToken, setAccessToken] = useState<string>("");
   const [vehicleInfo, setVehicleInfo] = useState<IVehicleInfo | null>(null); // Store vehicle information
   const [updateThreadCounter, setUpdateThreadCounter] = useState<number>(0);
-  const [selectedVehicleData, setSelectedVehicleData] = useState<IVehicleData | null>(null); // Store vehicle information
+  const [selectedVehicleData, setSelectedVehicleData] =
+    useState<IVehicleData | null>(null); // Store vehicle information
   const [stepHistoryData, setStepHistoryData] = useState<
     IStepHistoryData | undefined
   >(); // Store vehicle information
@@ -88,8 +92,7 @@ const ChatScreen: React.FC = () => {
     }>
   >();
 
-
-  // Custom Hooks
+  // Custom Hooks for Api calling
   const { createUserSession } = useUserSession();
   const { retreiveVehicleData } = useRetreiveVehicleData();
   const { fetchUserData } = useFetchUserData();
@@ -116,7 +119,7 @@ const ChatScreen: React.FC = () => {
     // }
   };
 
-  // Fetch Thread History
+  // Fetch all History Thread
   const retreiveHistoryData = async (itemData: object) => {
     setDisplayVehicleInfo(false);
     setIsLoading(true);
@@ -148,7 +151,7 @@ const ChatScreen: React.FC = () => {
     }
   }, [route]);
 
-  // Handle Send Message
+  // Handle Send Message with appenidng the DTC to the first question to every chat session.
   const handleSend = async () => {
     const scrappedData = selectedVehicleData?.DTC_Codes
       ? formatDtcCodes(selectedVehicleData?.DTC_Codes)
@@ -274,6 +277,7 @@ const ChatScreen: React.FC = () => {
     }
   };
 
+  //thumbs up and down user feedback recorded and passed to api
   const handleReactionFeedback = async (
     value: number,
     questionId: string,
@@ -302,7 +306,7 @@ const ChatScreen: React.FC = () => {
     return;
   };
 
-  // Handle Vehicle Modal Close
+  // Handle Vehicle Modal Close and retreive the vehicle data from api by passing vin number
   const handleVinClose = async (vehicleData: IVehicleData) => {
     if (vehicleData?.DTC_Codes) {
       setSelectedVehicleData(vehicleData);
@@ -336,6 +340,7 @@ const ChatScreen: React.FC = () => {
       setIsChatIconDisable(true);
     }
   };
+
   //fetch current user data
   const fetchcurrentUserdata = async (userUUID: string) => {
     const userDataVal = await validateUserMail(userUUID, accessToken);
@@ -355,7 +360,7 @@ const ChatScreen: React.FC = () => {
     }
   };
 
-  //intialize new chat
+  //intialize the  new chat
   const initiateNewChat = () => {
     Keyboard.dismiss();
     vehicleInfo?.vin ? setDisplayVehicleInfo(true) : setModalVisible(true);
@@ -392,6 +397,7 @@ const ChatScreen: React.FC = () => {
       });
   };
 
+  //Display the vehicle info modal
   const renderVehicleInfo = () => {
     setDisplayVehicleInfo(false);
     setModalVisible(true);
@@ -405,6 +411,7 @@ const ChatScreen: React.FC = () => {
     }
   };
 
+  // Pick images from the gallery, additional work
   const handlePickImage = async () => {
     try {
       const uri = await pickImage();
@@ -427,6 +434,7 @@ const ChatScreen: React.FC = () => {
     }
   };
 
+  // This method helps to call the api for converting speech to text using transcript api call
   const handleStopRecording = async () => {
     try {
       const recordingURI = await stopRecording();
@@ -514,7 +522,7 @@ const ChatScreen: React.FC = () => {
           onClose={() => setFeedbackModal(false)}
           feedbackQuestionID={feedbackQuestionID}
           onSubmit={(feedbackValue) => {
-          handleReactionFeedback(0, feedbackQuestionID, feedbackValue);
+            handleReactionFeedback(0, feedbackQuestionID, feedbackValue);
           }}
         />
       )}

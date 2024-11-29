@@ -43,22 +43,15 @@ const PastConversationsScreen = (
   const { fetchAllThreadData } = useFetchAllThreadData();
   const { createUserSession } = useUserSession();
 
+  // Initialize the new session for new chat
   const initialSession = async () => {
     const accessTokenId = await getItem(ApiPaths?.ACCESS_TOKEN ?? "");
     const user_Id = await getItem(ApiPaths.USER_ID ?? "");
-
-    console.log(user_Id, "user_Iduser_Iduser_Iduser_Id", accessTokenId);
-
     if (user_Id && accessTokenId) {
       setIsLoading(true);
       const historyData = await fetchAllThreadData(
         `${user_Id}`,
         `${accessTokenId}`
-      );
-
-      console.log(
-        JSON.stringify(historyData, null, 2),
-        "historyData_historyData"
       );
 
       // // Filter 2 days chats
@@ -71,12 +64,6 @@ const PastConversationsScreen = (
     }
     const userUUID = (await getItem(ApiPaths.USER_IDENTIFIER ?? "")) ?? "";
     setUserUUID(userUUID);
-  };
-
-  const fetchTokenSession = async () => {
-    const data = await createUserSession();
-    data?.access_token &&
-      (await setItem(ApiPaths.ACCESS_TOKEN ?? "", data?.access_token));
   };
 
   useEffect(() => {
@@ -143,6 +130,7 @@ const PastConversationsScreen = (
     { withVin: {}, others: [] }
   );
 
+  // Group the chat by Vin number coming in the chat
   const vinGroups =
     groupedByVin &&
     Object.keys(groupedByVin?.withVin).map((vin) => ({
@@ -160,9 +148,6 @@ const PastConversationsScreen = (
 
   return (
     <View style={styles.container}>
-      {/* <Text style={styles.uuidText}>{userUUID}</Text> */}
-      {/* <Text style={styles.heading}>Past Chats</Text> */}
-
       {/* Search Bar */}
       <View style={styles.searchMainContainer}>
         <View style={styles.searchContainer}>
